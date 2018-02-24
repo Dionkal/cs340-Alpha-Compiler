@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 enum keyword {IF, ELSE, WHILE, FOR, FUNCTION, RETURN, BREAK, CONTINUE, AND, NOT, OR, LOCAL, TRUE, FALSE, NIL};
-
+enum operators {ASSIGNMENT, PLUS, MINUS, PRODUCT, DIVIDE, PERCENT, EQUALS, NOT, D_PLUS, D_MINUS, GREATER, LESS, G_EQUAL, L_EQUAL}
 %}
 
 %option yylineno
@@ -72,8 +72,79 @@ enum keyword {IF, ELSE, WHILE, FOR, FUNCTION, RETURN, BREAK, CONTINUE, AND, NOT,
 {nil}			{
 					addToken(yytext, keyword, NIL);
 					fprintf(stderr,"Keyword value: %s\n", yytext);
-				}				
+				}
 
+				
+"="				{
+					addToken(yytext, operators, ASSIGNMENT);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}				
+"+"				{
+					addToken(yytext, operators, PLUS);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}				
+"-"				{
+					addToken(yytext, operators, MINUS);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+"*"				{
+					addToken(yytext, operators, PRODUCT);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+"/"				{
+					addToken(yytext, operators, DIVIDE);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+"%"				{
+					addToken(yytext, operators, PERCENT);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+"=="			{
+					addToken(yytext, operators, EQUALS);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+"!="			{
+					addToken(yytext, operators, NOT);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+"++"			{
+					addToken(yytext, operators, D_PLUS);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+"--"			{
+					addToken(yytext, operators, D_MINUS);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+">"				{
+					addToken(yytext, operators, GREATER);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+"<"				{
+					addToken(yytext, operators, LESS);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+">="			{
+					addToken(yytext, operators, G_EQUAL);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+"<="			{
+					addToken(yytext, operators, L_EQUAL);
+					fprintf(stderr,"Operator value: %s\n", yytext);
+				}
+				
+
+leftBracket1	\{
+rightBracket1	\}	
+leftBracket2	\[
+rightBracket2	\]
+leftBracket3	\(
+rightBracket3	\)
+semicolon		\;
+comma			\,
+colon			\:
+doubleColon		[:]{2}
+period			\.
+doublePeriod	[.]{2}
 
 %%
 
