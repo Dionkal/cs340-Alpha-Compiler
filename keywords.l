@@ -74,6 +74,18 @@ enum keyword {IF, ELSE, WHILE, FOR, FUNCTION, RETURN, BREAK, CONTINUE, AND, NOT,
 					fprintf(stderr,"Keyword value: %s\n", yytext);
 				}				
 
+leftBracket1	\{
+rightBracket1	\}	
+leftBracket2	\[
+rightBracket2	\]
+leftBracket3	\(
+rightBracket3	\)
+semicolon		\;
+comma			\,
+colon			\:
+doubleColon		[:]{2}
+period			\.
+doublePeriod	[.]{2}
 
 %%
 
