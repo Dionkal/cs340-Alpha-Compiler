@@ -1,31 +1,9 @@
-#define INVALID_CHARACTER -1
-#define IF 1
-#define ELSE 2
-#define WHILE 3
-#define FOR 4
-#define FUNCTION 5
-#define RETURN 6
-#define BREAK 7	
-#define CONTINUE 8
-#define AND 9
-#define NOT 10
-#define OR 11
-#define LOCAL 12
-#define TRUE 13
-#define FALSE 14
-#define NIL 15
-#define ASSIGNMENT 16
-#define PLUS 17
-#define MINUS 18
-#define PRODUCT 19
-#define DIVIDE 20
-#define PERCENT 21
-#define EQUALS 22
-#define NOT_OP 23
-#define D_PLUS 24
-#define D_MINUS 25
-#define GREATER 26
-#define LESS 27
-#define G_EQUAL 28
-#define L_EQUAL 29 
-#define IDENTIFIER 30
+typedef struct alpha_token_t alpha_token_t;
+
+ struct  alpha_token_t{
+	int token_no;
+	int line_no;
+	char* token_type; 
+	char* token_value;
+	alpha_token_t * next;
+};
