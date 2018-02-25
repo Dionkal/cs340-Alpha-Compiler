@@ -4,6 +4,9 @@
 #include "scanner.h"
 
 #define YY_DECL int alpha_yylext(void* yyval);
+alpha_token_t* List = NULL;	
+
+int node_count = 0;
 %}
 
 %option yylineno
@@ -34,8 +37,7 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					addToken(yytext, keyword, IF); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+					addToken(yytext, yyleng, "KEYWORD IF"); 
 				}
 else 			{
 					addToken(yytext, keyword, ELSE); 
@@ -195,6 +197,16 @@ nil				{
 .				printf("Invalid character\n");		
 				
 %%
+int addToken(char* value, int value_lenght, char* type){
+	alpha_token_t* node = malloc (sizeof(alpha_token_t));
+	
+	node.token_no = ++node_count;
+	node.line_no = yylineno;
+	/*TODO add type */
+	/*TODO add value*/
+}
+
+
 
 int yywrap(){
 	return 1;
