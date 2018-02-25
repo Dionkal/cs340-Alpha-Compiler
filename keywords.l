@@ -3,11 +3,10 @@
 #include <stdio.h>
 #include "scanner.h"
 
+#define YY_DECL int alpha_yylext(void* yyval);
 %}
 
 %option yylineno
-<<<<<<< HEAD
-=======
 %option noyywrap
 
 /*Punctuation*/
@@ -28,107 +27,105 @@ string			\"[^\n"]*\"
 comment1		\/{2}.*
 comment2		(\/\*)+(\*\/)+ /*not sure about this yet*/
 
->>>>>>> Ioanna
 
 ID				[a-zA-Z][a-zA-Z0-9_]*
 Whitespace 		[ \t\n]
 %%
-"if"			{
-					return IF;
+
+if				{
+					
 				}
-"else" 			{
-					return ELSE;
+else 			{
+					
 				}
-"while"			{
-					return WHILE;
+while			{
+					
 				}
-"for"			{
-					return FOR;
+for				{
+					
 				}
-"function"		{
-					return FUNCTION;
+function		{
+					
 				}
-"return"		{
-					return RETURN;
+return			{
+					
 				}
-"break"			{
-					return BREAK;
+break			{
+					
 				}
-"continue"		{
-					return CONTINUE;
+continue		{
+					
 				}
-"and"			{
-					return AND;
+and				{
+					
 				}
-"not"			{
-					return NOT;
+not				{
+					
 				}
-"or"			{
-					return OR;
+or				{
+					
 				}
-"local"			{
-					return LOCAL;
+local			{
+					
 				}
-"true"			{
-					return TRUE;
+true			{
+					
 				}
-"false"			{
-					return FALSE;
+false			{
+					
 				}
-"nil"			{
-					return NIL;
+nil				{
+					
 				}
 {ID}			{
-					return IDENTIFIER;
+					
 				}
 				
 "="				{
-					return ASSIGNMENT;
+					
 				}				
 "+"				{
-					return PLUS;
+					
 				}				
 "-"				{
-					return MINUS;
+					
 				}
 "*"				{
-					return PRODUCT;
+					
 				}
 "/"				{
-					return DIVIDE;
+					
 				}
 "%"				{
-					return PERCENT;
+					
 				}
 "=="			{
-					return EQUALS;
+					
 				}
 "!="			{
-					return NOT_OP;
+					
 				}
 "++"			{	
-					return D_PLUS;
+					
 				}
 "--"			{
-					return D_MINUS;
+					
 				}
 ">"				{
-					return GREATER;
+					
 				}
 "<"				{
-					return LESS;
+					
 				}
 ">="			{
-					return G_EQUAL;
+					
 				}
 "<="			{
-					return L_EQUAL;
+					
 				}
 
 
-<<<<<<< HEAD
 {Whitespace}	;
-=======
 {leftBracket1}	{printf("{");}
 {rightBracket1}	{printf("}");}
 {leftBracket2}	{printf("[");}
@@ -148,7 +145,7 @@ Whitespace 		[ \t\n]
 
 >>>>>>> Ioanna
 
-.				printf("Invalid character\n");				
+.								
 %%
 
 int yywrap(){
