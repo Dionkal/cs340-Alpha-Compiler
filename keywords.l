@@ -1,139 +1,113 @@
 %{
 	
 #include <stdio.h>
+#include "scanner.h"
 
-enum keyword {IF, ELSE, WHILE, FOR, FUNCTION, RETURN, BREAK, CONTINUE, AND, NOT, OR, LOCAL, TRUE, FALSE, NIL};
-enum operators {ASSIGNMENT, PLUS, MINUS, PRODUCT, DIVIDE, PERCENT, EQUALS, NOT, D_PLUS, D_MINUS, GREATER, LESS, G_EQUAL, L_EQUAL}
 %}
 
 %option yylineno
-%option noyywrap
 
 ID				[a-zA-Z][a-zA-Z0-9_]*
-
+Whitespace 		[ \t\n]
 %%
 "if"			{
-					addToken(yytext, keyword, ELSE);
+					return IF;
 				}
 "else" 			{
-					addToken(yytext, keyword, ELSE);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return ELSE;
 				}
 "while"			{
-					addToken(yytext, keyword, WHILE);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return WHILE;
 				}
 "for"			{
-					addToken(yytext, keyword, FOR);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return FOR;
 				}
 "function"		{
-					addToken(yytext, keyword, FUNCTION);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return FUNCTION;
 				}
 "return"		{
-					addToken(yytext, keyword, RETURN);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return RETURN;
 				}
 "break"			{
-					addToken(yytext, keyword, BREAK);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return BREAK;
 				}
 "continue"		{
-					addToken(yytext, keyword, CONTINUE);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return CONTINUE;
 				}
 "and"			{
-					addToken(yytext, keyword, AND);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return AND;
 				}
 "not"			{
-					addToken(yytext, keyword, NOT);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return NOT;
 				}
 "or"			{
-					addToken(yytext, keyword, OR);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return OR;
 				}
 "local"			{
-					addToken(yytext, keyword, LOCAL);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return LOCAL;
 				}
 "true"			{
-					addToken(yytext, keyword, TRUE);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return TRUE;
 				}
 "false"			{
-					addToken(yytext, keyword, FALSE);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return FALSE;
 				}
 "nil"			{
-					addToken(yytext, keyword, NIL);
-					fprintf(stderr,"Keyword value: %s\n", yytext);
+					return NIL;
 				}
 {ID}			{
-					fprintf(stderr,"Identifier value: %s\n", yytext);
+					return IDENTIFIER;
 				}
 				
 "="				{
-					addToken(yytext, operators, ASSIGNMENT);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return ASSIGNMENT;
 				}				
 "+"				{
-					addToken(yytext, operators, PLUS);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return PLUS;
 				}				
 "-"				{
-					addToken(yytext, operators, MINUS);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return MINUS;
 				}
 "*"				{
-					addToken(yytext, operators, PRODUCT);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return PRODUCT;
 				}
 "/"				{
-					addToken(yytext, operators, DIVIDE);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return DIVIDE;
 				}
 "%"				{
-					addToken(yytext, operators, PERCENT);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return PERCENT;
 				}
 "=="			{
-					addToken(yytext, operators, EQUALS);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return EQUALS;
 				}
 "!="			{
-					addToken(yytext, operators, NOT);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return NOT_OP;
 				}
-"++"			{
-					addToken(yytext, operators, D_PLUS);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+"++"			{	
+					return D_PLUS;
 				}
 "--"			{
-					addToken(yytext, operators, D_MINUS);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return D_MINUS;
 				}
 ">"				{
-					addToken(yytext, operators, GREATER);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return GREATER;
 				}
 "<"				{
-					addToken(yytext, operators, LESS);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return LESS;
 				}
 ">="			{
-					addToken(yytext, operators, G_EQUAL);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return G_EQUAL;
 				}
 "<="			{
-					addToken(yytext, operators, L_EQUAL);
-					fprintf(stderr,"Operator value: %s\n", yytext);
+					return L_EQUAL;
 				}
 
+
+{Whitespace}	;
+
+.				printf("Invalid character\n");				
 %%
 
-int main(void) {
-	return yylex();
+int yywrap(){
+	return 1;
 }
