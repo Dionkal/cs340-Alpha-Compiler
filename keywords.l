@@ -178,7 +178,7 @@ nil				{
 
 "/*"			{	/*dont know if it works, needs testing*/
 	
-					/*code for comments of /**/ style*/
+					/*code for comments of embedded style*/
 					int c;
 					while( (c= input()) != EOF){
 
