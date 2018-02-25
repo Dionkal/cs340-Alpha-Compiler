@@ -25,11 +25,12 @@ doublePeriod	[.]{2}
 
 string			\"[^\n"]*\" 
 comment1		\/{2}.*
-comment2		(\/\*)+(\*\/)+ /*not sure about this yet*/
+comment2		(\/\*)+(\*\/)+ /*not sure about this yet, that propably is not needed here*/
 
 
 ID				[a-zA-Z][a-zA-Z0-9_]*
 Whitespace 		[ \t\n]
+
 %%
 
 if				{
@@ -155,6 +156,7 @@ nil				{
 
 
 {Whitespace}	;
+
 {leftBracket1}	{printf("{");}
 {rightBracket1}	{printf("}");}
 {leftBracket2}	{printf("[");}
@@ -168,13 +170,30 @@ nil				{
 {period}		{printf(".");}
 {doublePeriod}	{printf("..");}
 
-{string}		{/*needs smthing*/}
+{string}		{/*needs smthing propaply*/}
 
-{comment2}		{/*prepei n doulepso ta emfoleumena*/}
+{comment1}		{}/*etsi to xei stis diafanies etsi to kano :P*/
 
->>>>>>> Ioanna
+"/*"			{	/*dont know if it works, needs testing*/
+	
+					/*code for comments of /**/ style*/
+					int c;
+					while( (c= input()) != EOF){
 
-.								
+						if(c=='*'){
+							if( (c==input()) != '/'){
+								break;
+							}else{
+								unput(c);
+							}
+						}
+						unput(c);
+					}
+					printf("Comment Error: comments must end with '*/'\n");
+				}
+
+.				printf("Invalid character\n");		
+				
 %%
 
 int yywrap(){
