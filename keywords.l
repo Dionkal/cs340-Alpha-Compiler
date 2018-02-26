@@ -6,10 +6,7 @@
 #include "scanner.h"
 using namespace std;
 
-#define YY_DECL int alpha_yylext(void* yyval);
-
-typedef struct alpha_token_t alpha_token_t;
-
+#define YY_DECL int alpha_yylex(void* yyval);
 alpha_token_t* List = NULL;	
 
 int node_count = 0;
@@ -234,3 +231,18 @@ int yywrap(){
 	return 1;
 }
 
+
+int main (){
+	int token;
+  	int token_count = 0;
+
+  	while ((token = alpha_yylex(void* yyval);)) {
+    		/*TODO print the token struct*/
+
+    	}else{
+    		printf("Invalid token \"%s\" on line %d",yytext,yylineno);
+    	}
+  	}
+
+  	return 0;
+}
