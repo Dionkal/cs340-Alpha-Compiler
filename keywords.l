@@ -7,6 +7,11 @@
 alpha_token_t* List = NULL;	
 
 int node_count = 0;
+
+enum keyword {IF, ELSE, WHILE, FOR, FUNCTION, RETURN, BREAK, CONTINUE, AND, NOT, OR, LOCAL, TRUE, FALSE, NIL}; 
+ 
+enum operators {ASSIGNMENT, PLUS, MINUS, PRODUCT, DIVIDE, PERCENT, EQUALS, NOT, D_PLUS, D_MINUS, GREATER, LESS, G_EQUAL, L_EQUAL} 
+
 %}
 
 %option yylineno
@@ -197,6 +202,55 @@ nil				{
 .				printf("Invalid character\n");		
 				
 %%
+
+const char* KeywordToString(keyword k)
+{
+    switch (k)
+    {
+		case IF:		return "IF";
+		case ELSE:		return "ELSE";
+        case WHILE:		return "WHILE";
+		case FOR:		return "FOR";
+		case FUNCTION:	return "FUNCTION";
+		case RETURN:	return "RETURN";
+		case BREAK:		return "BREAK";
+		case CONTINUE:	return "CONTINUE";
+		case AND:		return "AND";
+		case NOT:		return "NOT";
+		case OR:		return "OR";
+		case LOCAL:		return "LOCAL";
+		case TRUE:   	return "TRUE";
+		case FALSE:		return "FALSE";
+        case NIL:   	return "NIL";
+    }
+	return "Error in KeywordToString";
+}
+
+
+const char* OperatorToString(operators o)
+{
+    switch (o)
+    {
+		case ASSIGNMENT:	return "ASSIGNMENT";
+		case PLUS:			return "PLUS";
+        case MINUS:			return "MINUS";
+		case PRODUCT:		return "PRODUCT";
+		case DIVIDE:		return "DIVIDE";
+		case PERCENT:		return "PERCENT";
+		case EQUALS:		return "EQUALS";
+		case NOT:			return "NOT";
+		case D_PLUS:		return "D_PLUS";
+		case D_MINUS:		return "D_MINUS";
+		case GREATER:		return "GREATER";
+		case LESS:			return "LESS";
+		case G_EQUAL:   	return "G_EQUAL";
+		case L_EQUAL:		return "L_EQUAL";
+        
+    }
+	return "Error in OperatorToString";
+}
+
+
 int addToken(char* value, int value_lenght, char* type){
 	alpha_token_t* node = malloc (sizeof(alpha_token_t));
 	
