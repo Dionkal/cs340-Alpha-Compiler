@@ -1,15 +1,9 @@
 %{
 	
-#include <stdio.h>
-#include <string.h>
-#include <iostream.h>
 #include "scanner.h"
+
 using namespace std;
-
-#define YY_DECL int alpha_yylex(void* yyval);
-alpha_token_t* List = NULL;	
-
-int node_count = 0;
+	
 %}
 
 %option yylineno
@@ -40,22 +34,18 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					addToken(yytext, yyleng, "KEYWORD IF"); 
+					addToken(,string(yytext)); 
 				}
-else 			{
-					addToken(yytext, keyword, ELSE); 
+else 			{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-while			{
-					addToken(yytext, keyword, WHILE); 
+while			{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-for				{
-					addToken(yytext, keyword, FOR); 
+for				{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-function		{
-					addToken(yytext, keyword, FUNCTION); 
+function		{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
 return			{
@@ -96,7 +86,7 @@ false			{
 				}
 nil				{
 					addToken(yytext, keyword, FALSE); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+          			fprintf(stderr,"Keyword value: %s\n", string(yytext)); 
 				}
 {ID}			{
 					
@@ -155,7 +145,7 @@ nil				{
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 "<="			{
-					addToken(yytext, operators, ASSIGNMENT); 
+					yylval = addToken(yytext, operators, ASSIGNMENT); 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 
@@ -216,33 +206,37 @@ nil				{
 .				printf("Invalid character\n");		
 				
 %%
-int addToken(char* value, int value_lenght, char* type){
-	alpha_token_t* node = malloc (sizeof(alpha_token_t));
-	
-	node.token_no = ++node_count;
-	node.line_no = yylineno;
-	/*TODO add type */
-	/*TODO add value*/
+//Global token vector
+vector  <alpha_token_t>* vctr_ptr;
+//Global token number
+int token_number = 0;
+
+int alpha_yylex(void* yylval){
+	vctr_ptr = (vector* <alpha_token_t>) yylval;
+	return yylex();
 }
 
 
+void addToken(void* token_t, string value){
+	alpha_token_t token_struct;
+	
+	token_number++;
 
-int yywrap(){
-	return 1;
+	token_struct.number_of_token = token_no; 	//save token number
+	token_struct.line_number = yylineno;	  	//save line number
+	token_struct.token_type = token_t;			//save pointer to token type
+	token_struct.token_value = value;			//save value of token as string
+
+	//add token struct to global vector 
+	vctr_ptr->push_back(token_struct); 
 }
 
 
 int main (){
-	int token;
-  	int token_count = 0;
+	vector <alpha_token_t> token_vector;
+	alpha_yylex((void *) (&token_vector));
 
-  	while ((token = alpha_yylex(void* yyval);)) {
-    		/*TODO print the token struct*/
 
-    	}else{
-    		printf("Invalid token \"%s\" on line %d",yytext,yylineno);
-    	}
-  	}
 
   	return 0;
 }

@@ -1,13 +1,18 @@
 #include <string>
 #include <vector>
+#include <iostream>
+#include <stdio.h>
+
+
+using namespace std;
 
 typedef struct alpha_token_t alpha_token_t;
 
  struct  alpha_token_t{
-	int token_no;
-	int line_no;
+	int number_of_token;
+	int line_number;
 	void* token_type; 
-	String token_value;
+	string token_value;
 };
 
-int addToken(char* value, int value_lenght, char* type);
+void addToken(void* token_t, string value);
