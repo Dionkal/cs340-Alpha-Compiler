@@ -1,9 +1,14 @@
 %{
 	
 #include <stdio.h>
+#include <string.h>
+#include <iostream.h>
 #include "scanner.h"
+using namespace std;
 
 #define YY_DECL int alpha_yylext(void* yyval);
+
+
 alpha_token_t* List = NULL;	
 
 int node_count = 0;
@@ -172,18 +177,34 @@ nil				{
 {period}		{printf(".");}
 {doublePeriod}	{printf("..");}
 
-{string}		{/*needs smthing propaply*/}
+{string}		{
+					/*code for handing strings*/
+					int c;
+					while( (c==input()) != '\0'){
 
-{comment1}		{}/*etsi to xei stis diafanies etsi to kano :P*/
+						/* '\t' and '\n' are thought to be part of the string, they have no special meaning inside the string*/
+						if (c=='\'){
+							if( ((c==input())=='t') || ((c==input()) == 'n') ){/*paizei na prepei na ginei se 2 vimata, k prepei na perasei ap compilation gt exo sinatiktika lathi nomizo*/
+								unput(c);/*pleonasmos isos*/
+							}
+						}
+						if(c==' '){
+							unput(c);/*idia logiki me pano*/
+						}
+					}
+					printf("String Error: string must end with '\0'\n");
+				}
+
+{comment1}		{}
 
 "/*"			{	/*dont know if it works, needs testing*/
 	
 					/*code for comments of embedded style*/
 					int c;
-					while( (c= input()) != EOF){
+					while( (c= input()) != EOF){/*paizei na prepei na ginei se 2 vimata*/
 
 						if(c=='*'){
-							if( (c==input()) != '/'){
+							if( (c==input()) != '/'){/*paizei na prepei na ginei se 2 vimata*/
 								break;
 							}else{
 								unput(c);
@@ -211,3 +232,4 @@ int addToken(char* value, int value_lenght, char* type){
 int yywrap(){
 	return 1;
 }
+
