@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "scanner.h"
 
-#define YY_DECL int alpha_yylext(void* yyval);
+#define YY_DECL int alpha_yylex(void* yyval);
 alpha_token_t* List = NULL;	
 
 int node_count = 0;
@@ -210,4 +210,20 @@ int addToken(char* value, int value_lenght, char* type){
 
 int yywrap(){
 	return 1;
+}
+
+
+int main (){
+	int token;
+  	int token_count = 0;
+
+  	while ((token = alpha_yylex(void* yyval);)) {
+    		/*TODO print the token struct*/
+
+    	}else{
+    		printf("Invalid token \"%s\" on line %d",yytext,yylineno);
+    	}
+  	}
+
+  	return 0;
 }
