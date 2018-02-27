@@ -626,7 +626,7 @@ YY_DECL
 		}
 
 	{
-#line 34 "keywords.l"
+#line 32 "keywords.l"
 
 
 #line 632 "lex.yy.cc"
@@ -698,17 +698,16 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 36 "keywords.l"
+#line 34 "keywords.l"
 {
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = IF; 
-					addToken(tokenUnion,string(yytext),yylineno); 
-					// printf("IF token\nLine:\n");
+					// token_type_union tokenUnion;
+					//tokenUnion.enumerator_t = IF; 
+					addToken(IF,string(yytext),yylineno); 
 				}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 42 "keywords.l"
+#line 39 "keywords.l"
 { 
 					token_type_union tokenUnion;
 					tokenUnion.enumerator_t = ELSE; 
@@ -717,7 +716,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 47 "keywords.l"
+#line 44 "keywords.l"
 { 
 					token_type_union tokenUnion;
 					tokenUnion.enumerator_t = WHILE; 
@@ -726,7 +725,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 52 "keywords.l"
+#line 49 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -736,7 +735,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 58 "keywords.l"
+#line 55 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -746,7 +745,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 64 "keywords.l"
+#line 61 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -756,7 +755,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 70 "keywords.l"
+#line 67 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -766,7 +765,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 76 "keywords.l"
+#line 73 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -776,7 +775,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 82 "keywords.l"
+#line 79 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -786,7 +785,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 88 "keywords.l"
+#line 85 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -796,7 +795,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 94 "keywords.l"
+#line 91 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -806,7 +805,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 100 "keywords.l"
+#line 97 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -816,7 +815,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 106 "keywords.l"
+#line 103 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -826,7 +825,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 112 "keywords.l"
+#line 109 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -836,7 +835,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 118 "keywords.l"
+#line 115 "keywords.l"
 { 
           			
 					token_type_union tokenUnion;
@@ -846,105 +845,104 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 124 "keywords.l"
+#line 121 "keywords.l"
 {
-					
 				}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 128 "keywords.l"
+#line 124 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}				
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 131 "keywords.l"
+#line 127 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}				
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 134 "keywords.l"
+#line 130 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 137 "keywords.l"
+#line 133 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 140 "keywords.l"
+#line 136 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 143 "keywords.l"
+#line 139 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 146 "keywords.l"
+#line 142 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 149 "keywords.l"
+#line 145 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 152 "keywords.l"
+#line 148 "keywords.l"
 {	 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 155 "keywords.l"
+#line 151 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 158 "keywords.l"
+#line 154 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 161 "keywords.l"
+#line 157 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 164 "keywords.l"
+#line 160 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 167 "keywords.l"
+#line 163 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
@@ -952,84 +950,84 @@ YY_RULE_SETUP
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 172 "keywords.l"
+#line 168 "keywords.l"
 ;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 174 "keywords.l"
+#line 170 "keywords.l"
 {printf("{");}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 175 "keywords.l"
+#line 171 "keywords.l"
 {printf("}");}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 176 "keywords.l"
+#line 172 "keywords.l"
 {printf("[");}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 177 "keywords.l"
+#line 173 "keywords.l"
 {printf("]");}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 178 "keywords.l"
+#line 174 "keywords.l"
 {printf("(");}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 179 "keywords.l"
+#line 175 "keywords.l"
 {printf(")");}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 180 "keywords.l"
+#line 176 "keywords.l"
 {printf(";");}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 181 "keywords.l"
+#line 177 "keywords.l"
 {printf(",");}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 182 "keywords.l"
+#line 178 "keywords.l"
 {printf(":");}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 183 "keywords.l"
+#line 179 "keywords.l"
 {printf("::");}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 184 "keywords.l"
+#line 180 "keywords.l"
 {printf(".");}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 185 "keywords.l"
+#line 181 "keywords.l"
 {printf("..");}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 187 "keywords.l"
+#line 183 "keywords.l"
 {
 				
 				}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 191 "keywords.l"
+#line 187 "keywords.l"
 ;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 193 "keywords.l"
+#line 189 "keywords.l"
 {	/*dont know if it works, needs testing*/
 	
 					/*code for comments of embedded style*/
@@ -1050,15 +1048,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 211 "keywords.l"
+#line 207 "keywords.l"
 printf("Invalid character\n");		
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 213 "keywords.l"
+#line 209 "keywords.l"
 ECHO;
 	YY_BREAK
-#line 1061 "lex.yy.cc"
+#line 1059 "lex.yy.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2030,7 +2028,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 213 "keywords.l"
+#line 209 "keywords.l"
 
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr;
@@ -2061,7 +2059,7 @@ int alpha_yylex(void* yylval){
 
 int main (){
 	vector <alpha_token_t> token_vector;
-	while(!alpha_yylex( &token_vector)){cout <<"IN LOOP" <<endl;}
+	alpha_yylex( &token_vector);
 
 	for(alpha_token_t token :token_vector){
 		//print token info 

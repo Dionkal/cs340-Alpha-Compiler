@@ -1,7 +1,7 @@
 %{
 	
 #include "scanner.h"
-using namespace std;
+using namespace st;
 	
 %}
 
@@ -11,7 +11,7 @@ using namespace std;
 
 /*Punctuation*/
 leftBracket1	\{
-rightBracket1	\}	
+rightBracet1	\}	
 leftBracket2	\[
 rightBracket2	\]
 leftBracket3	\(
@@ -19,14 +19,12 @@ rightBracket3	\)
 semicolon		\;
 comma			\,
 colon			\:
-doubleColon		[:]{2}
+doubleColon	[:]{2}
 period			\.
-doublePeriod	[.]{2}
+doublePeriod[.]{2}
 
 string			\"[^\n"]*\" 
-comment1		\/{2}.*
-comment2		(\/\*)+(\*\/)+ /*not sure about this yet, that propably is not needed here*/
-
+comment1	\/{2}.*
 
 ID				[a-zA-Z][a-zA-Z0-9_]*
 Whitespace 		[ \t\n]
@@ -34,10 +32,9 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = IF; 
-					addToken(tokenUnion,string(yytext),yylineno); 
-					// printf("IF token\nLine:\n");
+					// token_type_union tokenUnion;
+					//tokenUnion.enumerator_t = IF; 
+					addToken(IF,string(yytext),yylineno); 
 				}
 else 			{ 
 					token_type_union tokenUnion;
@@ -122,7 +119,6 @@ nil				{
 					addToken(tokenUnion,string(yytext),yylineno); 
 				}
 {ID}			{
-					
 				}
 				
 "="				{ 
@@ -172,7 +168,7 @@ nil				{
 {Whitespace}	;
 
 {leftBracket1}	{printf("{");}
-{rightBracket1}	{printf("}");}
+{rightBracket1}	{printf"}");}
 {leftBracket2}	{printf("[");}
 {rightBracket2}	{printf("]");}
 {leftBracket3}	{printf("(");}
@@ -180,9 +176,9 @@ nil				{
 {semicolon}		{printf(";");}
 {comma}			{printf(",");}
 {colon}			{printf(":");}
-{doubleColon}	{printf("::");}
+{doubleColon}	{printf(::");}
 {period}		{printf(".");}
-{doublePeriod}	{printf("..");}
+{doublePeriod}	{printf(..");}
 
 {string}		{
 				
@@ -203,8 +199,7 @@ nil				{
 								// unput(c);
 							}
 						}
-						// unput(c);
-					}*/
+						// unput(c);					}*/
 					printf("Comment Error: comments must end with '*/'\n");
 				}
 
