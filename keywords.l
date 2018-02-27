@@ -202,8 +202,8 @@ nil				{
 							; /*ignore the text*/
 						if(c=='*'){
 							while( (c=input()) == '*')
-								;
-							if(c=='/' && (c=input()) != '\n')//that is the concept anyway
+								unput(c);
+							if(c=='/')
 								break; /*here is the end of the comment*/
 						}
 						if(c==EOF){
