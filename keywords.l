@@ -1,10 +1,8 @@
 %{
 	
 #include "scanner.h"
-<<<<<<< HEAD
 using namespace st;
 	
-=======
 
 #define YY_DECL int alpha_yylext(void* yyval);
 alpha_token_t* List = NULL;	
@@ -15,7 +13,6 @@ enum keyword {IF, ELSE, WHILE, FOR, FUNCTION, RETURN, BREAK, CONTINUE, AND, NOT,
  
 enum operators {ASSIGNMENT, PLUS, MINUS, PRODUCT, DIVIDE, PERCENT, EQUALS, NOT, D_PLUS, D_MINUS, GREATER, LESS, G_EQUAL, L_EQUAL} 
 
->>>>>>> eriona
 %}
 
 %option yylineno
@@ -219,17 +216,12 @@ nil				{
 .				printf("Invalid character\n");		
 				
 %%
-<<<<<<< HEAD
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr;
 //Global token number
 int token_number = 0;
 
 yyFlexLexer temp;
-
-void addToken(token_type_union token_t, string value, int line){
-	alpha_token_t token_struct;
-=======
 
 const char* KeywordToString(keyword k)
 {
@@ -281,7 +273,6 @@ const char* OperatorToString(operators o)
 
 int addToken(char* value, int value_lenght, char* type){
 	alpha_token_t* node = malloc (sizeof(alpha_token_t));
->>>>>>> eriona
 	
 	token_number++;
 
