@@ -35,52 +35,91 @@ Whitespace 		[ \t\n]
 
 if				{
 					token_type_union tokenUnion;
-
 					tokenUnion.enumerator_t = IF; 
-					addToken(tokenUnion,string(yytext)); 
-					printf("IF token\nLine:%d",yylineno);
+					addToken(tokenUnion,string(yytext),yylineno); 
+					// printf("IF token\nLine:\n");
 				}
 else 			{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = ELSE; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 while			{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = WHILE; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 for				{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = FOR; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 function		{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = FUNCTION; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 return			{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = RETURN; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 break			{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = BREAK; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 continue		{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = CONTINUE; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 and				{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = AND; 
+					addToken(tokenUnion,string(yytext),yylineno); 
 				}
 not				{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = NOT; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 or				{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = OR; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 local			{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = LOCAL; 
+					addToken(tokenUnion,string(yytext),yylineno); 
 				}
 true			{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = TRUE; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 false			{ 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = FALSE; 
+					addToken(tokenUnion,string(yytext),yylineno); 
 				}
 nil				{ 
-          			fprintf(stderr,"Keyword value: %s\n", string(yytext)); 
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = NIL; 
+					addToken(tokenUnion,string(yytext),yylineno); 
 				}
 {ID}			{
 					
@@ -179,15 +218,15 @@ int token_number = 0;
 
 yyFlexLexer temp;
 
-void addToken(token_type_union token_t, string value){
+void addToken(token_type_union token_t, string value, int line){
 	alpha_token_t token_struct;
 	
 	token_number++;
 
-	token_struct.number_of_token = token_number; 	//save token number
-	//token_struct.line_number = yyFlexLexer::yylineno;	  		//save line number
-	token_struct.token_type = token_t;				//save union of token type
-	token_struct.token_value = value;				//save value of token as string
+	token_struct.number_of_token = token_number; 		//save token number
+	token_struct.line_number = line;	  				//save line number
+	token_struct.token_type = token_t;					//save union of token type
+	token_struct.token_value = value;					//save value of token as string
 
 	//add token struct to global vector 
 	vctr_ptr->push_back(token_struct); 
@@ -205,11 +244,7 @@ int main (){
 
 	for(alpha_token_t token :token_vector){
 		//print token info 
-		printf("%d: ",token.number_of_token);
-		printf("#%d\t", token.line_number);
-		printf("\"%s\"\t", token.token_value);
-		printf(" placeholder token type\n");
-
+		cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t  placeholder token type\n" <<endl;
 	}
 
   	return 0;

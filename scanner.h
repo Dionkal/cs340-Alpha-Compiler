@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef enum {IF,ELSE,WHILE,ASSIGNMENT} token_type_enum ;
+typedef enum {IF,ELSE,WHILE,FOR,FUNCTION,RETURN,BREAK,CONTINUE,AND,NOT,OR,LOCAL,TRUE,FALSE,NIL} token_type_enum ;
 
 typedef union {
 	token_type_enum enumerator_t;
@@ -20,4 +20,4 @@ typedef struct{
 	string token_value;
 }alpha_token_t;
 
-void addToken(token_type_union token_t, string value);
+void addToken(token_type_union token_t, string value, int line);

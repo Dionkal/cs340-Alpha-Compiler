@@ -701,211 +701,250 @@ YY_RULE_SETUP
 #line 36 "keywords.l"
 {
 					token_type_union tokenUnion;
-
 					tokenUnion.enumerator_t = IF; 
-					addToken(tokenUnion,string(yytext)); 
-					printf("IF token\nLine:%d",yylineno);
+					addToken(tokenUnion,string(yytext),yylineno); 
+					// printf("IF token\nLine:\n");
 				}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 43 "keywords.l"
+#line 42 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = ELSE; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 46 "keywords.l"
+#line 47 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = WHILE; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 49 "keywords.l"
+#line 52 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = FOR; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 52 "keywords.l"
+#line 58 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = FUNCTION; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 55 "keywords.l"
+#line 64 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = RETURN; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 58 "keywords.l"
+#line 70 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = BREAK; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 61 "keywords.l"
+#line 76 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = CONTINUE; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 64 "keywords.l"
+#line 82 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = AND; 
+					addToken(tokenUnion,string(yytext),yylineno); 
 				}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 67 "keywords.l"
+#line 88 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = NOT; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 70 "keywords.l"
+#line 94 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = OR; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 73 "keywords.l"
+#line 100 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = LOCAL; 
+					addToken(tokenUnion,string(yytext),yylineno); 
 				}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 76 "keywords.l"
+#line 106 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = TRUE; 
+					addToken(tokenUnion,string(yytext),yylineno);
 				}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 79 "keywords.l"
+#line 112 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = FALSE; 
+					addToken(tokenUnion,string(yytext),yylineno); 
 				}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 82 "keywords.l"
+#line 118 "keywords.l"
 { 
-          			fprintf(stderr,"Keyword value: %s\n", string(yytext)); 
+          			
+					token_type_union tokenUnion;
+					tokenUnion.enumerator_t = NIL; 
+					addToken(tokenUnion,string(yytext),yylineno); 
 				}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 85 "keywords.l"
+#line 124 "keywords.l"
 {
 					
 				}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 89 "keywords.l"
+#line 128 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}				
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 92 "keywords.l"
+#line 131 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}				
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 95 "keywords.l"
+#line 134 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 98 "keywords.l"
+#line 137 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 101 "keywords.l"
+#line 140 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 104 "keywords.l"
+#line 143 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 107 "keywords.l"
+#line 146 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 110 "keywords.l"
+#line 149 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 113 "keywords.l"
+#line 152 "keywords.l"
 {	 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 116 "keywords.l"
+#line 155 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 119 "keywords.l"
+#line 158 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 122 "keywords.l"
+#line 161 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 125 "keywords.l"
+#line 164 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 128 "keywords.l"
+#line 167 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
@@ -913,84 +952,84 @@ YY_RULE_SETUP
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 133 "keywords.l"
+#line 172 "keywords.l"
 ;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 135 "keywords.l"
+#line 174 "keywords.l"
 {printf("{");}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 136 "keywords.l"
+#line 175 "keywords.l"
 {printf("}");}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 137 "keywords.l"
+#line 176 "keywords.l"
 {printf("[");}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 138 "keywords.l"
+#line 177 "keywords.l"
 {printf("]");}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 139 "keywords.l"
+#line 178 "keywords.l"
 {printf("(");}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 140 "keywords.l"
+#line 179 "keywords.l"
 {printf(")");}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 141 "keywords.l"
+#line 180 "keywords.l"
 {printf(";");}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 142 "keywords.l"
+#line 181 "keywords.l"
 {printf(",");}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 143 "keywords.l"
+#line 182 "keywords.l"
 {printf(":");}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 144 "keywords.l"
+#line 183 "keywords.l"
 {printf("::");}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 145 "keywords.l"
+#line 184 "keywords.l"
 {printf(".");}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 146 "keywords.l"
+#line 185 "keywords.l"
 {printf("..");}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 148 "keywords.l"
+#line 187 "keywords.l"
 {
 				
 				}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 152 "keywords.l"
+#line 191 "keywords.l"
 ;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 154 "keywords.l"
+#line 193 "keywords.l"
 {	/*dont know if it works, needs testing*/
 	
 					/*code for comments of embedded style*/
@@ -1011,15 +1050,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 172 "keywords.l"
+#line 211 "keywords.l"
 printf("Invalid character\n");		
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 174 "keywords.l"
+#line 213 "keywords.l"
 ECHO;
 	YY_BREAK
-#line 1022 "lex.yy.cc"
+#line 1061 "lex.yy.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1991,7 +2030,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 174 "keywords.l"
+#line 213 "keywords.l"
 
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr;
@@ -2000,15 +2039,15 @@ int token_number = 0;
 
 yyFlexLexer temp;
 
-void addToken(token_type_union token_t, string value){
+void addToken(token_type_union token_t, string value, int line){
 	alpha_token_t token_struct;
 	
 	token_number++;
 
-	token_struct.number_of_token = token_number; 	//save token number
-	//token_struct.line_number = yyFlexLexer::yylineno;	  		//save line number
-	token_struct.token_type = token_t;				//save union of token type
-	token_struct.token_value = value;				//save value of token as string
+	token_struct.number_of_token = token_number; 		//save token number
+	token_struct.line_number = line;	  				//save line number
+	token_struct.token_type = token_t;					//save union of token type
+	token_struct.token_value = value;					//save value of token as string
 
 	//add token struct to global vector 
 	vctr_ptr->push_back(token_struct); 
@@ -2022,15 +2061,11 @@ int alpha_yylex(void* yylval){
 
 int main (){
 	vector <alpha_token_t> token_vector;
-	alpha_yylex( &token_vector);
+	while(!alpha_yylex( &token_vector)){cout <<"IN LOOP" <<endl;}
 
 	for(alpha_token_t token :token_vector){
 		//print token info 
-		printf("%d: ",token.number_of_token);
-		printf("#%d\t", token.line_number);
-		printf("\"%s\"\t", token.token_value);
-		printf(" placeholder token type\n");
-
+		cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t  placeholder token type\n" <<endl;
 	}
 
   	return 0;
