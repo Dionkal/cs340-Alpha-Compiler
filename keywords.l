@@ -1,13 +1,13 @@
 %{
 	
 #include "scanner.h"
-
 using namespace std;
 	
 %}
 
 %option yylineno
 %option noyywrap
+
 
 /*Punctuation*/
 leftBracket1	\{
@@ -34,7 +34,11 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					addToken(,string(yytext)); 
+					token_type_union tokenUnion;
+
+					tokenUnion.enumerator_t = IF; 
+					addToken(tokenUnion,string(yytext)); 
+					printf("IF token\nLine:%d",yylineno);
 				}
 else 			{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
@@ -48,104 +52,80 @@ for				{
 function		{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-return			{
-					addToken(yytext, keyword, RETURN); 
+return			{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-break			{
-					addToken(yytext, keyword, BREAK); 
+break			{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-continue		{
-					addToken(yytext, keyword, CONTINUE); 
+continue		{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-and				{
-					addToken(yytext, keyword, AND); 
+and				{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext); 
 				}
-not				{
-					addToken(yytext, keyword, NOT); 
+not				{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-or				{
-					addToken(yytext, keyword, OR); 
+or				{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-local			{
-					addToken(yytext, keyword, LOCAL); 
+local			{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext); 
 				}
-true			{
-					addToken(yytext, keyword, TRUE); 
+true			{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext);
 				}
-false			{
-					addToken(yytext, keyword, FALSE); 
+false			{ 
           			fprintf(stderr,"Keyword value: %s\n", yytext); 
 				}
-nil				{
-					addToken(yytext, keyword, FALSE); 
+nil				{ 
           			fprintf(stderr,"Keyword value: %s\n", string(yytext)); 
 				}
 {ID}			{
 					
 				}
 				
-"="				{
-					addToken(yytext, operators, ASSIGNMENT); 
+"="				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}				
-"+"				{
-					addToken(yytext, operators, ASSIGNMENT); 
+"+"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}				
-"-"				{
-					addToken(yytext, operators, ASSIGNMENT); 
+"-"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-"*"				{
-					addToken(yytext, operators, ASSIGNMENT); 
+"*"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-"/"				{
-					addToken(yytext, operators, ASSIGNMENT); 
+"/"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-"%"				{
-					addToken(yytext, operators, ASSIGNMENT); 
+"%"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-"=="			{
-					addToken(yytext, operators, ASSIGNMENT); 
+"=="			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-"!="			{
-					addToken(yytext, operators, ASSIGNMENT); 
+"!="			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-"++"			{	
-					addToken(yytext, operators, ASSIGNMENT); 
+"++"			{	 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-"--"			{
-					addToken(yytext, operators, ASSIGNMENT); 
+"--"			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-">"				{
-					addToken(yytext, operators, ASSIGNMENT); 
+">"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-"<"				{
-					addToken(yytext, operators, ASSIGNMENT); 
+"<"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-">="			{
-					addToken(yytext, operators, ASSIGNMENT); 
+">="			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
-"<="			{
-					yylval = addToken(yytext, operators, ASSIGNMENT); 
+"<="			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
 				}
 
@@ -166,40 +146,26 @@ nil				{
 {doublePeriod}	{printf("..");}
 
 {string}		{
-					/*code for handing strings*/
-					int c;
-					while( (c==input()) != '\0'){
-
-						/* '\t' and '\n' are thought to be part of the string, they have no special meaning inside the string*/
-						if (c=='\'){
-							if( ((c==input())=='t') || ((c==input()) == 'n') ){/*paizei na prepei na ginei se 2 vimata, k prepei na perasei ap compilation gt exo sinatiktika lathi nomizo*/
-								unput(c);/*pleonasmos isos*/
-							}
-						}
-						if(c==' '){
-							unput(c);/*idia logiki me pano*/
-						}
-					}
-					printf("String Error: string must end with '\0'\n");
+				
 				}
 
-{comment1}		{}
+{comment1}		;
 
 "/*"			{	/*dont know if it works, needs testing*/
 	
 					/*code for comments of embedded style*/
 					int c;
-					while( (c= input()) != EOF){/*paizei na prepei na ginei se 2 vimata*/
+					/*while( (c= input()) != EOF){
 
 						if(c=='*'){
-							if( (c==input()) != '/'){/*paizei na prepei na ginei se 2 vimata*/
+							if( (c==input()) != '/'){paizei na prepei na ginei se 2 vimata
 								break;
 							}else{
-								unput(c);
+								// unput(c);
 							}
 						}
-						unput(c);
-					}
+						// unput(c);
+					}*/
 					printf("Comment Error: comments must end with '*/'\n");
 				}
 
@@ -211,32 +177,40 @@ vector  <alpha_token_t>* vctr_ptr;
 //Global token number
 int token_number = 0;
 
-int alpha_yylex(void* yylval){
-	vctr_ptr = (vector* <alpha_token_t>) yylval;
-	return yylex();
-}
+yyFlexLexer temp;
 
-
-void addToken(void* token_t, string value){
+void addToken(token_type_union token_t, string value){
 	alpha_token_t token_struct;
 	
 	token_number++;
 
-	token_struct.number_of_token = token_no; 	//save token number
-	token_struct.line_number = yylineno;	  	//save line number
-	token_struct.token_type = token_t;			//save pointer to token type
-	token_struct.token_value = value;			//save value of token as string
+	token_struct.number_of_token = token_number; 	//save token number
+	//token_struct.line_number = yyFlexLexer::yylineno;	  		//save line number
+	token_struct.token_type = token_t;				//save union of token type
+	token_struct.token_value = value;				//save value of token as string
 
 	//add token struct to global vector 
 	vctr_ptr->push_back(token_struct); 
 }
 
+int alpha_yylex(void* yylval){
+	vctr_ptr = (vector <alpha_token_t>*) yylval;
+	return  temp.yylex();
+}
+
 
 int main (){
 	vector <alpha_token_t> token_vector;
-	alpha_yylex((void *) (&token_vector));
+	alpha_yylex( &token_vector);
 
+	for(alpha_token_t token :token_vector){
+		//print token info 
+		printf("%d: ",token.number_of_token);
+		printf("#%d\t", token.line_number);
+		printf("\"%s\"\t", token.token_value);
+		printf(" placeholder token type\n");
 
+	}
 
   	return 0;
 }
