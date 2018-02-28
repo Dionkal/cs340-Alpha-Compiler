@@ -1,7 +1,7 @@
 %{
 	
 #include "scanner.h"
-using namespace st;
+using namespace std;
 	
 %}
 
@@ -32,93 +32,78 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					// token_type_union tokenUnion;
-					//tokenUnion.enumerator_t = IF; 
-					addToken(IF,string(yytext),yylineno); 
+					addToken(string("KEYWORD IF"),string(yytext),yylineno); 
 				}
 else 			{ 
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = ELSE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD ELSE"),string(yytext),yylineno);
 				}
 while			{ 
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = WHILE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD WHILE"),string(yytext),yylineno);
 				}
 for				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FOR; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD FOR"),string(yytext),yylineno);
 				}
 function		{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FUNCTION; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD FUNCTION"),string(yytext),yylineno);
 				}
 return			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = RETURN; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD RETURN"),string(yytext),yylineno);
 				}
 break			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = BREAK; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD BREAK"),string(yytext),yylineno);
 				}
 continue		{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = CONTINUE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD CONTINUE"),string(yytext),yylineno);
 				}
 and				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = AND; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					 
+					addToken(string("KEYWORD AND"),string(yytext),yylineno); 
 				}
 not				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = NOT; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD NOT"),string(yytext),yylineno);
 				}
 or				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = OR; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD OR"),string(yytext),yylineno);
 				}
 local			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = LOCAL; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					 
+					addToken(string("KEYWORD LOCAL"),string(yytext),yylineno); 
 				}
 true			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = TRUE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(string("KEYWORD TRUE"),string(yytext),yylineno);
 				}
 false			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FALSE; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					 
+					addToken(string("KEYWORD FALSE"),string(yytext),yylineno); 
 				}
 nil				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = NIL; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					 
+					addToken(string("KEYWORD NIL"),string(yytext),yylineno); 
 				}
 {ID}			{
+					addToken(string("IDENTIFIER"),string(yytext),yylineno);
 				}
 				
 "="				{ 
@@ -167,18 +152,6 @@ nil				{
 
 {Whitespace}	;
 
-{leftBracket1}	{printf("{");}
-{rightBracket1}	{printf"}");}
-{leftBracket2}	{printf("[");}
-{rightBracket2}	{printf("]");}
-{leftBracket3}	{printf("(");}
-{rightBracket3}	{printf(")");}
-{semicolon}		{printf(";");}
-{comma}			{printf(",");}
-{colon}			{printf(":");}
-{doubleColon}	{printf(::");}
-{period}		{printf(".");}
-{doublePeriod}	{printf(..");}
 
 {string}		{
 				
@@ -213,14 +186,14 @@ int token_number = 0;
 
 yyFlexLexer temp;
 
-void addToken(token_type_union token_t, string value, int line){
+void addToken(string token_t, string value, int line){
 	alpha_token_t token_struct;
 	
 	token_number++;
 
 	token_struct.number_of_token = token_number; 		//save token number
 	token_struct.line_number = line;	  				//save line number
-	token_struct.token_type = token_t;					//save union of token type
+	token_struct.str_type = token_t;					//save  token type as string
 	token_struct.token_value = value;					//save value of token as string
 
 	//add token struct to global vector 
@@ -239,7 +212,7 @@ int main (){
 
 	for(alpha_token_t token :token_vector){
 		//print token info 
-		cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t  placeholder token type\n" <<endl;
+		cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t" << token.str_type <<endl;
 	}
 
   	return 0;
