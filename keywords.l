@@ -200,56 +200,64 @@ nil				{
 } 
 
 
-"\""		{
+"\""	{
 
 				/*code for strings*/
-				string input=string(yytext);/*get input*/
-				string next;
-				string output=string(yytext);
+				char *input=strdup(yytext);/*get input*/
+				char *next;
+				char * output=(char *)malloc(1024*sizeof(char));
+				int cnt=0;
+				*output=*input;
 
-				while( (input=yyinput()) != string("\0")){
+				while( (*input=yyinput()) != '\0'){
 
 					/*Check cases which start with '\'*/
-					if(input == string("\\")){
-						next=yyinput();
+					if(*input == '\\'){
+						*next=yyinput();
 
-						if(next==string("n")){
-							output+=string("\n");							
+						if(*next=='n'){
+							*output='\n';
+							cnt++;							
 						}
-						if(next==string("t")){
-							output+=string("\t");
+						if(*next=='t'){
+							*output='\t';
+							cnt++;
 						}
-						if(next==string("v")){
-							output+=string("\v");
+						if(*next=='v'){
+							*output='\v';
+							cnt++;
 						}
-						if(next==string("\\")){
-							output+=string("\\");
+						if(*next=='\\'){
+							*output='\\';
+							cnt++;
 						}
-						if(next==string("b")){
-							output+=string("\b");
+						if(*next=='b'){
+							*output='\b';
+							cnt++;
 						}
-						if(next==string("\"")){
-							output+=string("\"");
+						if(*next=='\"'){
+							*output='\"';
+							cnt++;
 						}
 					}
 
 					/*other cases*/
-					if(input==string("\n")){
-						output+=string("\n");
+					if(*input=='\n'){
+						*output='\n';
+						break;//not sure
 					}
 
-					/*if(input.equals(eof())){
+					if(*input == EOF){
 						printf("EOF found\n");
-					}*/
+					}
 
-					output+=string(input);
-					input=yyinput();
+					*output=*input;
+					*input=yyinput();
 				}
 				addToken(STRING,string("STRING"),output,yylineno); 
 
 
 			}
-
 {comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
 
 "/*"			{	
