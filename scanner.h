@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef enum{KEYWORD,IDENTIFIER,INT_CONST,REAL_CONST,STRING,OPERATOR} type;
+typedef enum{KEYWORD,IDENTIFIER,INT_CONST,REAL_CONST,STRING,OPERATOR,PUNCTUATION} type;
 
 typedef struct{
 	int number_of_token;

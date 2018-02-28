@@ -13,7 +13,7 @@ real	[0-9]+"."[0-9]+
 
 /*Punctuation*/
 leftBracket1	\{
-rightBracet1	\}	
+rightBracket1	\}	
 leftBracket2	\[
 rightBracket2	\]
 leftBracket3	\(
@@ -160,6 +160,43 @@ nil				{
 
 {Whitespace}	;
 
+{leftBracket1}  { 
+          	addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
+        } 
+{rightBracket1}  { 
+          	addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+        } 
+{leftBracket2}  { 
+          	addToken(PUNCTUATION,string("LEFT_SQR_BRACKET"),string(yytext),yylineno);
+        } 
+{rightBracket2}  { 
+          	addToken(PUNCTUATION,string("RIGHT_SQR_BRACKET"),string(yytext),yylineno); 
+        } 
+{leftBracket3}  { 
+          	addToken(PUNCTUATION,string("LEFT_PARENTHESIS"),string(yytext),yylineno);
+        } 
+{rightBracket3}  { 
+          	addToken(PUNCTUATION,string("RIGHT_PARENTHESIS"),string(yytext),yylineno); 
+        } 
+{semicolon}    { 
+          	addToken(PUNCTUATION,string("SEMICOLON"),string(yytext),yylineno);
+        } 
+{comma}      { 
+          	addToken(PUNCTUATION,string("COMMA"),string(yytext),yylineno);
+        } 
+{colon}      { 
+          	addToken(PUNCTUATION,string("COLON"),string(yytext),yylineno);
+        } 
+{doubleColon}  { 
+        	addToken(PUNCTUATION,string("DOUBLE_COLON"),string(yytext),yylineno);
+        } 
+{period}    { 
+          	addToken(PUNCTUATION,string("PERIOD"),string(yytext),yylineno); 
+        } 
+{doublePeriod}  { 
+        	addToken(PUNCTUATION,string("DOUBLE_PERIOD"),string(yytext),yylineno);
+} 
+
 
 {string}		{
 				
@@ -188,11 +225,16 @@ nil				{
 				
 %%
 //Global token vector
-vector  <alpha_token_t> vctr;
+vector  <alpha_token_t>* vctr_ptr; 
 //Global token number
 int token_number = 0;
 //Global lex object
 yyFlexLexer temp;
+
+int alpha_yylex(void* yylval){ 
+  vctr_ptr = (vector <alpha_token_t>*) yylval;  
+  return  temp.yylex(); 
+} 
 
 void addToken(type token_t,string token_sT, string value, int line){
 	alpha_token_t token_struct;
@@ -206,9 +248,7 @@ void addToken(type token_t,string token_sT, string value, int line){
 	token_struct.token_value = value;					//save value of token as string
 
 	//add token struct to global vector 
-	vctr.push_back(token_struct);
-
-	return &token_struct;  
+	vctr_ptr->push_back(token_struct);  
 }
 
 
@@ -220,15 +260,14 @@ string typeToString(type t){
 		case REAL_CONST: 	return "REAL_CONST";
 		case STRING: 		return "STRING";
 		case OPERATOR: 		return "OPERATOR";
+		case PUNCTUATION: 	return "PUNCTUATION";
+		default:			return "_UKNOWN_TYPE_";
 	}
 }
 
 int main (){
-	alpha_token_t token;
-	// cout <<"test";
-	// while(alpha_yylex( &token)){
-	// 	//print token info 
-	// 	cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t";
+	vector <alpha_token_t> token_vector; 
+  alpha_yylex( &token_vector);
 
 	for(alpha_token_t token :token_vector){
 		//print token info 
