@@ -164,9 +164,67 @@ nil				{
 {Whitespace}	;
 
 
-{string}		{
-				
+{string}	{
+
+				/*code for strings*/
+				char *input=strdup(yytext);/*get input*/
+				char *next;
+				char *output=(char *)malloc(strlen(input));
+
+				while( *input != '\0'){
+
+					/*Check cases which start with '\'*/
+					if(*input == '\\'){
+						next=input++;
+
+						if(*next=='n'){
+							*output='\n';
+							output++;
+						}
+						if(*next=='t'){
+							*output='\t';
+							output++;
+						}
+						if(*next=='v'){
+							*output='\v';
+							output++;
+						}
+						if(*next=='?'){
+							*output='\?';
+							output++;
+						}
+						if(*next=='\\'){
+							*output='\\';
+							output++;
+						}
+						if(*next=='b'){
+							*output='\b';
+							output++;
+						}
+						if(*next=='\"'){
+							*output='\"';
+							output++;
+						}
+					}
+
+					/*other cases*/
+					if(*input=='\n'){
+						*output='\n';
+						output++;
+					}
+
+					if(*input== EOF){
+						printf("EOF found\n");
+					}
+
+					*output=*input;
+					output++;
+					input++;
 				}
+				addToken(STRING,string("STRING"),output,yylineno); 
+
+
+			}
 
 {comment1}		;
 
