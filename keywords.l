@@ -203,44 +203,44 @@ nil				{
 "\""		{
 
 				/*code for strings*/
-				char *input=strdup(yytext);/*get input*/
-				char *next;
+				string input=string(yytext);/*get input*/
+				string next;
 				string output=string(yytext);
 
-				while( (input=yyinput()) != '\0'){
+				while( (input=yyinput()) != string("\0")){
 
 					/*Check cases which start with '\'*/
-					if(*input == '\\'){
+					if(input == string("\\")){
 						next=yyinput();
 
-						if(*next=='n'){
-							output+='\n';							
+						if(next==string("n")){
+							output+=string("\n");							
 						}
-						if(*next=='t'){
-							output+='\t';
+						if(next==string("t")){
+							output+=string("\t");
 						}
-						if(*next=='v'){
-							output+='\v';
+						if(next==string("v")){
+							output+=string("\v");
 						}
-						if(*next=='\\'){
-							output+='\\';
+						if(next==string("\\")){
+							output+=string("\\");
 						}
-						if(*next=='b'){
-							output+='\b';
+						if(next==string("b")){
+							output+=string("\b");
 						}
-						if(*next=='\"'){
-							output+='\"';
+						if(next==string("\"")){
+							output+=string("\"");
 						}
 					}
 
 					/*other cases*/
-					if(*input=='\n'){
-						output+='\n';
+					if(input==string("\n")){
+						output+=string("\n");
 					}
 
-					if(*input== EOF){
+					/*if(input.equals(eof())){
 						printf("EOF found\n");
-					}
+					}*/
 
 					output+=string(input);
 					input=yyinput();
