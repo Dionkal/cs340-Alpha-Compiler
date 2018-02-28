@@ -249,6 +249,11 @@ nil				{
 						output++;
 					}
 
+					if(*input=='\"'){
+						*output='\"';
+						break;
+					}
+
 					if(*input== EOF){
 						printf("EOF found\n");
 					}
