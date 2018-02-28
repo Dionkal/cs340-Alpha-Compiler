@@ -190,9 +190,9 @@ nil				{
 {period}		{printf(".");}
 {doublePeriod}	{printf(..");}
 
-{string}		{
-				
-				}
+{string}	{
+			
+			}
 
 {comment1}		;
 
@@ -202,7 +202,7 @@ nil				{
 							; /*ignore the text*/
 						if(c=='*'){
 							while( (c=input()) == '*')
-								unput(c);
+								unput(c); /* den ksero an xreiazetai na kalesthei i addtoken edo*/
 							if(c=='/')
 								break; /*here is the end of the comment*/
 						}
