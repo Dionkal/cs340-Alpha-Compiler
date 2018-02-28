@@ -202,6 +202,7 @@ void addToken(string token_t, string value, int line){
 
 int alpha_yylex(void* yylval){
 	vctr_ptr = (vector <alpha_token_t>*) yylval;
+	cout <<"TEST" <<endl;
 	return  temp.yylex();
 }
 
