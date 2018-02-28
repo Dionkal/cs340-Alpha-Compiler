@@ -249,7 +249,8 @@ nil				{
 
 
 			}
-{comment1}		;
+
+{comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
 
 "/*"			{	
 					int c,lineBegin,lineEnd,nested=0; /*lineBegin and lineEnd for printing where the comment is,and nested checks if the comment is nested*/
