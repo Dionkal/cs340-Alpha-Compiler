@@ -294,6 +294,7 @@ string typeToString(type t){
 		case STRING: 		return "STRING";
 		case OPERATOR: 		return "OPERATOR";
 		case PUNCTUATION: 	return "PUNCTUATION";
+		case COMMENT: 		return "COMMENT";
 		default:			return "_UKNOWN_TYPE_";
 	}
 }
