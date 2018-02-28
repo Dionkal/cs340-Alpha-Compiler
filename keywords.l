@@ -200,73 +200,55 @@ nil				{
 } 
 
 
-{string}	{
+"\""		{
 
 				/*code for strings*/
 				char *input=strdup(yytext);/*get input*/
 				char *next;
-				char *output=(char *)malloc(strlen(input));
+				string output=string(yytext);
 
-				while( *input != '\0'){
+				while( (input=yyinput()) != '\0'){
 
 					/*Check cases which start with '\'*/
 					if(*input == '\\'){
-						next=input++;
+						next=yyinput();
 
 						if(*next=='n'){
-							*output='\n';
-							output++;
+							output+='\n';							
 						}
 						if(*next=='t'){
-							*output='\t';
-							output++;
+							output+='\t';
 						}
 						if(*next=='v'){
-							*output='\v';
-							output++;
-						}
-						if(*next=='?'){
-							*output='\?';
-							output++;
+							output+='\v';
 						}
 						if(*next=='\\'){
-							*output='\\';
-							output++;
+							output+='\\';
 						}
 						if(*next=='b'){
-							*output='\b';
-							output++;
+							output+='\b';
 						}
 						if(*next=='\"'){
-							*output='\"';
-							output++;
+							output+='\"';
 						}
 					}
 
 					/*other cases*/
 					if(*input=='\n'){
-						*output='\n';
-						output++;
-					}
-
-					if(*input=='\"'){
-						*output='\"';
-						break;
+						output+='\n';
 					}
 
 					if(*input== EOF){
 						printf("EOF found\n");
 					}
 
-					*output=*input;
-					output++;
-					input++;
+					output+=string(input);
+					input=yyinput();
 				}
 				addToken(STRING,string("STRING"),output,yylineno); 
 
 
 			}
-
 {comment1}		;
 
 "/*"			{	
