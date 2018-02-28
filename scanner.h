@@ -2,11 +2,11 @@
 #include <vector>
 #include <iostream>
 #include <stdio.h>
-
+#include <sstream>   
 
 using namespace std;
 
-typedef enum{KEYWORD,IDENTIFIER,INT_CONST,REAL_CONST,STRING,OPERATOR} type;
+typedef enum{KEYWORD,IDENTIFIER,INT_CONST,REAL_CONST,STRING,OPERATOR,COMMENT} type;
 
 typedef struct{
 	int number_of_token;

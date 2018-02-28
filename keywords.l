@@ -3,6 +3,8 @@
 #include "scanner.h"
 #include <iomanip>
 using namespace std;
+
+
 	
 %}
 
@@ -171,34 +173,35 @@ nil				{
 "/*"			{	
 					int c,lineBegin,lineEnd,nested=0; /*lineBegin and lineEnd for printing where the comment is,and nested checks if the comment is nested*/
 					string lines;/*for output*/
-					lineBegin=yylineno;
-					lines=string.to_string(lineBegin);
+					stringstream ss;
+					lineBegin=yylineno;					
+					ss<<lineBegin;
+					lines=ss.str();
 
 					while(1){
+						while( (c=yyinput()) != '*' && c!=EOF){
 
-						while( (c=input()) != '*' && c!=EOF){
+							while( (c=yyinput())=='/'){
 
-							while( (c=input())=='/'){
-
-								if((c=input())=='*'){//possible nested
+								if((c=yyinput())=='*'){//possible nested
 											
 									//idios kodikas		
 									nested++;			
 								}	
 							}
 
-							while(c == '\\' && (c=input())=='n'){//edo tora thelei den thelei input den ksero ego mperdeutei
+							while(c == '\\' && (c=yyinput())=='n'){//edo tora thelei den thelei input den ksero ego mperdeutei
 								;
 							}				
 
 							lineEnd=yylineno;
-							lineEnd=string.to_string(lineEnd);
-							lines=lines + "-" + lineEnd;
-							addToken(string("MULTILINE COMMENT"),lines,yylineno); 
+							ss<<lineEnd;
+							lines=lines + "-" + ss.str();
+							addToken(COMMENT,string("MULTILINE COMMENT"),lines,yylineno); 
 						}
 
 						if(c=='*'){
-							while( (c=input())=='*'){//ta lookforward prepei na ta pao piso
+							while( (c=yyinput())=='*'){//ta lookforward prepei na ta pao piso
 								unput(c);/*put it back*/
 							}
 
