@@ -488,13 +488,11 @@ static const flex_int32_t yy_rule_can_match_eol[49] =
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "keywords.l"
 #line 2 "keywords.l"
-	
-#include "scanner.h"
-using namespace std;
-	
-#line 495 "lex.yy.cc"
-/*Punctuation*/
-#line 497 "lex.yy.cc"
+#include "keywords.h"
+
+#define YY_DECL int alpha_yylext(void* smthing)  
+#line 485 "lex.yy.cc"
+#line 486 "lex.yy.cc"
 
 #define INITIAL 0
 
@@ -626,10 +624,10 @@ YY_DECL
 		}
 
 	{
-#line 32 "keywords.l"
+#line 28 "keywords.l"
 
 
-#line 632 "lex.yy.cc"
+#line 621 "lex.yy.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -698,7 +696,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 34 "keywords.l"
+#line 30 "keywords.l"
 {
 					// token_type_union tokenUnion;
 					//tokenUnion.enumerator_t = IF; 
@@ -707,7 +705,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 39 "keywords.l"
+#line 34 "keywords.l"
 { 
 					token_type_union tokenUnion;
 					tokenUnion.enumerator_t = ELSE; 
@@ -716,318 +714,247 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 44 "keywords.l"
+#line 38 "keywords.l"
 { 
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = WHILE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					// yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 49 "keywords.l"
-{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FOR; 
-					addToken(tokenUnion,string(yytext),yylineno);
+#line 42 "keywords.l"
+{           			 
+					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 55 "keywords.l"
-{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FUNCTION; 
-					addToken(tokenUnion,string(yytext),yylineno);
+#line 46 "keywords.l"
+{
+					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 61 "keywords.l"
-{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = RETURN; 
-					addToken(tokenUnion,string(yytext),yylineno);
+#line 50 "keywords.l"
+{
+					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 67 "keywords.l"
-{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = BREAK; 
-					addToken(tokenUnion,string(yytext),yylineno);
+#line 54 "keywords.l"
+{  
+					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 73 "keywords.l"
+#line 58 "keywords.l"
 { 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = CONTINUE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+ 					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 79 "keywords.l"
+#line 62 "keywords.l"
 { 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = AND; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					//yylval = addToken(tokenUnion,string(yytext),yylineno); 
+					return 999;
 				}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 85 "keywords.l"
-{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = NOT; 
-					addToken(tokenUnion,string(yytext),yylineno);
+#line 66 "keywords.l"
+{  
+					// yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 91 "keywords.l"
+#line 70 "keywords.l"
 { 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = OR; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					// yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 97 "keywords.l"
+#line 74 "keywords.l"
 { 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = LOCAL; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+          			// yylval = addToken(tokenUnion,string(yytext),yylineno); 
+					return 999;
 				}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 103 "keywords.l"
+#line 78 "keywords.l"
 { 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = TRUE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+          			// yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 109 "keywords.l"
+#line 82 "keywords.l"
 { 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FALSE; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+          			// yylval = addToken(tokenUnion,string(yytext),yylineno); 
+					return 999;
 				}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 115 "keywords.l"
+#line 86 "keywords.l"
 { 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = NIL; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+          			// yylval = addToken(tokenUnion,string(yytext),yylineno); 
+					return 999;
 				}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 121 "keywords.l"
+#line 90 "keywords.l"
 {
 				}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 124 "keywords.l"
+#line 93 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}				
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 127 "keywords.l"
+#line 97 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}				
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 130 "keywords.l"
+#line 101 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 133 "keywords.l"
+#line 105 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 136 "keywords.l"
+#line 109 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 139 "keywords.l"
+#line 113 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 142 "keywords.l"
+#line 117 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 145 "keywords.l"
+#line 121 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 148 "keywords.l"
+#line 125 "keywords.l"
 {	 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 151 "keywords.l"
+#line 129 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 154 "keywords.l"
+#line 133 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 157 "keywords.l"
+#line 137 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 160 "keywords.l"
+#line 141 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 163 "keywords.l"
+#line 145 "keywords.l"
 { 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 168 "keywords.l"
+#line 151 "keywords.l"
 ;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 170 "keywords.l"
-{printf("{");}
-	YY_BREAK
-case 33:
-YY_RULE_SETUP
-#line 171 "keywords.l"
-{printf("}");}
-	YY_BREAK
-case 34:
-YY_RULE_SETUP
-#line 172 "keywords.l"
-{printf("[");}
-	YY_BREAK
-case 35:
-YY_RULE_SETUP
-#line 173 "keywords.l"
-{printf("]");}
-	YY_BREAK
-case 36:
-YY_RULE_SETUP
-#line 174 "keywords.l"
-{printf("(");}
-	YY_BREAK
-case 37:
-YY_RULE_SETUP
-#line 175 "keywords.l"
-{printf(")");}
-	YY_BREAK
-case 38:
-YY_RULE_SETUP
-#line 176 "keywords.l"
-{printf(";");}
-	YY_BREAK
-case 39:
-YY_RULE_SETUP
-#line 177 "keywords.l"
-{printf(",");}
-	YY_BREAK
-case 40:
-YY_RULE_SETUP
-#line 178 "keywords.l"
-{printf(":");}
-	YY_BREAK
-case 41:
-YY_RULE_SETUP
-#line 179 "keywords.l"
-{printf("::");}
-	YY_BREAK
-case 42:
-YY_RULE_SETUP
-#line 180 "keywords.l"
-{printf(".");}
-	YY_BREAK
-case 43:
-YY_RULE_SETUP
-#line 181 "keywords.l"
-{printf("..");}
-	YY_BREAK
-case 44:
-YY_RULE_SETUP
-#line 183 "keywords.l"
+#line 153 "keywords.l"
 {
 				
 				}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 187 "keywords.l"
+#line 157 "keywords.l"
 ;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 189 "keywords.l"
+#line 159 "keywords.l"
 {	/*dont know if it works, needs testing*/
 	
 					/*code for comments of embedded style*/
@@ -1048,15 +975,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 207 "keywords.l"
+#line 176 "keywords.l"
 printf("Invalid character\n");		
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 209 "keywords.l"
+#line 178 "keywords.l"
 ECHO;
 	YY_BREAK
-#line 1059 "lex.yy.cc"
+#line 974 "lex.yy.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2028,7 +1955,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 209 "keywords.l"
+#line 178 "keywords.l"
 
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr;
@@ -2051,20 +1978,18 @@ void addToken(token_type_union token_t, string value, int line){
 	vctr_ptr->push_back(token_struct); 
 }
 
-int alpha_yylex(void* yylval){
-	vctr_ptr = (vector <alpha_token_t>*) yylval;
-	return  temp.yylex();
+	return NULL;
+	// return &token_struct;  
 }
 
 
 int main (){
-	vector <alpha_token_t> token_vector;
-	alpha_yylex( &token_vector);
-
-	for(alpha_token_t token :token_vector){
-		//print token info 
-		cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t  placeholder token type\n" <<endl;
-	}
+	//alpha_token_t token;
+	cout <<"test";
+	// while(alpha_yylex( &token)){
+	// 	//print token info 
+	// 	cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t";
+	// }
 
   	return 0;
 }

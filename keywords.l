@@ -1,15 +1,11 @@
 %{
-	
-#include "scanner.h"
-using namespace st;
-	
-%}
+#include "keywords.h"
 
+#define YY_DECL int alpha_yylext(void* smthing)  
+%}
 %option yylineno
 %option noyywrap
 
-
-/*Punctuation*/
 leftBracket1	\{
 rightBracet1	\}	
 leftBracket2	\[
@@ -24,7 +20,7 @@ period			\.
 doublePeriod[.]{2}
 
 string			\"[^\n"]*\" 
-comment1	\/{2}.*
+comment1		\/{2}.*
 
 ID				[a-zA-Z][a-zA-Z0-9_]*
 Whitespace 		[ \t\n]
@@ -42,126 +38,115 @@ else 			{
 					addToken(tokenUnion,string(yytext),yylineno);
 				}
 while			{ 
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = WHILE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					// yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
-for				{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FOR; 
-					addToken(tokenUnion,string(yytext),yylineno);
+for				{           			 
+					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
-function		{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FUNCTION; 
-					addToken(tokenUnion,string(yytext),yylineno);
+function		{
+					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
-return			{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = RETURN; 
-					addToken(tokenUnion,string(yytext),yylineno);
+return			{
+					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
-break			{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = BREAK; 
-					addToken(tokenUnion,string(yytext),yylineno);
+break			{  
+					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 continue		{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = CONTINUE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+ 					//yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 and				{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = AND; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					//yylval = addToken(tokenUnion,string(yytext),yylineno); 
+					return 999;
 				}
-not				{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = NOT; 
-					addToken(tokenUnion,string(yytext),yylineno);
+not				{  
+					// yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 or				{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = OR; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					// yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 local			{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = LOCAL; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+          			// yylval = addToken(tokenUnion,string(yytext),yylineno); 
+					return 999;
 				}
 true			{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = TRUE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+          			// yylval = addToken(tokenUnion,string(yytext),yylineno);
+					return 999;
 				}
 false			{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FALSE; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+          			// yylval = addToken(tokenUnion,string(yytext),yylineno); 
+					return 999;
 				}
 nil				{ 
-          			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = NIL; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+          			// yylval = addToken(tokenUnion,string(yytext),yylineno); 
+					return 999;
 				}
 {ID}			{
 				}
 				
 "="				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}				
 "+"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}				
 "-"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 "*"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 "/"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 "%"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 "=="			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 "!="			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 "++"			{	 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 "--"			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 ">"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 "<"				{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 ">="			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 "<="			{ 
           			fprintf(stderr,"Operator value: %s\n", yytext);
+					return 999;
 				}
 
 
@@ -227,20 +212,18 @@ void addToken(token_type_union token_t, string value, int line){
 	vctr_ptr->push_back(token_struct); 
 }
 
-int alpha_yylex(void* yylval){
-	vctr_ptr = (vector <alpha_token_t>*) yylval;
-	return  temp.yylex();
+	return NULL;
+	// return &token_struct;  
 }
 
 
 int main (){
-	vector <alpha_token_t> token_vector;
-	alpha_yylex( &token_vector);
-
-	for(alpha_token_t token :token_vector){
-		//print token info 
-		cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t  placeholder token type\n" <<endl;
-	}
+	//alpha_token_t token;
+	cout <<"test";
+	// while(alpha_yylex( &token)){
+	// 	//print token info 
+	// 	cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t";
+	// }
 
   	return 0;
 }
