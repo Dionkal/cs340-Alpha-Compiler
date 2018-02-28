@@ -1,7 +1,7 @@
 all: fl main
 main:
-	g++ lex.yy.cc -o scanner
+	g++ lex.yy.c -o scanner
 fl: 
-	flex --c++ keywords.l
+	flex  keywords.l
 clean:
-	rm -rf lex.yy.cc scanner
+	rm -rf lex.yy.c scanner

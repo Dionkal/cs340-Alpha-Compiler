@@ -1,11 +1,9 @@
 %{
-#include "scanner.h"
+#include "keywords.h"
  
 using namespace std; 
-#define YY_DECL int alpha_yylext(void* yyval); 
-%}
-
-#define YY_DECL int alpha_yylext(void* smthing)  
+#define YY_DECL int alpha_yylex(void* yylval) 
+  
 %}
 %option yylineno
 %option noyywrap
@@ -32,7 +30,7 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					 addToken("KEYWORD IF",string(yytext),yylineno); 
+					addToken("KEYWORD IF",string(yytext),yylineno); 
 					return 1;
 				}
 else			{ 
