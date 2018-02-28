@@ -1,6 +1,7 @@
 %{
 	
 #include "scanner.h"
+#include <iomanip>
 using namespace std;
 	
 %}
@@ -8,6 +9,8 @@ using namespace std;
 %option yylineno
 %option noyywrap
 
+integer [0-9]+
+real	[0-9]+"."[0-9]+
 
 /*Punctuation*/
 leftBracket1	\{
@@ -32,123 +35,129 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					addToken(string("KEYWORD IF"),string(yytext),yylineno); 
+					addToken(KEYWORD,string("IF"),string(yytext),yylineno); 
 				}
 else 			{ 
 					 
-					addToken(string("KEYWORD ELSE"),string(yytext),yylineno);
+					addToken(KEYWORD,string("ELSE"),string(yytext),yylineno);
 				}
 while			{ 
 					 
-					addToken(string("KEYWORD WHILE"),string(yytext),yylineno);
+					addToken(KEYWORD,string("WHILE"),string(yytext),yylineno);
 				}
 for				{ 
           			
 					 
-					addToken(string("KEYWORD FOR"),string(yytext),yylineno);
+					addToken(KEYWORD,string("FOR"),string(yytext),yylineno);
 				}
 function		{ 
           			
 					 
-					addToken(string("KEYWORD FUNCTION"),string(yytext),yylineno);
+					addToken(KEYWORD,string("FUNCTION"),string(yytext),yylineno);
 				}
 return			{ 
           			
 					 
-					addToken(string("KEYWORD RETURN"),string(yytext),yylineno);
+					addToken(KEYWORD,string("RETURN"),string(yytext),yylineno);
 				}
 break			{ 
           			
 					 
-					addToken(string("KEYWORD BREAK"),string(yytext),yylineno);
+					addToken(KEYWORD,string("BREAK"),string(yytext),yylineno);
 				}
 continue		{ 
           			
 					 
-					addToken(string("KEYWORD CONTINUE"),string(yytext),yylineno);
+					addToken(KEYWORD,string("CONTINUE"),string(yytext),yylineno);
 				}
 and				{ 
           			
 					 
-					addToken(string("KEYWORD AND"),string(yytext),yylineno); 
+					addToken(KEYWORD,string("AND"),string(yytext),yylineno); 
 				}
 not				{ 
           			
 					 
-					addToken(string("KEYWORD NOT"),string(yytext),yylineno);
+					addToken(KEYWORD,string("NOT"),string(yytext),yylineno);
 				}
 or				{ 
           			
 					 
-					addToken(string("KEYWORD OR"),string(yytext),yylineno);
+					addToken(KEYWORD,string("OR"),string(yytext),yylineno);
 				}
 local			{ 
           			
 					 
-					addToken(string("KEYWORD LOCAL"),string(yytext),yylineno); 
+					addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno); 
 				}
 true			{ 
           			
 					 
-					addToken(string("KEYWORD TRUE"),string(yytext),yylineno);
+					addToken(KEYWORD,string("TRUE"),string(yytext),yylineno);
 				}
 false			{ 
           			
 					 
-					addToken(string("KEYWORD FALSE"),string(yytext),yylineno); 
+					addToken(KEYWORD,string("FALSE"),string(yytext),yylineno); 
 				}
 nil				{ 
           			
 					 
-					addToken(string("KEYWORD NIL"),string(yytext),yylineno); 
+					addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
 {ID}			{
-					addToken(string("IDENTIFIER"),string(yytext),yylineno);
+					addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
 				
 "="				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("ASSIGNMENT"),string(yytext),yylineno);
 				}				
 "+"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("PLUS"),string(yytext),yylineno);
 				}				
 "-"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("MINUS"),string(yytext),yylineno);
 				}
 "*"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("MULTIPLICATION"),string(yytext),yylineno);
 				}
 "/"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("DIVISION"),string(yytext),yylineno);
 				}
 "%"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("MODULO"),string(yytext),yylineno);
 				}
 "=="			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("EQUALS"),string(yytext),yylineno);
 				}
 "!="			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("NOT_EQUALS"),string(yytext),yylineno);
 				}
 "++"			{	 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("PLUS_PLUS"),string(yytext),yylineno);
 				}
 "--"			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("MINUS_MINUS"),string(yytext),yylineno);
 				}
 ">"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("GREATER"),string(yytext),yylineno);
 				}
 "<"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("LESS"),string(yytext),yylineno);
 				}
 ">="			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("G_EQUAL"),string(yytext),yylineno);
 				}
 "<="			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
+				}
+{integer}		{
+					addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
 				}
 
+{real}			{
+					addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
+				}
 
 {Whitespace}	;
 
@@ -183,17 +192,18 @@ nil				{
 vector  <alpha_token_t>* vctr_ptr;
 //Global token number
 int token_number = 0;
-
+//Global lex object
 yyFlexLexer temp;
 
-void addToken(string token_t, string value, int line){
+void addToken(type token_t,string token_sT, string value, int line){
 	alpha_token_t token_struct;
 	
 	token_number++;
 
 	token_struct.number_of_token = token_number; 		//save token number
 	token_struct.line_number = line;	  				//save line number
-	token_struct.str_type = token_t;					//save  token type as string
+	token_struct.token_type = token_t;					//save token type as string
+	token_struct.str_subType = token_sT;				//save token subtype as string
 	token_struct.token_value = value;					//save value of token as string
 
 	//add token struct to global vector 
@@ -202,10 +212,20 @@ void addToken(string token_t, string value, int line){
 
 int alpha_yylex(void* yylval){
 	vctr_ptr = (vector <alpha_token_t>*) yylval;
-	cout <<"TEST" <<endl;
 	return  temp.yylex();
 }
 
+
+string typeToString(type t){
+	switch(t){
+		case KEYWORD: 		return "KEYWORD";
+		case IDENTIFIER: 	return "IDENTIFIER";
+		case INT_CONST: 	return "INT_CONST";
+		case REAL_CONST: 	return "REAL_CONST";
+		case STRING: 		return "STRING";
+		case OPERATOR: 		return "OPERATOR";
+	}
+}
 
 int main (){
 	vector <alpha_token_t> token_vector;
@@ -213,7 +233,8 @@ int main (){
 
 	for(alpha_token_t token :token_vector){
 		//print token info 
-		cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t" << token.str_type <<endl;
+		cout  <<left  <<std::setw(5)<<token.number_of_token <<": #" << token.line_number <<" \"" <<std::setw(6)<<token.token_value <<"\"\t";
+		cout  <<left << typeToString(token.token_type) <<"\t" <<setw(8) <<token.str_subType  <<setw(8) <<endl;
 	}
 
   	return 0;
