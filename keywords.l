@@ -203,58 +203,61 @@ nil				{
 "\""	{
 
 				/*code for strings*/
-				char *input=strdup(yytext);/*get input*/
-				char *next;
+				char input = *yytext;/*get input*/
+				char next;
 				char * output=(char *)malloc(1024*sizeof(char));
 				int cnt=0;
-				*output=*input;
+				output[cnt]=input;
 
-				while( (*input=yyinput()) != '\0'){
-
+				while( (input=yyinput()) != '\0'){
+					cout << "INPUT IS: " << input <<endl;
 					/*Check cases which start with '\'*/
-					if(*input == '\\'){
-						*next=yyinput();
+					if(input == '\\'){
+						next=yyinput();
 
-						if(*next=='n'){
-							*output='\n';
+						if(next=='n'){
+							output[cnt]='\n';
 							cnt++;							
 						}
-						if(*next=='t'){
-							*output='\t';
+						if(next=='t'){
+							output[cnt]='\t';
 							cnt++;
 						}
-						if(*next=='v'){
-							*output='\v';
+						if(next=='v'){
+							output[cnt]='\v';
 							cnt++;
 						}
-						if(*next=='\\'){
-							*output='\\';
+						if(next=='\\'){
+							output[cnt]='\\';
 							cnt++;
 						}
-						if(*next=='b'){
-							*output='\b';
+						if(next=='b'){
+							output[cnt]='\b';
 							cnt++;
 						}
-						if(*next=='\"'){
-							*output='\"';
+						if(next=='\"'){
+							output[cnt]='\"';
 							cnt++;
 						}
 					}
 
 					/*other cases*/
-					if(*input=='\n'){
-						*output='\n';
+					if(input=='\n'){
+						output[cnt]='\n';
 						break;//not sure
 					}
 
-					if(*input == EOF){
+					if(input == EOF){
 						printf("EOF found\n");
 					}
 
-					*output=*input;
-					*input=yyinput();
+					output[cnt]=input;
+					cnt++;
+
 				}
-				addToken(STRING,string("STRING"),output,yylineno); 
+				output[cnt+1] = '\0';
+				cout <<"OUTPUT: "<< *output <<endl;
+				addToken(STRING,string("STRING"),string(output),yylineno); 
 
 
 			}
