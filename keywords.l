@@ -168,21 +168,51 @@ nil				{
 
 {comment1}		;
 
-"/*"			{	/*dont know if it works, needs testing*/
-	
-					/*code for comments of embedded style*/
-					int c;
-					/*while( (c= input()) != EOF){
+"/*"			{	
+					int c,lineBegin,lineEnd,nested=0; /*lineBegin and lineEnd for printing where the comment is,and nested checks if the comment is nested*/
+					string lines;/*for output*/
+					lineBegin=yylineno;
+					lines=string.to_string(lineBegin);
+
+					while(1){
+
+						while( (c=input()) != '*' && c!=EOF){
+
+							while( (c=input())=='/'){
+
+								if((c=input())=='*'){//possible nested
+											
+									//idios kodikas		
+									nested++;			
+								}	
+							}
+
+							while(c == '\\' && (c=input())=='n'){//edo tora thelei den thelei input den ksero ego mperdeutei
+								;
+							}				
+
+							lineEnd=yylineno;
+							lineEnd=string.to_string(lineEnd);
+							lines=lines + "-" + lineEnd;
+							addToken(string("MULTILINE COMMENT"),lines,yylineno); 
+						}
 
 						if(c=='*'){
-							if( (c==input()) != '/'){paizei na prepei na ginei se 2 vimata
-								break;
-							}else{
-								// unput(c);
+							while( (c=input())=='*'){//ta lookforward prepei na ta pao piso
+								unput(c);/*put it back*/
 							}
+
+							if(c=='/')
+								//ki an einai nested na to valo edo i guess
+								break;/*here is the end of the commnent*/
 						}
-						// unput(c);					}*/
-					printf("Comment Error: comments must end with '*/'\n");
+
+						if(c==EOF){
+							printf("EOF found");
+							break;
+						}
+
+					}
 				}
 
 .				printf("Invalid character\n");		
