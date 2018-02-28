@@ -27,7 +27,6 @@ doubleColon	[:]{2}
 period			\.
 doublePeriod[.]{2}
 
-string			\"[^\n"]*\" 
 comment1		\/{2}.*
 
 ID				[a-zA-Z][a-zA-Z0-9_]*
@@ -205,60 +204,74 @@ nil				{
 				/*code for strings*/
 				char input = *yytext;/*get input*/
 				char next;
-				char * output=(char *)malloc(1024*sizeof(char));
+				int buf_size = 1;
+				char * output=(char *)malloc(buf_size*sizeof(char));
 				int cnt=0;
 				output[cnt]=input;
 
-				while( (input=yyinput()) != '\0'){
-					cout << "INPUT IS: " << input <<endl;
+				while( (input=yyinput()) != '\0' && input != 10){
+					if(cnt >( buf_size/2)){
+						//cout <<"Reallocating..buffsize is now: " << buf_size <<endl;
+						buf_size = buf_size *2;
+						output = (char*) realloc((void*)output, buf_size);
+						//hope it works...pls <3
+					}
 					/*Check cases which start with '\'*/
 					if(input == '\\'){
 						next=yyinput();
 
 						if(next=='n'){
 							output[cnt]='\n';
-							cnt++;							
+							cnt++;
+							continue;							
 						}
 						if(next=='t'){
 							output[cnt]='\t';
 							cnt++;
+							input = next;
 						}
 						if(next=='v'){
 							output[cnt]='\v';
 							cnt++;
+							input = next;
 						}
 						if(next=='\\'){
 							output[cnt]='\\';
 							cnt++;
+							input = next;
 						}
 						if(next=='b'){
 							output[cnt]='\b';
 							cnt++;
+							input = next;
 						}
 						if(next=='\"'){
 							output[cnt]='\"';
 							cnt++;
+							input = next;
 						}
 					}
 
 					/*other cases*/
 					if(input=='\n'){
-						output[cnt]='\n';
+						// output[cnt]='\n';
 						break;//not sure
 					}
-
-					if(input == EOF){
-						printf("EOF found\n");
+					if(input =='\"'){
+						break;//not sure	
 					}
 
 					output[cnt]=input;
 					cnt++;
 
 				}
-				output[cnt+1] = '\0';
-				cout <<"OUTPUT: "<< *output <<endl;
-				addToken(STRING,string("STRING"),string(output),yylineno); 
-
+				if(input==EOF || input== 10){
+						addToken(STRING,string(""),"Error: End-of-file reached while in string\n",yylineno);							
+				}else{
+					output[cnt] = '\0';
+					addToken(STRING,string("STRING"),string(output),yylineno); 
+				}	
+				free(output);
 
 			}
 {comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
@@ -337,6 +350,26 @@ void addToken(type token_t,string token_sT, string value, int line){
 	token_struct.str_subType = token_sT;				//save token subtype as string
 	token_struct.token_value = value;					//save value of token as string
 
+	switch(token_t){
+		case KEYWORD: 		
+		case OPERATOR: 		
+		case PUNCTUATION: 	 
+		case COMMENT: 
+			token_struct.arrow_type = "<--enumerated";
+			break;
+		case IDENTIFIER: 	
+		case STRING:
+			token_struct.arrow_type = "<--char*";
+			break;
+		case INT_CONST: 	
+			token_struct.arrow_type = "<--int";
+			break;
+		case REAL_CONST: 	
+			token_struct.arrow_type ="<--floating point";
+		 	break;
+		default:	
+			token_struct.arrow_type = "<--_UKNOWN_TYPE_";
+	}
 	//add token struct to global vector 
 	vctr_ptr->push_back(token_struct);  
 }
@@ -360,10 +393,10 @@ int main (){
 	vector <alpha_token_t> token_vector; 
   alpha_yylex( &token_vector);
 
-	for(alpha_token_t token :token_vector){
+	for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
 		//print token info 
-		cout  <<left  <<std::setw(5)<<token.number_of_token <<": #" << token.line_number <<" \"" <<std::setw(6)<<token.token_value <<"\"\t";
-		cout  <<left << typeToString(token.token_type) <<"\t" <<setw(8) <<token.str_subType  <<setw(8) <<endl;
+		cout  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
+		cout  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
 	}
 
   	return 0;

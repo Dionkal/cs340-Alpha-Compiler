@@ -2,7 +2,8 @@
 #include <vector>
 #include <iostream>
 #include <stdio.h>
-#include <sstream>   
+#include <sstream> 
+
 
 using namespace std;
 
@@ -14,6 +15,8 @@ typedef struct{
 	type token_type; 
 	string str_subType;
 	string token_value;
+	string arrow_type;
+
 }alpha_token_t;
 
 void addToken(type token_t,string token_sT, string value, int line);
