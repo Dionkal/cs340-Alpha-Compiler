@@ -209,7 +209,7 @@ nil				{
 				int cnt=0;
 				output[cnt]=input;
 
-				while( (input=yyinput()) != '\0' && input != 10){
+				while( (input=yyinput()) != '\0' && input != EOF){
 					if(cnt >( buf_size/2)){
 						//cout <<"Reallocating..buffsize is now: " << buf_size <<endl;
 						buf_size = buf_size *2;
@@ -228,27 +228,27 @@ nil				{
 						if(next=='t'){
 							output[cnt]='\t';
 							cnt++;
-							input = next;
+							continue;
 						}
 						if(next=='v'){
 							output[cnt]='\v';
 							cnt++;
-							input = next;
+							continue;
 						}
 						if(next=='\\'){
 							output[cnt]='\\';
 							cnt++;
-							input = next;
+							continue;
 						}
 						if(next=='b'){
 							output[cnt]='\b';
 							cnt++;
-							input = next;
+							continue;
 						}
 						if(next=='\"'){
 							output[cnt]='\"';
 							cnt++;
-							input = next;
+							continue;
 						}
 					}
 
@@ -265,7 +265,7 @@ nil				{
 					cnt++;
 
 				}
-				if(input==EOF || input== 10){
+				if(input==EOF){
 						addToken(STRING,string(""),"Error: End-of-file reached while in string\n",yylineno);							
 				}else{
 					output[cnt] = '\0';
@@ -292,7 +292,7 @@ nil				{
 								if((c=yyinput())=='*'){//possible nested
 											
 									//idios kodikas		
-									nested++;			
+									//nested++;	output[cnt]		
 								}	
 							}
 
@@ -324,7 +324,7 @@ nil				{
 					}
 				}
 
-.			printf("Invalid character\n");		
+.			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
 				
 %%
 //Global token vector

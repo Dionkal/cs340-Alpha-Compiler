@@ -1,0 +1,23 @@
+1    : #1 "if    "	KEYWORD	IF      <--enumerated     
+2    : #1 "while "	KEYWORD	WHILE   <--enumerated     
+3    : #2 "else  "	KEYWORD	ELSE    <--enumerated     
+4    : #2 ".     "	PUNCTUATION	PERIOD  <--enumerated     
+5    : #2 ":     "	PUNCTUATION	COLON   <--enumerated     
+6    : #2 "+     "	OPERATOR	PLUS    <--enumerated     
+7    : #2 "-     "	OPERATOR	MINUS   <--enumerated     
+8    : #2 "++    "	OPERATOR	PLUS_PLUS<--enumerated     
+9    : #2 "=     "	OPERATOR	ASSIGNMENT<--enumerated     
+10   : #2 ":     "	PUNCTUATION	COLON   <--enumerated     
+11   : #3 "xsdas "	IDENTIFIER	xsdas   <--char*          
+12   : #4 "continue"	KEYWORD	CONTINUE<--enumerated     
+13   : #5 "false "	KEYWORD	FALSE   <--enumerated     
+14   : #6 "nil   "	KEYWORD	NIL     <--enumerated     
+15   : #6 "::    "	PUNCTUATION	DOUBLE_COLON<--enumerated     
+16   : #6 "      "	COMMENT	LINE COMMENT<--enumerated     
+17   : #7 "trueand"	IDENTIFIER	trueand <--char*          
+18   : #8 "return"	KEYWORD	RETURN  <--enumerated     
+19   : #8 "var23 "	IDENTIFIER	var23   <--char*          
+20   : #8 "23444 "	INT_CONST	23444   <--int            
+21   : #8 "23.93232"	REAL_CONST	23.93232<--floating point 
+22   : #9 "abc
+  "	STRING	STRING  <--char*          
