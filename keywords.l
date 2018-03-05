@@ -4,7 +4,6 @@
 #include <iomanip>
 using namespace std;
 
-
 	
 %}
 %option yylineno
@@ -199,81 +198,63 @@ nil				{
 } 
 
 
-"\""	{
+"\""		{ 
+	
 
-				/*code for strings*/
-				char input = *yytext;/*get input*/
-				char next;
-				int buf_size = 1;
-				char * output=(char *)malloc(buf_size*sizeof(char));
-				int cnt=0;
-				output[cnt]=input;
+			char input = *yytext; /*get input*/
+  			char next;
+  			string output;
+  			int stringLine = yylineno;
+  			// output = string(&input);
 
-				while( (input=yyinput()) != '\0' && input != EOF){
-					if(cnt >( buf_size/2)){
-						//cout <<"Reallocating..buffsize is now: " << buf_size <<endl;
-						buf_size = buf_size *2;
-						output = (char*) realloc((void*)output, buf_size);
-						//hope it works...pls <3
-					}
-					/*Check cases which start with '\'*/
-					if(input == '\\'){
-						next=yyinput();
+  			while ((input = yyinput()) != '\0' && input != EOF) {
+    		/*Check cases which start with '\'*/
+    			if (input == '\\') {
+      				//Lookahead
+      				next = yyinput();
 
-						if(next=='n'){
-							output[cnt]='\n';
-							cnt++;
-							continue;							
-						}
-						if(next=='t'){
-							output[cnt]='\t';
-							cnt++;
-							continue;
-						}
-						if(next=='v'){
-							output[cnt]='\v';
-							cnt++;
-							continue;
-						}
-						if(next=='\\'){
-							output[cnt]='\\';
-							cnt++;
-							continue;
-						}
-						if(next=='b'){
-							output[cnt]='\b';
-							cnt++;
-							continue;
-						}
-						if(next=='\"'){
-							output[cnt]='\"';
-							cnt++;
-							continue;
-						}
-					}
-
-					/*other cases*/
-					if(input=='\n'){
-						// output[cnt]='\n';
-						break;//not sure
-					}
-					if(input =='\"'){
-						break;//not sure	
-					}
-
-					output[cnt]=input;
-					cnt++;
-
+      				if (next == 'n') {
+        				output += '\n';
+        				continue;
+      				}
+      				if (next == 't') {
+        				output += '\t';
+        				continue;
+      				}
+      				if (next == 'v') {
+        				output += '\v';
+        				continue;
+      				}
+      				if (next == '\\') {
+        				output += '\\';
+        				continue;
+      				}
+      				if (next == 'b') {
+        				output += '\b';
+        	        	continue;
+      				}
+      				if (next == '\"') {
+        				output += '\"';
+        				continue;
+        			}
 				}
-				if(input==EOF){
-						addToken(STRING,string(""),"Error: End-of-file reached while in string\n",yylineno);							
-				}else{
-					output[cnt] = '\0';
-					addToken(STRING,string("STRING"),string(output),yylineno); 
-				}	
-				free(output);
 
-			}
+
+				/*check if string ends legally*/
+				if(input== '\"'){
+					addToken(STRING, string("STRING"), output, stringLine);			
+				}
+
+    			output += input; 
+    
+  			}
+  		
+  		if (input == EOF) {
+    		printf("Error: End-of-file reached while in string: %s at line #%d\n",yytext,yylineno);
+    	}
+}
+
+
 {comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
 
 "/*"			{	

@@ -19,4 +19,9 @@ typedef struct{
 
 }alpha_token_t;
 
+/*Adds the given token to the global vector*/
 void addToken(type token_t,string token_sT, string value, int line);
+
+
+/*code for strings*/
+void stringAction();
