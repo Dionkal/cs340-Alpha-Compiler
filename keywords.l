@@ -389,14 +389,56 @@ string typeToString(type t){
 	}
 }
 
-int main (){
+int main (int argc, char *argv[]){
 	vector <alpha_token_t> token_vector; 
-  alpha_yylex( &token_vector);
 
-	for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
-		//print token info 
-		cout  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
-		cout  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+	if (argc < 2 || argc > 3) {
+		printf("Invalid parameter\nUsage: <program> <path to input file> <optional "
+           "path to output file>\n");
+		exit(1);
+	}
+	
+	
+	std::filebuf fb_in;
+	std::filebuf fb_out;
+	if (fb_in.open (argv[1],std::ios::in)){
+		std::istream is(&fb_in);
+	
+	
+		if (argc == 3) {
+	
+			fb_out.open (argv[2],std::ios::out);
+			std::ostream os(&fb_out);
+			temp.switch_streams(&is,&os);
+
+			alpha_yylex( &token_vector);
+  
+  
+			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
+			//print token info 
+				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
+				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+			}
+		}else{
+			std::ostream os(NULL);
+			os.rdbuf(std::cout.rdbuf());
+			temp.switch_streams(&is,&os);
+			
+			alpha_yylex( &token_vector);
+  
+  
+			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
+			//print token info 
+				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
+				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+			}
+		}
+	
+
+	}else{
+		cout <<"Error opening file: " << string(argv[1]) <<endl;
+		exit(-1);
+	
 	}
 
   	return 0;
