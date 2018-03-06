@@ -198,16 +198,14 @@ nil				{
 } 
 
 
-"\""		{ 
-	
-
+"\""		{ 	
 			char input = *yytext; /*get input*/
   			char next;
   			string output;
   			int stringLine = yylineno;
-  			// output = string(&input);
+  			int isLegal = 1;
 
-  			while ((input = yyinput()) != '\0' && input != EOF) {
+  			while (input != EOF && (input = yyinput()) != '\0' ) {
     		/*Check cases which start with '\'*/
     			if (input == '\\') {
       				//Lookahead
@@ -216,41 +214,33 @@ nil				{
       				if (next == 'n') {
         				output += '\n';
         				continue;
-      				}
-      				if (next == 't') {
+      				}else if (next == 't') {
         				output += '\t';
         				continue;
-      				}
-      				if (next == 'v') {
-        				output += '\v';
-        				continue;
-      				}
-      				if (next == '\\') {
+        			}else if (next == '\\') {
         				output += '\\';
         				continue;
-      				}
-      				if (next == 'b') {
-        				output += '\b';
-        	        	continue;
-      				}
-      				if (next == '\"') {
+      				}else if (next == '\"') {
         				output += '\"';
         				continue;
+        			}else{
+        				printf("Error: Illegal escape character \'%c%c\' in string at line %d",input,next,yylineno);
+        				isLegal = 0;
         			}
 				}
 
 
 				/*check if string ends legally*/
 				if(input== '\"'){
-					addToken(STRING, string("STRING"), output, stringLine);			
+					if(isLegal) addToken(STRING, string("STRING"), output, stringLine);	
+					break;		
 				}
 
     			output += input; 
-    
   			}
   		
-  		if (input == EOF) {
-    		printf("Error: End-of-file reached while in string: %s at line #%d\n",yytext,yylineno);
+  		if (input == '\0') {
+    		printf("Error: End-of-file reached while in string: %s at line #%d\n",yytext,stringLine);
     	}
 }
 
