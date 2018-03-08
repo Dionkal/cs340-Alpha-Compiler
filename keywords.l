@@ -4,7 +4,6 @@
 #include <iomanip>
 using namespace std;
 
-
 	
 %}
 %option yylineno
@@ -199,81 +198,53 @@ nil				{
 } 
 
 
-"\""	{
+"\""		{ 	
+			char input = *yytext; /*get input*/
+  			char next;
+  			string output;
+  			int stringLine = yylineno;
+  			int isLegal = 1;
 
-				/*code for strings*/
-				char input = *yytext;/*get input*/
-				char next;
-				int buf_size = 1;
-				char * output=(char *)malloc(buf_size*sizeof(char));
-				int cnt=0;
-				output[cnt]=input;
+  			while (input != EOF && (input = yyinput()) != '\0' ) {
+    		/*Check cases which start with '\'*/
+    			if (input == '\\') {
+      				//Lookahead
+      				next = yyinput();
 
-				while( (input=yyinput()) != '\0' && input != 10){
-					if(cnt >( buf_size/2)){
-						//cout <<"Reallocating..buffsize is now: " << buf_size <<endl;
-						buf_size = buf_size *2;
-						output = (char*) realloc((void*)output, buf_size);
-						//hope it works...pls <3
-					}
-					/*Check cases which start with '\'*/
-					if(input == '\\'){
-						next=yyinput();
-
-						if(next=='n'){
-							output[cnt]='\n';
-							cnt++;
-							continue;							
-						}
-						if(next=='t'){
-							output[cnt]='\t';
-							cnt++;
-							input = next;
-						}
-						if(next=='v'){
-							output[cnt]='\v';
-							cnt++;
-							input = next;
-						}
-						if(next=='\\'){
-							output[cnt]='\\';
-							cnt++;
-							input = next;
-						}
-						if(next=='b'){
-							output[cnt]='\b';
-							cnt++;
-							input = next;
-						}
-						if(next=='\"'){
-							output[cnt]='\"';
-							cnt++;
-							input = next;
-						}
-					}
-
-					/*other cases*/
-					if(input=='\n'){
-						// output[cnt]='\n';
-						break;//not sure
-					}
-					if(input =='\"'){
-						break;//not sure	
-					}
-
-					output[cnt]=input;
-					cnt++;
-
+      				if (next == 'n') {
+        				output += '\n';
+        				continue;
+      				}else if (next == 't') {
+        				output += '\t';
+        				continue;
+        			}else if (next == '\\') {
+        				output += '\\';
+        				continue;
+      				}else if (next == '\"') {
+        				output += '\"';
+        				continue;
+        			}else{
+        				printf("Error: Illegal escape character \'%c%c\' in string at line %d\n",input,next,yylineno);
+        				isLegal = 0;
+        			}
 				}
-				if(input==EOF || input== 10){
-						addToken(STRING,string(""),"Error: End-of-file reached while in string\n",yylineno);							
-				}else{
-					output[cnt] = '\0';
-					addToken(STRING,string("STRING"),string(output),yylineno); 
-				}	
-				free(output);
 
-			}
+
+				/*check if string ends legally*/
+				if(input== '\"'){
+					if(isLegal) addToken(STRING, string("STRING"), output, stringLine);	
+					break;		
+				}
+
+    			output += input; 
+  			}
+  		
+  		if (input == '\0') {
+    		printf("Error: End-of-file reached while in string: %s at line #%d\n",yytext,stringLine);
+    	}
+}
+
+
 {comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
 
 "/*"			{	
@@ -292,7 +263,7 @@ nil				{
 								if((c=yyinput())=='*'){//possible nested
 											
 									//idios kodikas		
-									nested++;			
+									//nested++;	output[cnt]		
 								}	
 							}
 
@@ -324,7 +295,7 @@ nil				{
 					}
 				}
 
-.			printf("Invalid character\n");		
+.			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
 				
 %%
 //Global token vector
