@@ -248,51 +248,42 @@ nil				{
 {comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
 
 "/*"			{	
-					int c,lineBegin,lineEnd,nested=0; /*lineBegin and lineEnd for printing where the comment is,and nested checks if the comment is nested*/
-					string lines;/*for output*/
-					stringstream ss;
-					lineBegin=yylineno;					
-					ss<<lineBegin;
-					lines=ss.str();
+					int c;
+			int start_line;
+			std :: vector <int> v;
 
-					while(1){
-						while( (c=yyinput()) != '*' && c!=EOF){
-
-							while( (c=yyinput())=='/'){
-
-								if((c=yyinput())=='*'){//possible nested
-											
-									//idios kodikas		
-									//nested++;	output[cnt]		
-								}	
-							}
-
-							while(c == '\\' && (c=yyinput())=='n'){//edo tora thelei den thelei input den ksero ego mperdeutei
-								;
-							}				
-
-							lineEnd=yylineno;
-							ss<<lineEnd;
-							lines=lines + "-" + ss.str();
-							addToken(COMMENT,string("MULTILINE COMMENT"),lines,yylineno); 
+			v.push_back (yylineno);
+	
+			while((c=input()) != EOF))
+			{
+				if(c == '*')
+				{
+					if((c = input()) == '/')
+					{
+						if(!v.empty())
+						{
+							start_line=v.back();
+							v.pop_back();
+					
+							std::cout << "Comment opens at line "start_line" and closes at line "yylineno'\n';
 						}
-
-						if(c=='*'){
-							while( (c=yyinput())=='*'){//ta lookforward prepei na ta pao piso
-								unput(c);/*put it back*/
-							}
-
-							if(c=='/')
-								//ki an einai nested na to valo edo i guess
-								break;/*here is the end of the commnent*/
-						}
-
-						if(c==EOF){
-							printf("EOF found");
-							break;
-						}
-
-					}
+						else break;
+					}	
+					else unput(c);
+				}
+		
+		
+				if(c == '/')
+				{
+					if((c = input()) == '*')
+					v.push_back(yylineno);
+					
+					else
+					unput(c);
+				}
+			}
+			
+			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
 				}
 
 .			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
@@ -313,7 +304,7 @@ int alpha_yylex(void* yylval){
 void addToken(type token_t,string token_sT, string value, int line){
 	alpha_token_t token_struct;
 	
-	token_number++;
+	token_number++; 
 
 	token_struct.number_of_token = token_number; 		//save token number
 	token_struct.line_number = line;	  				//save line number
