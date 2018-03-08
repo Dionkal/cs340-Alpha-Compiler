@@ -248,34 +248,34 @@ nil				{
 {comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
 
 "/*"			{	
-					int c;
+					char c;
 			int start_line;
 			std :: vector <int> v;
 
 			v.push_back (yylineno);
 	
-			while((c=input()) != EOF))
+			while(((c = yyinput()) != '\0') && (c  != EOF) )
 			{
+				cout <<"Input is : "<< c <<endl;
 				if(c == '*')
 				{
-					if((c = input()) == '/')
+					if((c = yyinput()) == '/')
 					{
 						if(!v.empty())
 						{
 							start_line=v.back();
 							v.pop_back();
 					
-							std::cout << "Comment opens at line "start_line" and closes at line "yylineno'\n';
+							std::cout << "Comment opens at line " << start_line <<" and closes at line "<<yylineno << endl;
+							
 						}
-						else break;
+						if(v.empty()) break;
+						
 					}	
 					else unput(c);
-				}
-		
-		
-				if(c == '/')
+				}else if(c == '/')
 				{
-					if((c = input()) == '*')
+					if((c = yyinput()) == '*')
 					v.push_back(yylineno);
 					
 					else
