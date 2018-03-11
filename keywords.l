@@ -250,13 +250,14 @@ nil				{
 "/*"			{	
 					char c;
 			int start_line;
+			string startToEnd;
+			ostringstream convert1,convert2;
 			std :: vector <int> v;
 
 			v.push_back (yylineno);
 	
 			while(((c = yyinput()) != '\0') && (c  != EOF) )
 			{
-				cout <<"Input is : "<< c <<endl;
 				if(c == '*')
 				{
 					if((c = yyinput()) == '/')
@@ -265,8 +266,12 @@ nil				{
 						{
 							start_line=v.back();
 							v.pop_back();
-					
-							std::cout << "Comment opens at line " << start_line <<" and closes at line "<<yylineno << endl;
+							
+							convert1<<start_line;
+							convert2<<yylineno;
+							startToEnd=convert1.str()+"-"+convert2.str();
+							addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line); 
+
 							
 						}
 						if(v.empty()) break;
