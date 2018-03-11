@@ -2,22 +2,26 @@
 #include <vector>
 #include <iostream>
 #include <stdio.h>
-
+#include <sstream> 
+#include <fstream>
 
 using namespace std;
 
-typedef enum {IF,ELSE,WHILE,FOR,FUNCTION,RETURN,BREAK,CONTINUE,AND,NOT,OR,LOCAL,TRUE,FALSE,NIL} token_type_enum ;
-
-typedef union {
-	token_type_enum enumerator_t;
-	char* char_t;
-}token_type_union;
+typedef enum{KEYWORD,IDENTIFIER,INT_CONST,REAL_CONST,STRING,OPERATOR,PUNCTUATION,COMMENT} type;
 
 typedef struct{
 	int number_of_token;
 	int line_number;
-	token_type_union token_type; 
+	type token_type; 
+	string str_subType;
 	string token_value;
+	string arrow_type;
+
 }alpha_token_t;
 
-void addToken(token_type_union token_t, string value, int line);
+/*Adds the given token to the global vector*/
+void addToken(type token_t,string token_sT, string value, int line);
+
+
+/*code for strings*/
+void stringAction();

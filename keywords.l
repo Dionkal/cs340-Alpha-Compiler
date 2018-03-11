@@ -1,30 +1,20 @@
 %{
 	
 #include "scanner.h"
-<<<<<<< HEAD
-using namespace st;
+#include <iomanip>
+using namespace std;
+
 	
-=======
-
-#define YY_DECL int alpha_yylext(void* yyval);
-alpha_token_t* List = NULL;	
-
-int node_count = 0;
-
-enum keyword {IF, ELSE, WHILE, FOR, FUNCTION, RETURN, BREAK, CONTINUE, AND, NOT, OR, LOCAL, TRUE, FALSE, NIL}; 
- 
-enum operators {ASSIGNMENT, PLUS, MINUS, PRODUCT, DIVIDE, PERCENT, EQUALS, NOT, D_PLUS, D_MINUS, GREATER, LESS, G_EQUAL, L_EQUAL} 
-
->>>>>>> eriona
 %}
-
 %option yylineno
 %option noyywrap
 
+integer [0-9]+
+real	[0-9]+"."[0-9]+
 
 /*Punctuation*/
 leftBracket1	\{
-rightBracet1	\}	
+rightBracket1	\}	
 leftBracket2	\[
 rightBracket2	\]
 leftBracket3	\(
@@ -36,8 +26,7 @@ doubleColon	[:]{2}
 period			\.
 doublePeriod[.]{2}
 
-string			\"[^\n"]*\" 
-comment1	\/{2}.*
+comment1		\/{2}.*
 
 ID				[a-zA-Z][a-zA-Z0-9_]*
 Whitespace 		[ \t\n]
@@ -45,268 +34,378 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					// token_type_union tokenUnion;
-					//tokenUnion.enumerator_t = IF; 
-					addToken(IF,string(yytext),yylineno); 
+					addToken(KEYWORD,string("IF"),string(yytext),yylineno); 
 				}
 else 			{ 
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = ELSE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("ELSE"),string(yytext),yylineno);
 				}
 while			{ 
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = WHILE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("WHILE"),string(yytext),yylineno);
 				}
 for				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FOR; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("FOR"),string(yytext),yylineno);
 				}
 function		{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FUNCTION; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("FUNCTION"),string(yytext),yylineno);
 				}
 return			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = RETURN; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("RETURN"),string(yytext),yylineno);
 				}
 break			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = BREAK; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("BREAK"),string(yytext),yylineno);
 				}
 continue		{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = CONTINUE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("CONTINUE"),string(yytext),yylineno);
 				}
 and				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = AND; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					 
+					addToken(KEYWORD,string("AND"),string(yytext),yylineno); 
 				}
 not				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = NOT; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("NOT"),string(yytext),yylineno);
 				}
 or				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = OR; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("OR"),string(yytext),yylineno);
 				}
 local			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = LOCAL; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					 
+					addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno); 
 				}
 true			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = TRUE; 
-					addToken(tokenUnion,string(yytext),yylineno);
+					 
+					addToken(KEYWORD,string("TRUE"),string(yytext),yylineno);
 				}
 false			{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = FALSE; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					 
+					addToken(KEYWORD,string("FALSE"),string(yytext),yylineno); 
 				}
 nil				{ 
           			
-					token_type_union tokenUnion;
-					tokenUnion.enumerator_t = NIL; 
-					addToken(tokenUnion,string(yytext),yylineno); 
+					 
+					addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
 {ID}			{
+					addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
 				
 "="				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("ASSIGNMENT"),string(yytext),yylineno);
 				}				
 "+"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("PLUS"),string(yytext),yylineno);
 				}				
 "-"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("MINUS"),string(yytext),yylineno);
 				}
 "*"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("MULTIPLICATION"),string(yytext),yylineno);
 				}
 "/"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("DIVISION"),string(yytext),yylineno);
 				}
 "%"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("MODULO"),string(yytext),yylineno);
 				}
 "=="			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("EQUALS"),string(yytext),yylineno);
 				}
 "!="			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("NOT_EQUALS"),string(yytext),yylineno);
 				}
 "++"			{	 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("PLUS_PLUS"),string(yytext),yylineno);
 				}
 "--"			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("MINUS_MINUS"),string(yytext),yylineno);
 				}
 ">"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("GREATER"),string(yytext),yylineno);
 				}
 "<"				{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("LESS"),string(yytext),yylineno);
 				}
 ">="			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("G_EQUAL"),string(yytext),yylineno);
 				}
 "<="			{ 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+          			addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
+				}
+{integer}		{
+					addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
 				}
 
+{real}			{
+					addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
+				}
 
 {Whitespace}	;
 
-{leftBracket1}	{printf("{");}
-{rightBracket1}	{printf"}");}
-{leftBracket2}	{printf("[");}
-{rightBracket2}	{printf("]");}
-{leftBracket3}	{printf("(");}
-{rightBracket3}	{printf(")");}
-{semicolon}		{printf(";");}
-{comma}			{printf(",");}
-{colon}			{printf(":");}
-{doubleColon}	{printf(::");}
-{period}		{printf(".");}
-{doublePeriod}	{printf(..");}
+{leftBracket1}  { 
+          	addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
+        } 
+{rightBracket1}  { 
+          	addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+        } 
+{leftBracket2}  { 
+          	addToken(PUNCTUATION,string("LEFT_SQR_BRACKET"),string(yytext),yylineno);
+        } 
+{rightBracket2}  { 
+          	addToken(PUNCTUATION,string("RIGHT_SQR_BRACKET"),string(yytext),yylineno); 
+        } 
+{leftBracket3}  { 
+          	addToken(PUNCTUATION,string("LEFT_PARENTHESIS"),string(yytext),yylineno);
+        } 
+{rightBracket3}  { 
+          	addToken(PUNCTUATION,string("RIGHT_PARENTHESIS"),string(yytext),yylineno); 
+        } 
+{semicolon}    { 
+          	addToken(PUNCTUATION,string("SEMICOLON"),string(yytext),yylineno);
+        } 
+{comma}      { 
+          	addToken(PUNCTUATION,string("COMMA"),string(yytext),yylineno);
+        } 
+{colon}      { 
+          	addToken(PUNCTUATION,string("COLON"),string(yytext),yylineno);
+        } 
+{doubleColon}  { 
+        	addToken(PUNCTUATION,string("DOUBLE_COLON"),string(yytext),yylineno);
+        } 
+{period}    { 
+          	addToken(PUNCTUATION,string("PERIOD"),string(yytext),yylineno); 
+        } 
+{doublePeriod}  { 
+        	addToken(PUNCTUATION,string("DOUBLE_PERIOD"),string(yytext),yylineno);
+} 
 
-{string}		{
-				
+
+"\""		{ 	
+			char input = *yytext; /*get input*/
+  			char next;
+  			string output;
+  			int stringLine = yylineno;
+  			int isLegal = 1;
+
+  			while (input != EOF && (input = yyinput()) != '\0' ) {
+    		/*Check cases which start with '\'*/
+    			if (input == '\\') {
+      				//Lookahead
+      				next = yyinput();
+
+      				if (next == 'n') {
+        				output += '\n';
+        				continue;
+      				}else if (next == 't') {
+        				output += '\t';
+        				continue;
+        			}else if (next == '\\') {
+        				output += '\\';
+        				continue;
+      				}else if (next == '\"') {
+        				output += '\"';
+        				continue;
+        			}else{
+        				printf("Error: Illegal escape character \'%c%c\' in string at line %d\n",input,next,yylineno);
+        				isLegal = 0;
+        			}
 				}
 
-{comment1}		;
 
-"/*"			{	/*dont know if it works, needs testing*/
+				/*check if string ends legally*/
+				if(input== '\"'){
+					if(isLegal) addToken(STRING, string("STRING"), output, stringLine);	
+					break;		
+				}
+
+    			output += input; 
+  			}
+  		
+  		if (input == '\0') {
+    		printf("Error: End-of-file reached while in string: %s at line #%d\n",yytext,stringLine);
+    	}
+}
+
+
+{comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
+
+"/*"			{	
+					char c;
+			int start_line;
+			string startToEnd;
+			ostringstream convert1,convert2;
+			std :: vector <int> v;
+
+			v.push_back (yylineno);
 	
-					/*code for comments of embedded style*/
-					int c;
-					/*while( (c= input()) != EOF){
+			while(((c = yyinput()) != '\0') && (c  != EOF) )
+			{
+				if(c == '*')
+				{
+					if((c = yyinput()) == '/')
+					{
+						if(!v.empty())
+						{
+							start_line=v.back();
+							v.pop_back();
+							
+							convert1<<start_line;
+							convert2<<yylineno;
+							startToEnd=convert1.str()+"-"+convert2.str();
+							addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line); 
 
-						if(c=='*'){
-							if( (c==input()) != '/'){paizei na prepei na ginei se 2 vimata
-								break;
-							}else{
-								// unput(c);
-							}
+							
 						}
-						// unput(c);					}*/
-					printf("Comment Error: comments must end with '*/'\n");
+						if(v.empty()) break;
+						
+					}	
+					else unput(c);
+				}else if(c == '/')
+				{
+					if((c = yyinput()) == '*')
+					v.push_back(yylineno);
+					
+					else
+					unput(c);
+				}
+			}
+			
+			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
 				}
 
-.				printf("Invalid character\n");		
+.			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
 				
 %%
-<<<<<<< HEAD
 //Global token vector
-vector  <alpha_token_t>* vctr_ptr;
+vector  <alpha_token_t>* vctr_ptr; 
 //Global token number
 int token_number = 0;
-
+//Global lex object
 yyFlexLexer temp;
 
-void addToken(token_type_union token_t, string value, int line){
+int alpha_yylex(void* yylval){ 
+  vctr_ptr = (vector <alpha_token_t>*) yylval;  
+  return  temp.yylex(); 
+} 
+
+void addToken(type token_t,string token_sT, string value, int line){
 	alpha_token_t token_struct;
-=======
-
-const char* KeywordToString(keyword k)
-{
-    switch (k)
-    {
-		case IF:		return "IF";
-		case ELSE:		return "ELSE";
-        case WHILE:		return "WHILE";
-		case FOR:		return "FOR";
-		case FUNCTION:	return "FUNCTION";
-		case RETURN:	return "RETURN";
-		case BREAK:		return "BREAK";
-		case CONTINUE:	return "CONTINUE";
-		case AND:		return "AND";
-		case NOT:		return "NOT";
-		case OR:		return "OR";
-		case LOCAL:		return "LOCAL";
-		case TRUE:   	return "TRUE";
-		case FALSE:		return "FALSE";
-        case NIL:   	return "NIL";
-    }
-	return "Error in KeywordToString";
-}
-
-
-const char* OperatorToString(operators o)
-{
-    switch (o)
-    {
-		case ASSIGNMENT:	return "ASSIGNMENT";
-		case PLUS:			return "PLUS";
-        case MINUS:			return "MINUS";
-		case PRODUCT:		return "PRODUCT";
-		case DIVIDE:		return "DIVIDE";
-		case PERCENT:		return "PERCENT";
-		case EQUALS:		return "EQUALS";
-		case NOT:			return "NOT";
-		case D_PLUS:		return "D_PLUS";
-		case D_MINUS:		return "D_MINUS";
-		case GREATER:		return "GREATER";
-		case LESS:			return "LESS";
-		case G_EQUAL:   	return "G_EQUAL";
-		case L_EQUAL:		return "L_EQUAL";
-        
-    }
-	return "Error in OperatorToString";
-}
-
-
-int addToken(char* value, int value_lenght, char* type){
-	alpha_token_t* node = malloc (sizeof(alpha_token_t));
->>>>>>> eriona
 	
-	token_number++;
+	token_number++; 
 
 	token_struct.number_of_token = token_number; 		//save token number
 	token_struct.line_number = line;	  				//save line number
-	token_struct.token_type = token_t;					//save union of token type
+	token_struct.token_type = token_t;					//save token type as string
+	token_struct.str_subType = token_sT;				//save token subtype as string
 	token_struct.token_value = value;					//save value of token as string
 
+	switch(token_t){
+		case KEYWORD: 		
+		case OPERATOR: 		
+		case PUNCTUATION: 	 
+		case COMMENT: 
+			token_struct.arrow_type = "<--enumerated";
+			break;
+		case IDENTIFIER: 	
+		case STRING:
+			token_struct.arrow_type = "<--char*";
+			break;
+		case INT_CONST: 	
+			token_struct.arrow_type = "<--int";
+			break;
+		case REAL_CONST: 	
+			token_struct.arrow_type ="<--floating point";
+		 	break;
+		default:	
+			token_struct.arrow_type = "<--_UKNOWN_TYPE_";
+	}
 	//add token struct to global vector 
-	vctr_ptr->push_back(token_struct); 
-}
-
-int alpha_yylex(void* yylval){
-	vctr_ptr = (vector <alpha_token_t>*) yylval;
-	return  temp.yylex();
+	vctr_ptr->push_back(token_struct);  
 }
 
 
-int main (){
-	vector <alpha_token_t> token_vector;
-	alpha_yylex( &token_vector);
+string typeToString(type t){
+	switch(t){
+		case KEYWORD: 		return "KEYWORD";
+		case IDENTIFIER: 	return "IDENTIFIER";
+		case INT_CONST: 	return "INT_CONST";
+		case REAL_CONST: 	return "REAL_CONST";
+		case STRING: 		return "STRING";
+		case OPERATOR: 		return "OPERATOR";
+		case PUNCTUATION: 	return "PUNCTUATION";
+		case COMMENT: 		return "COMMENT";
+		default:			return "_UKNOWN_TYPE_";
+	}
+}
 
-	for(alpha_token_t token :token_vector){
-		//print token info 
-		cout << token.number_of_token <<": #" << token.line_number <<"\t\""<<token.token_value <<"\"\t  placeholder token type\n" <<endl;
+int main (int argc, char *argv[]){
+	vector <alpha_token_t> token_vector; 
+
+	if (argc < 2 || argc > 3) {
+		printf("Invalid parameter\nUsage: <program> <path to input file> <optional "
+           "path to output file>\n");
+		exit(1);
+	}
+	
+	
+	std::filebuf fb_in;
+	std::filebuf fb_out;
+	if (fb_in.open (argv[1],std::ios::in)){
+		std::istream is(&fb_in);
+	
+	
+		if (argc == 3) {
+	
+			fb_out.open (argv[2],std::ios::out);
+			std::ostream os(&fb_out);
+			temp.switch_streams(&is,&os);
+
+			alpha_yylex( &token_vector);
+  
+  
+			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
+			//print token info 
+				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
+				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+			}
+		}else{
+			std::ostream os(NULL);
+			os.rdbuf(std::cout.rdbuf());
+			temp.switch_streams(&is,&os);
+			
+			alpha_yylex( &token_vector);
+  
+  
+			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
+			//print token info 
+				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
+				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+			}
+		}
+	
+
+	}else{
+		cout <<"Error opening file: " << string(argv[1]) <<endl;
+		exit(-1);
+	
 	}
 
   	return 0;
