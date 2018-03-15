@@ -271,7 +271,8 @@ nil				{
 							convert2<<yylineno;
 							startToEnd=convert1.str()+"-"+convert2.str();
 							addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line); 
-
+							convert1.str(std::string());
+							convert2.str(std::string());
 							
 						}
 						if(v.empty()) break;
@@ -286,6 +287,8 @@ nil				{
 					else
 					unput(c);
 				}
+				
+				
 			}
 			
 			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
