@@ -1,21 +1,16 @@
 %{
 	
-#include <stdio.h>
 #include "scanner.h"
+#include <iomanip>
+using namespace std;
 
-#define YY_DECL int alpha_yylext(void* yyval);
-alpha_token_t* List = NULL;	
-
-int node_count = 0;
-
-enum keyword {IF, ELSE, WHILE, FOR, FUNCTION, RETURN, BREAK, CONTINUE, AND, NOT, OR, LOCAL, TRUE, FALSE, NIL}; 
- 
-enum operators {ASSIGNMENT, PLUS, MINUS, PRODUCT, DIVIDE, PERCENT, EQUALS, NOT, D_PLUS, D_MINUS, GREATER, LESS, G_EQUAL, L_EQUAL} 
-
+	
 %}
-
 %option yylineno
 %option noyywrap
+
+integer [0-9]+
+real	[0-9]+"."[0-9]+
 
 /*Punctuation*/
 leftBracket1	\{
@@ -27,14 +22,11 @@ rightBracket3	\)
 semicolon		\;
 comma			\,
 colon			\:
-doubleColon		[:]{2}
+doubleColon	[:]{2}
 period			\.
-doublePeriod	[.]{2}
+doublePeriod[.]{2}
 
-string			\"[^\n"]*\" 
 comment1		\/{2}.*
-comment2		(\/\*)+(\*\/)+ /*not sure about this yet, that propably is not needed here*/
-
 
 ID				[a-zA-Z][a-zA-Z0-9_]*
 Whitespace 		[ \t\n]
@@ -42,226 +34,379 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					addToken(yytext, yyleng, "KEYWORD IF"); 
+					addToken(KEYWORD,string("IF"),string(yytext),yylineno); 
 				}
-else 			{
-					addToken(yytext, keyword, ELSE); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+else 			{ 
+					 
+					addToken(KEYWORD,string("ELSE"),string(yytext),yylineno);
 				}
-while			{
-					addToken(yytext, keyword, WHILE); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+while			{ 
+					 
+					addToken(KEYWORD,string("WHILE"),string(yytext),yylineno);
 				}
-for				{
-					addToken(yytext, keyword, FOR); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+for				{ 
+          			
+					 
+					addToken(KEYWORD,string("FOR"),string(yytext),yylineno);
 				}
-function		{
-					addToken(yytext, keyword, FUNCTION); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+function		{ 
+          			
+					 
+					addToken(KEYWORD,string("FUNCTION"),string(yytext),yylineno);
 				}
-return			{
-					addToken(yytext, keyword, RETURN); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+return			{ 
+          			
+					 
+					addToken(KEYWORD,string("RETURN"),string(yytext),yylineno);
 				}
-break			{
-					addToken(yytext, keyword, BREAK); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+break			{ 
+          			
+					 
+					addToken(KEYWORD,string("BREAK"),string(yytext),yylineno);
 				}
-continue		{
-					addToken(yytext, keyword, CONTINUE); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+continue		{ 
+          			
+					 
+					addToken(KEYWORD,string("CONTINUE"),string(yytext),yylineno);
 				}
-and				{
-					addToken(yytext, keyword, AND); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+and				{ 
+          			
+					 
+					addToken(KEYWORD,string("AND"),string(yytext),yylineno); 
 				}
-not				{
-					addToken(yytext, keyword, NOT); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+not				{ 
+          			
+					 
+					addToken(KEYWORD,string("NOT"),string(yytext),yylineno);
 				}
-or				{
-					addToken(yytext, keyword, OR); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+or				{ 
+          			
+					 
+					addToken(KEYWORD,string("OR"),string(yytext),yylineno);
 				}
-local			{
-					addToken(yytext, keyword, LOCAL); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+local			{ 
+          			
+					 
+					addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno); 
 				}
-true			{
-					addToken(yytext, keyword, TRUE); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext);
+true			{ 
+          			
+					 
+					addToken(KEYWORD,string("TRUE"),string(yytext),yylineno);
 				}
-false			{
-					addToken(yytext, keyword, FALSE); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+false			{ 
+          			
+					 
+					addToken(KEYWORD,string("FALSE"),string(yytext),yylineno); 
 				}
-nil				{
-					addToken(yytext, keyword, FALSE); 
-          			fprintf(stderr,"Keyword value: %s\n", yytext); 
+nil				{ 
+          			
+					 
+					addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
 {ID}			{
-					
+					addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
 				
-"="				{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"="				{ 
+          			addToken(OPERATOR,string("ASSIGNMENT"),string(yytext),yylineno);
 				}				
-"+"				{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"+"				{ 
+          			addToken(OPERATOR,string("PLUS"),string(yytext),yylineno);
 				}				
-"-"				{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"-"				{ 
+          			addToken(OPERATOR,string("MINUS"),string(yytext),yylineno);
 				}
-"*"				{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"*"				{ 
+          			addToken(OPERATOR,string("MULTIPLICATION"),string(yytext),yylineno);
 				}
-"/"				{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"/"				{ 
+          			addToken(OPERATOR,string("DIVISION"),string(yytext),yylineno);
 				}
-"%"				{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"%"				{ 
+          			addToken(OPERATOR,string("MODULO"),string(yytext),yylineno);
 				}
-"=="			{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"=="			{ 
+          			addToken(OPERATOR,string("EQUALS"),string(yytext),yylineno);
 				}
-"!="			{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"!="			{ 
+          			addToken(OPERATOR,string("NOT_EQUALS"),string(yytext),yylineno);
 				}
-"++"			{	
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"++"			{	 
+          			addToken(OPERATOR,string("PLUS_PLUS"),string(yytext),yylineno);
 				}
-"--"			{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"--"			{ 
+          			addToken(OPERATOR,string("MINUS_MINUS"),string(yytext),yylineno);
 				}
-">"				{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+">"				{ 
+          			addToken(OPERATOR,string("GREATER"),string(yytext),yylineno);
 				}
-"<"				{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"<"				{ 
+          			addToken(OPERATOR,string("LESS"),string(yytext),yylineno);
 				}
-">="			{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+">="			{ 
+          			addToken(OPERATOR,string("G_EQUAL"),string(yytext),yylineno);
 				}
-"<="			{
-					addToken(yytext, operators, ASSIGNMENT); 
-          			fprintf(stderr,"Operator value: %s\n", yytext);
+"<="			{ 
+          			addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
+				}
+{integer}		{
+					addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
 				}
 
+{real}			{
+					addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
+				}
 
 {Whitespace}	;
 
-{leftBracket1}	{printf("{");}
-{rightBracket1}	{printf("}");}
-{leftBracket2}	{printf("[");}
-{rightBracket2}	{printf("]");}
-{leftBracket3}	{printf("(");}
-{rightBracket3}	{printf(")");}
-{semicolon}		{printf(";");}
-{comma}			{printf(",");}
-{colon}			{printf(":");}
-{doubleColon}	{printf("::");}
-{period}		{printf(".");}
-{doublePeriod}	{printf("..");}
+{leftBracket1}  { 
+          	addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
+        } 
+{rightBracket1}  { 
+          	addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+        } 
+{leftBracket2}  { 
+          	addToken(PUNCTUATION,string("LEFT_SQR_BRACKET"),string(yytext),yylineno);
+        } 
+{rightBracket2}  { 
+          	addToken(PUNCTUATION,string("RIGHT_SQR_BRACKET"),string(yytext),yylineno); 
+        } 
+{leftBracket3}  { 
+          	addToken(PUNCTUATION,string("LEFT_PARENTHESIS"),string(yytext),yylineno);
+        } 
+{rightBracket3}  { 
+          	addToken(PUNCTUATION,string("RIGHT_PARENTHESIS"),string(yytext),yylineno); 
+        } 
+{semicolon}    { 
+          	addToken(PUNCTUATION,string("SEMICOLON"),string(yytext),yylineno);
+        } 
+{comma}      { 
+          	addToken(PUNCTUATION,string("COMMA"),string(yytext),yylineno);
+        } 
+{colon}      { 
+          	addToken(PUNCTUATION,string("COLON"),string(yytext),yylineno);
+        } 
+{doubleColon}  { 
+        	addToken(PUNCTUATION,string("DOUBLE_COLON"),string(yytext),yylineno);
+        } 
+{period}    { 
+          	addToken(PUNCTUATION,string("PERIOD"),string(yytext),yylineno); 
+        } 
+{doublePeriod}  { 
+        	addToken(PUNCTUATION,string("DOUBLE_PERIOD"),string(yytext),yylineno);
+} 
 
-{string}		{/*needs smthing propaply*/}
 
-{comment1}		{}/*etsi to xei stis diafanies etsi to kano :P*/
+"\""		{ 	
+			char input = *yytext; /*get input*/
+  			char next;
+  			string output;
+  			int stringLine = yylineno;
+  			int isLegal = 1;
 
-"/*"			{	/*dont know if it works, needs testing*/
-	
-					/*code for comments of embedded style*/
-					int c;
-					while( (c= input()) != EOF){
+  			while (input != EOF && (input = yyinput()) != '\0' ) {
+    		/*Check cases which start with '\'*/
+    			if (input == '\\') {
+      				//Lookahead
+      				next = yyinput();
 
-						if(c=='*'){
-							if( (c==input()) != '/'){
-								break;
-							}else{
-								unput(c);
-							}
-						}
-						unput(c);
-					}
-					printf("Comment Error: comments must end with '*/'\n");
+      				if (next == 'n') {
+        				output += '\n';
+        				continue;
+      				}else if (next == 't') {
+        				output += '\t';
+        				continue;
+        			}else if (next == '\\') {
+        				output += '\\';
+        				continue;
+      				}else if (next == '\"') {
+        				output += '\"';
+        				continue;
+        			}else{
+        				printf("Error: Illegal escape character \'%c%c\' in string at line %d\n",input,next,yylineno);
+        				isLegal = 0;
+        			}
 				}
 
-.				printf("Invalid character\n");		
+
+				/*check if string ends legally*/
+				if(input== '\"'){
+					if(isLegal) addToken(STRING, string("STRING"), output, stringLine);	
+					break;		
+				}
+
+    			output += input; 
+  			}
+  		
+  		if (input == '\0') {
+    		printf("Error: End-of-file reached while in string: %s at line #%d\n",yytext,stringLine);
+    	}
+}
+
+
+{comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
+
+"/*"			{	
+					char c;
+			int start_line;
+			string startToEnd;
+			ostringstream convert1,convert2;
+			std :: vector <int> v;
+
+			v.push_back (yylineno);
+	
+			while(((c = yyinput()) != '\0') && (c  != EOF) )
+			{
+				if(c == '*')
+				{
+					if((c = yyinput()) == '/')
+					{
+						if(!v.empty())
+						{
+							start_line=v.back();
+							v.pop_back();
+							
+							convert1<<start_line;
+							convert2<<yylineno;
+							startToEnd=convert1.str()+"-"+convert2.str();
+							addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line); 
+
+							
+						}
+						if(v.empty()) break;
+						
+					}	
+					else unput(c);
+				}else if(c == '/')
+				{
+					if((c = yyinput()) == '*')
+					v.push_back(yylineno);
+					
+					else
+					unput(c);
+				}
+			}
+			
+			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
+				}
+
+.			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
 				
 %%
+//Global token vector
+vector  <alpha_token_t>* vctr_ptr; 
+//Global token number
+int token_number = 0;
+//Global lex object
+yyFlexLexer temp;
 
-const char* KeywordToString(keyword k)
-{
-    switch (k)
-    {
-		case IF:		return "IF";
-		case ELSE:		return "ELSE";
-        case WHILE:		return "WHILE";
-		case FOR:		return "FOR";
-		case FUNCTION:	return "FUNCTION";
-		case RETURN:	return "RETURN";
-		case BREAK:		return "BREAK";
-		case CONTINUE:	return "CONTINUE";
-		case AND:		return "AND";
-		case NOT:		return "NOT";
-		case OR:		return "OR";
-		case LOCAL:		return "LOCAL";
-		case TRUE:   	return "TRUE";
-		case FALSE:		return "FALSE";
-        case NIL:   	return "NIL";
-    }
-	return "Error in KeywordToString";
-}
+int alpha_yylex(void* yylval){ 
+  vctr_ptr = (vector <alpha_token_t>*) yylval;  
+  return  temp.yylex(); 
+} 
 
-
-const char* OperatorToString(operators o)
-{
-    switch (o)
-    {
-		case ASSIGNMENT:	return "ASSIGNMENT";
-		case PLUS:			return "PLUS";
-        case MINUS:			return "MINUS";
-		case PRODUCT:		return "PRODUCT";
-		case DIVIDE:		return "DIVIDE";
-		case PERCENT:		return "PERCENT";
-		case EQUALS:		return "EQUALS";
-		case NOT:			return "NOT";
-		case D_PLUS:		return "D_PLUS";
-		case D_MINUS:		return "D_MINUS";
-		case GREATER:		return "GREATER";
-		case LESS:			return "LESS";
-		case G_EQUAL:   	return "G_EQUAL";
-		case L_EQUAL:		return "L_EQUAL";
-        
-    }
-	return "Error in OperatorToString";
-}
-
-
-int addToken(char* value, int value_lenght, char* type){
-	alpha_token_t* node = malloc (sizeof(alpha_token_t));
+void addToken(type token_t,string token_sT, string value, int line){
+	alpha_token_t token_struct;
 	
-	node.token_no = ++node_count;
-	node.line_no = yylineno;
-	/*TODO add type */
-	/*TODO add value*/
+	token_number++; 
+
+	token_struct.number_of_token = token_number; 		//save token number
+	token_struct.line_number = line;	  				//save line number
+	token_struct.token_type = token_t;					//save token type as string
+	token_struct.str_subType = token_sT;				//save token subtype as string
+	token_struct.token_value = value;					//save value of token as string
+
+	switch(token_t){
+		case KEYWORD: 		
+		case OPERATOR: 		
+		case PUNCTUATION: 	 
+		case COMMENT: 
+			token_struct.arrow_type = "<--enumerated";
+			break;
+		case IDENTIFIER: 	
+		case STRING:
+			token_struct.arrow_type = "<--char*";
+			break;
+		case INT_CONST: 	
+			token_struct.arrow_type = "<--int";
+			break;
+		case REAL_CONST: 	
+			token_struct.arrow_type ="<--floating point";
+		 	break;
+		default:	
+			token_struct.arrow_type = "<--_UKNOWN_TYPE_";
+	}
+	//add token struct to global vector 
+	vctr_ptr->push_back(token_struct);  
 }
 
 
+string typeToString(type t){
+	switch(t){
+		case KEYWORD: 		return "KEYWORD";
+		case IDENTIFIER: 	return "IDENTIFIER";
+		case INT_CONST: 	return "INT_CONST";
+		case REAL_CONST: 	return "REAL_CONST";
+		case STRING: 		return "STRING";
+		case OPERATOR: 		return "OPERATOR";
+		case PUNCTUATION: 	return "PUNCTUATION";
+		case COMMENT: 		return "COMMENT";
+		default:			return "_UKNOWN_TYPE_";
+	}
+}
 
-int yywrap(){
-	return 1;
+int main (int argc, char *argv[]){
+	vector <alpha_token_t> token_vector; 
+
+	if (argc < 2 || argc > 3) {
+		printf("Invalid parameter\nUsage: <program> <path to input file> <optional "
+           "path to output file>\n");
+		exit(1);
+	}
+	
+	
+	std::filebuf fb_in;
+	std::filebuf fb_out;
+	if (fb_in.open (argv[1],std::ios::in)){
+		std::istream is(&fb_in);
+	
+	
+		if (argc == 3) {
+	
+			fb_out.open (argv[2],std::ios::out);
+			std::ostream os(&fb_out);
+			temp.switch_streams(&is,&os);
+
+			alpha_yylex( &token_vector);
+  
+  
+			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
+			//print token info 
+				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
+				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+			}
+		}else{
+			std::ostream os(NULL);
+			os.rdbuf(std::cout.rdbuf());
+			temp.switch_streams(&is,&os);
+			
+			alpha_yylex( &token_vector);
+  
+  
+			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
+			//print token info 
+				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
+				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+			}
+		}
+	
+
+	}else{
+		cout <<"Error opening file: " << string(argv[1]) <<endl;
+		exit(-1);
+	
+	}
+
+  	return 0;
 }
