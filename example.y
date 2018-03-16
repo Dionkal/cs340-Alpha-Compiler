@@ -13,8 +13,8 @@ extern FILE* yyin;
 }/*this is needed for lex actions*/
 
 %}
+%name parser_name
 
-/*diloseis yacc*/
 %start 			program
 
 %token <stringValue> ID
