@@ -192,29 +192,27 @@ typedef
 #define	AND	261
 #define	OR	262
 #define	NOT	263
-#define	GREATER	264
-#define	GREATEREQUAL	265
-#define	LESS	266
-#define	LESSEQUAL	267
-#define	EQUAL	268
-#define	NOTEQUAL	269
-#define	UMINUS	270
-#define	PLUSPLUS	271
-#define	MINUSMINUS	272
-#define	LOCAL	273
-#define	SCOPEOP	274
-#define	DOUPLEDOT	275
-#define	FUNCTION	276
-#define	NUMBER	277
-#define	STRING	278
-#define	NIL	279
-#define	TRUE	280
-#define	FALSE	281
-#define	IF	282
-#define	ELSE	283
-#define	WHILE	284
-#define	FOR	285
-#define	RETURN	286
+#define	GREATEREQUAL	264
+#define	LESSEQUAL	265
+#define	EQUAL	266
+#define	NOTEQUAL	267
+#define	UMINUS	268
+#define	PLUSPLUS	269
+#define	MINUSMINUS	270
+#define	LOCAL	271
+#define	SCOPEOP	272
+#define	DOUPLEDOT	273
+#define	FUNCTION	274
+#define	NUMBER	275
+#define	STRING	276
+#define	NIL	277
+#define	TRUE	278
+#define	FALSE	279
+#define	IF	280
+#define	ELSE	281
+#define	WHILE	282
+#define	FOR	283
+#define	RETURN	284
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -269,9 +267,7 @@ static const int CONTINUE;
 static const int AND;
 static const int OR;
 static const int NOT;
-static const int GREATER;
 static const int GREATEREQUAL;
-static const int LESS;
 static const int LESSEQUAL;
 static const int EQUAL;
 static const int NOTEQUAL;
@@ -306,29 +302,27 @@ static const int RETURN;
 	,AND=261
 	,OR=262
 	,NOT=263
-	,GREATER=264
-	,GREATEREQUAL=265
-	,LESS=266
-	,LESSEQUAL=267
-	,EQUAL=268
-	,NOTEQUAL=269
-	,UMINUS=270
-	,PLUSPLUS=271
-	,MINUSMINUS=272
-	,LOCAL=273
-	,SCOPEOP=274
-	,DOUPLEDOT=275
-	,FUNCTION=276
-	,NUMBER=277
-	,STRING=278
-	,NIL=279
-	,TRUE=280
-	,FALSE=281
-	,IF=282
-	,ELSE=283
-	,WHILE=284
-	,FOR=285
-	,RETURN=286
+	,GREATEREQUAL=264
+	,LESSEQUAL=265
+	,EQUAL=266
+	,NOTEQUAL=267
+	,UMINUS=268
+	,PLUSPLUS=269
+	,MINUSMINUS=270
+	,LOCAL=271
+	,SCOPEOP=272
+	,DOUPLEDOT=273
+	,FUNCTION=274
+	,NUMBER=275
+	,STRING=276
+	,NIL=277
+	,TRUE=278
+	,FALSE=279
+	,IF=280
+	,ELSE=281
+	,WHILE=282
+	,FOR=283
+	,RETURN=284
 
 
 #line 215 "/usr/share/bison++/bison.h"
