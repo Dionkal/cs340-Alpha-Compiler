@@ -9,6 +9,8 @@
 	extern FILE* yyin;
 
 %}
+%name parser_name
+
 %start 	program
 %token  ID BREAK CONTINUE AND OR NOT GREATER GREATEREQUAL LESS LESSEQUAL EQUAL NOTEQUAL UMINUS PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NUMBER STRING NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
@@ -71,6 +73,18 @@ primary:	lvalue
 			|objectdef
 			|'(' funcdef ')'
 			|const
+			;
+
+lvalue: 	ID
+			|LOCAL ID
+			|SCOPEOP ID
+			|member
+			;
+
+member:		lvalue '.' ID
+			|lvalue '[' expr ']'
+			|call '.' ID
+			call '[' expr ']'
 			;
 
 call: 		call '(' elist ')'
@@ -145,7 +159,7 @@ whilestmt:	WHILE '(' expr ')' stmt ;
 
 forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt ;
 
-returnstmt	RETURN returnstmt1;
+returnstmt:	RETURN returnstmt1;
 
 returnstmt1:/*empty*/
 			|expr

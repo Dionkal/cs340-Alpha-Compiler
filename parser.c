@@ -1,7 +1,7 @@
-#define YY_parse_h_included
+#define YY_parser_name_h_included
 /*#define YY_USE_CLASS 
 */
-/*  A Bison++ parser, made from example.y  */
+/*  A Bison++ parser, made from syntax.y  */
 
  /* with Bison++ version bison++ Version 1.21.9-1, adapted from GNU bison by coetmeur@icdc.fr
 Maintained by Magnus Ekdahl <magnus@debian.org>
@@ -98,100 +98,102 @@ Maintained by Magnus Ekdahl <magnus@debian.org>
 #define YYBISON 1  
 
  #line 88 "/usr/share/bison++/bison.cc"
-#line 1 "example.y"
+#line 1 "syntax.y"
 
-#include <stdio.h>
-int yyerror (char *yaccProvidedMessage);
-int yylex(void);
+	#include <stdlib.h>
+	#include <stdio.h>
+	int yyerror (char *yaccProvidedMessage);
+	int yylex(void);
 
-extern int yylineno;
-extern char* yytext;
-extern FILE* yyin;
-
-%union{/*den ksero p prepei na mpei auto*/
-	char *stringValue;
-	int intValue;
-}/*this is needed for lex actions*/
+	extern int yylineno;
+	extern char* yytext;
+	extern FILE* yyin;
 
 
 #line 88 "/usr/share/bison++/bison.cc"
 /* %{ and %header{ and %union, during decl */
-#define YY_parse_BISON 1
+#define YY_parser_name_BISON 1
 
-#ifndef YY_parse_COMPATIBILITY
+#ifndef YY_parser_name_COMPATIBILITY
  #ifndef YY_USE_CLASS
-  #define  YY_parse_COMPATIBILITY 1
+  #define  YY_parser_name_COMPATIBILITY 1
  #else
-  #define  YY_parse_COMPATIBILITY 0
+  #define  YY_parser_name_COMPATIBILITY 0
  #endif
 #endif
 
-#if YY_parse_COMPATIBILITY != 0
+#if YY_parser_name_COMPATIBILITY != 0
  /* backward compatibility */
  #ifdef YYLTYPE
-  #ifndef YY_parse_LTYPE
-   #define YY_parse_LTYPE YYLTYPE
+  #ifndef YY_parser_name_LTYPE
+   #define YY_parser_name_LTYPE YYLTYPE
   #endif
  #endif
 /* Testing alternative bison solution
    /#ifdef YYSTYPE*/
-#ifndef YY_parse_STYPE 
-   #define YY_parse_STYPE YYSTYPE
+#ifndef YY_parser_name_STYPE 
+   #define YY_parser_name_STYPE YYSTYPE
 #endif
 /*#endif*/
  #ifdef YYDEBUG
-  #ifndef YY_parse_DEBUG
-   #define  YY_parse_DEBUG YYDEBUG
+  #ifndef YY_parser_name_DEBUG
+   #define  YY_parser_name_DEBUG YYDEBUG
   #endif
  #endif
  
  /* use goto to be compatible */
- #ifndef YY_parse_USE_GOTO
-  #define YY_parse_USE_GOTO 1
+ #ifndef YY_parser_name_USE_GOTO
+  #define YY_parser_name_USE_GOTO 1
  #endif
 #endif
 
 /* use no goto to be clean in C++ */
-#ifndef YY_parse_USE_GOTO
- #define YY_parse_USE_GOTO 0
+#ifndef YY_parser_name_USE_GOTO
+ #define YY_parser_name_USE_GOTO 0
 #endif
 
-#ifndef YY_parse_PURE
+#ifndef YY_parser_name_PURE
 
  #line 130 "/usr/share/bison++/bison.cc"
 
 #line 130 "/usr/share/bison++/bison.cc"
-/*  YY_parse_PURE */
+/*  YY_parser_name_PURE */
 #endif
 
 /* section apres lecture def, avant lecture grammaire S2 */
 
  #line 134 "/usr/share/bison++/bison.cc"
+#ifndef YY_USE_CLASS
+# ifndef YYSTYPE
+#  define YYSTYPE int
+#  define YYSTYPE_IS_TRIVIAL 1
+# endif
+#endif
 
 #line 134 "/usr/share/bison++/bison.cc"
 /* prefix */
-#ifndef YY_parse_DEBUG
+#ifndef YY_parser_name_DEBUG
 
  #line 136 "/usr/share/bison++/bison.cc"
 
 #line 136 "/usr/share/bison++/bison.cc"
-/* YY_parse_DEBUG */
+/* YY_parser_name_DEBUG */
 #endif
 
 
-#ifndef YY_parse_LSP_NEEDED
+#ifndef YY_parser_name_LSP_NEEDED
 
  #line 141 "/usr/share/bison++/bison.cc"
 
 #line 141 "/usr/share/bison++/bison.cc"
- /* YY_parse_LSP_NEEDED*/
+ /* YY_parser_name_LSP_NEEDED*/
 #endif
 
 
 
 /* DEFAULT LTYPE*/
-#ifdef YY_parse_LSP_NEEDED
-#ifndef YY_parse_LTYPE
+#ifdef YY_parser_name_LSP_NEEDED
+#ifndef YY_parser_name_LTYPE
 #ifndef BISON_YYLTYPE_ISDECLARED
 #define BISON_YYLTYPE_ISDECLARED
 typedef
@@ -207,65 +209,65 @@ typedef
   yyltype;
 
 #endif
-#define YY_parse_LTYPE yyltype
+#define YY_parser_name_LTYPE yyltype
 #endif
 #endif
 /* DEFAULT STYPE*/
-      /* We used to use `unsigned long' as YY_parse_STYPE on MSDOS,
+      /* We used to use `unsigned long' as YY_parser_name_STYPE on MSDOS,
 	 but it seems better to be consistent.
 	 Most programs should declare their own type anyway.  */
 
-#ifndef YY_parse_STYPE
-#define YY_parse_STYPE int
+#ifndef YY_parser_name_STYPE
+#define YY_parser_name_STYPE int
 #endif
 /* DEFAULT MISCELANEOUS */
-#ifndef YY_parse_PARSE
-#define YY_parse_PARSE yyparse
+#ifndef YY_parser_name_PARSE
+#define YY_parser_name_PARSE yyparse
 #endif
-#ifndef YY_parse_LEX
-#define YY_parse_LEX yylex
+#ifndef YY_parser_name_LEX
+#define YY_parser_name_LEX yylex
 #endif
-#ifndef YY_parse_LVAL
-#define YY_parse_LVAL yylval
+#ifndef YY_parser_name_LVAL
+#define YY_parser_name_LVAL yylval
 #endif
-#ifndef YY_parse_LLOC
-#define YY_parse_LLOC yylloc
+#ifndef YY_parser_name_LLOC
+#define YY_parser_name_LLOC yylloc
 #endif
-#ifndef YY_parse_CHAR
-#define YY_parse_CHAR yychar
+#ifndef YY_parser_name_CHAR
+#define YY_parser_name_CHAR yychar
 #endif
-#ifndef YY_parse_NERRS
-#define YY_parse_NERRS yynerrs
+#ifndef YY_parser_name_NERRS
+#define YY_parser_name_NERRS yynerrs
 #endif
-#ifndef YY_parse_DEBUG_FLAG
-#define YY_parse_DEBUG_FLAG yydebug
+#ifndef YY_parser_name_DEBUG_FLAG
+#define YY_parser_name_DEBUG_FLAG yydebug
 #endif
-#ifndef YY_parse_ERROR
-#define YY_parse_ERROR yyerror
+#ifndef YY_parser_name_ERROR
+#define YY_parser_name_ERROR yyerror
 #endif
 
-#ifndef YY_parse_PARSE_PARAM
+#ifndef YY_parser_name_PARSE_PARAM
  #ifndef YY_USE_CLASS
   #ifdef YYPARSE_PARAM
-   #define YY_parse_PARSE_PARAM void* YYPARSE_PARAM 
+   #define YY_parser_name_PARSE_PARAM void* YYPARSE_PARAM 
   #else
    #ifndef __STDC__
     #ifndef __cplusplus
-     #define YY_parse_PARSE_PARAM
+     #define YY_parser_name_PARSE_PARAM
     #endif
    #endif
   #endif
  #endif
- #ifndef YY_parse_PARSE_PARAM
-  #define YY_parse_PARSE_PARAM void
+ #ifndef YY_parser_name_PARSE_PARAM
+  #define YY_parser_name_PARSE_PARAM void
  #endif
 #endif
 
-#if YY_parse_COMPATIBILITY != 0
+#if YY_parser_name_COMPATIBILITY != 0
 /* backward compatibility */
-#ifdef YY_parse_LTYPE
+#ifdef YY_parser_name_LTYPE
 #ifndef YYLTYPE
-#define YYLTYPE YY_parse_LTYPE
+#define YYLTYPE YY_parser_name_LTYPE
 #else
 /* WARNING obsolete !!! user defined YYLTYPE not reported into generated header */
 #endif
@@ -273,32 +275,32 @@ typedef
 
 /* Removed due to bison compabilityproblems
 /#ifndef YYSTYPE
-/#define YYSTYPE YY_parse_STYPE
+/#define YYSTYPE YY_parser_name_STYPE
 /#else*/
 /* WARNING obsolete !!! user defined YYSTYPE not reported into generated header */
 /*#endif*/
 
-#ifdef YY_parse_PURE
+#ifdef YY_parser_name_PURE
 #  ifndef YYPURE
-#    define YYPURE YY_parse_PURE
+#    define YYPURE YY_parser_name_PURE
 #  endif
 #endif
 
-#ifdef YY_parse_DEBUG
+#ifdef YY_parser_name_DEBUG
 #  ifndef YYDEBUG
-#    define YYDEBUG YY_parse_DEBUG 
+#    define YYDEBUG YY_parser_name_DEBUG 
 #  endif
 #endif
 
-#ifndef YY_parse_ERROR_VERBOSE
+#ifndef YY_parser_name_ERROR_VERBOSE
  #ifdef YYERROR_VERBOSE
-  #define YY_parse_ERROR_VERBOSE YYERROR_VERBOSE
+  #define YY_parser_name_ERROR_VERBOSE YYERROR_VERBOSE
  #endif
 #endif
 
-#ifndef YY_parse_LSP_NEEDED
+#ifndef YY_parser_name_LSP_NEEDED
 #  ifdef YYLSP_NEEDED
-#    define YY_parse_LSP_NEEDED YYLSP_NEEDED
+#    define YY_parser_name_LSP_NEEDED YYLSP_NEEDED
 #  endif
 #endif
 
@@ -309,71 +311,149 @@ typedef
 
  #line 263 "/usr/share/bison++/bison.cc"
 #define	ID	258
-#define	INTEGER	259
-#define	UNIMUS	260
+#define	BREAK	259
+#define	CONTINUE	260
+#define	AND	261
+#define	OR	262
+#define	NOT	263
+#define	GREATER	264
+#define	GREATEREQUAL	265
+#define	LESS	266
+#define	LESSEQUAL	267
+#define	EQUAL	268
+#define	NOTEQUAL	269
+#define	UMINUS	270
+#define	PLUSPLUS	271
+#define	MINUSMINUS	272
+#define	LOCAL	273
+#define	SCOPEOP	274
+#define	DOUPLEDOT	275
+#define	FUNCTION	276
+#define	NUMBER	277
+#define	STRING	278
+#define	NIL	279
+#define	TRUE	280
+#define	FALSE	281
+#define	IF	282
+#define	ELSE	283
+#define	WHILE	284
+#define	FOR	285
+#define	RETURN	286
 
 
 #line 263 "/usr/share/bison++/bison.cc"
  /* #defines tokens */
 #else
 /* CLASS */
-#ifndef YY_parse_CLASS
-#define YY_parse_CLASS parse
+#ifndef YY_parser_name_CLASS
+#define YY_parser_name_CLASS parser_name
 #endif
-#ifndef YY_parse_INHERIT
-#define YY_parse_INHERIT
+#ifndef YY_parser_name_INHERIT
+#define YY_parser_name_INHERIT
 #endif
-#ifndef YY_parse_MEMBERS
-#define YY_parse_MEMBERS 
+#ifndef YY_parser_name_MEMBERS
+#define YY_parser_name_MEMBERS 
 #endif
-#ifndef YY_parse_LEX_BODY
-#define YY_parse_LEX_BODY  
+#ifndef YY_parser_name_LEX_BODY
+#define YY_parser_name_LEX_BODY  
 #endif
-#ifndef YY_parse_ERROR_BODY
-#define YY_parse_ERROR_BODY  
+#ifndef YY_parser_name_ERROR_BODY
+#define YY_parser_name_ERROR_BODY  
 #endif
-#ifndef YY_parse_CONSTRUCTOR_PARAM
-#define YY_parse_CONSTRUCTOR_PARAM
+#ifndef YY_parser_name_CONSTRUCTOR_PARAM
+#define YY_parser_name_CONSTRUCTOR_PARAM
 #endif
-#ifndef YY_parse_CONSTRUCTOR_CODE
-#define YY_parse_CONSTRUCTOR_CODE
+#ifndef YY_parser_name_CONSTRUCTOR_CODE
+#define YY_parser_name_CONSTRUCTOR_CODE
 #endif
-#ifndef YY_parse_CONSTRUCTOR_INIT
-#define YY_parse_CONSTRUCTOR_INIT
+#ifndef YY_parser_name_CONSTRUCTOR_INIT
+#define YY_parser_name_CONSTRUCTOR_INIT
 #endif
 /* choose between enum and const */
-#ifndef YY_parse_USE_CONST_TOKEN
-#define YY_parse_USE_CONST_TOKEN 0
+#ifndef YY_parser_name_USE_CONST_TOKEN
+#define YY_parser_name_USE_CONST_TOKEN 0
 /* yes enum is more compatible with flex,  */
 /* so by default we use it */ 
 #endif
-#if YY_parse_USE_CONST_TOKEN != 0
-#ifndef YY_parse_ENUM_TOKEN
-#define YY_parse_ENUM_TOKEN yy_parse_enum_token
+#if YY_parser_name_USE_CONST_TOKEN != 0
+#ifndef YY_parser_name_ENUM_TOKEN
+#define YY_parser_name_ENUM_TOKEN yy_parser_name_enum_token
 #endif
 #endif
 
-class YY_parse_CLASS YY_parse_INHERIT
+class YY_parser_name_CLASS YY_parser_name_INHERIT
 {
 public: 
-#if YY_parse_USE_CONST_TOKEN != 0
+#if YY_parser_name_USE_CONST_TOKEN != 0
 /* static const int token ... */
 
  #line 307 "/usr/share/bison++/bison.cc"
 static const int ID;
-static const int INTEGER;
-static const int UNIMUS;
+static const int BREAK;
+static const int CONTINUE;
+static const int AND;
+static const int OR;
+static const int NOT;
+static const int GREATER;
+static const int GREATEREQUAL;
+static const int LESS;
+static const int LESSEQUAL;
+static const int EQUAL;
+static const int NOTEQUAL;
+static const int UMINUS;
+static const int PLUSPLUS;
+static const int MINUSMINUS;
+static const int LOCAL;
+static const int SCOPEOP;
+static const int DOUPLEDOT;
+static const int FUNCTION;
+static const int NUMBER;
+static const int STRING;
+static const int NIL;
+static const int TRUE;
+static const int FALSE;
+static const int IF;
+static const int ELSE;
+static const int WHILE;
+static const int FOR;
+static const int RETURN;
 
 
 #line 307 "/usr/share/bison++/bison.cc"
  /* decl const */
 #else
-enum YY_parse_ENUM_TOKEN { YY_parse_NULL_TOKEN=0
+enum YY_parser_name_ENUM_TOKEN { YY_parser_name_NULL_TOKEN=0
 
  #line 310 "/usr/share/bison++/bison.cc"
 	,ID=258
-	,INTEGER=259
-	,UNIMUS=260
+	,BREAK=259
+	,CONTINUE=260
+	,AND=261
+	,OR=262
+	,NOT=263
+	,GREATER=264
+	,GREATEREQUAL=265
+	,LESS=266
+	,LESSEQUAL=267
+	,EQUAL=268
+	,NOTEQUAL=269
+	,UMINUS=270
+	,PLUSPLUS=271
+	,MINUSMINUS=272
+	,LOCAL=273
+	,SCOPEOP=274
+	,DOUPLEDOT=275
+	,FUNCTION=276
+	,NUMBER=277
+	,STRING=278
+	,NIL=279
+	,TRUE=280
+	,FALSE=281
+	,IF=282
+	,ELSE=283
+	,WHILE=284
+	,FOR=285
+	,RETURN=286
 
 
 #line 310 "/usr/share/bison++/bison.cc"
@@ -381,70 +461,102 @@ enum YY_parse_ENUM_TOKEN { YY_parse_NULL_TOKEN=0
      }; /* end of enum declaration */
 #endif
 public:
- int YY_parse_PARSE (YY_parse_PARSE_PARAM);
- virtual void YY_parse_ERROR(char *msg) YY_parse_ERROR_BODY;
-#ifdef YY_parse_PURE
-#ifdef YY_parse_LSP_NEEDED
- virtual int  YY_parse_LEX (YY_parse_STYPE *YY_parse_LVAL,YY_parse_LTYPE *YY_parse_LLOC) YY_parse_LEX_BODY;
+ int YY_parser_name_PARSE (YY_parser_name_PARSE_PARAM);
+ virtual void YY_parser_name_ERROR(char *msg) YY_parser_name_ERROR_BODY;
+#ifdef YY_parser_name_PURE
+#ifdef YY_parser_name_LSP_NEEDED
+ virtual int  YY_parser_name_LEX (YY_parser_name_STYPE *YY_parser_name_LVAL,YY_parser_name_LTYPE *YY_parser_name_LLOC) YY_parser_name_LEX_BODY;
 #else
- virtual int  YY_parse_LEX (YY_parse_STYPE *YY_parse_LVAL) YY_parse_LEX_BODY;
+ virtual int  YY_parser_name_LEX (YY_parser_name_STYPE *YY_parser_name_LVAL) YY_parser_name_LEX_BODY;
 #endif
 #else
- virtual int YY_parse_LEX() YY_parse_LEX_BODY;
- YY_parse_STYPE YY_parse_LVAL;
-#ifdef YY_parse_LSP_NEEDED
- YY_parse_LTYPE YY_parse_LLOC;
+ virtual int YY_parser_name_LEX() YY_parser_name_LEX_BODY;
+ YY_parser_name_STYPE YY_parser_name_LVAL;
+#ifdef YY_parser_name_LSP_NEEDED
+ YY_parser_name_LTYPE YY_parser_name_LLOC;
 #endif
- int   YY_parse_NERRS;
- int    YY_parse_CHAR;
+ int   YY_parser_name_NERRS;
+ int    YY_parser_name_CHAR;
 #endif
-#if YY_parse_DEBUG != 0
- int YY_parse_DEBUG_FLAG;   /*  nonzero means print parse trace     */
+#if YY_parser_name_DEBUG != 0
+ int YY_parser_name_DEBUG_FLAG;   /*  nonzero means print parse trace     */
 #endif
 public:
- YY_parse_CLASS(YY_parse_CONSTRUCTOR_PARAM);
+ YY_parser_name_CLASS(YY_parser_name_CONSTRUCTOR_PARAM);
 public:
- YY_parse_MEMBERS 
+ YY_parser_name_MEMBERS 
 };
 /* other declare folow */
-#if YY_parse_USE_CONST_TOKEN != 0
+#if YY_parser_name_USE_CONST_TOKEN != 0
 
  #line 341 "/usr/share/bison++/bison.cc"
-const int YY_parse_CLASS::ID=258;
-const int YY_parse_CLASS::INTEGER=259;
-const int YY_parse_CLASS::UNIMUS=260;
+const int YY_parser_name_CLASS::ID=258;
+const int YY_parser_name_CLASS::BREAK=259;
+const int YY_parser_name_CLASS::CONTINUE=260;
+const int YY_parser_name_CLASS::AND=261;
+const int YY_parser_name_CLASS::OR=262;
+const int YY_parser_name_CLASS::NOT=263;
+const int YY_parser_name_CLASS::GREATER=264;
+const int YY_parser_name_CLASS::GREATEREQUAL=265;
+const int YY_parser_name_CLASS::LESS=266;
+const int YY_parser_name_CLASS::LESSEQUAL=267;
+const int YY_parser_name_CLASS::EQUAL=268;
+const int YY_parser_name_CLASS::NOTEQUAL=269;
+const int YY_parser_name_CLASS::UMINUS=270;
+const int YY_parser_name_CLASS::PLUSPLUS=271;
+const int YY_parser_name_CLASS::MINUSMINUS=272;
+const int YY_parser_name_CLASS::LOCAL=273;
+const int YY_parser_name_CLASS::SCOPEOP=274;
+const int YY_parser_name_CLASS::DOUPLEDOT=275;
+const int YY_parser_name_CLASS::FUNCTION=276;
+const int YY_parser_name_CLASS::NUMBER=277;
+const int YY_parser_name_CLASS::STRING=278;
+const int YY_parser_name_CLASS::NIL=279;
+const int YY_parser_name_CLASS::TRUE=280;
+const int YY_parser_name_CLASS::FALSE=281;
+const int YY_parser_name_CLASS::IF=282;
+const int YY_parser_name_CLASS::ELSE=283;
+const int YY_parser_name_CLASS::WHILE=284;
+const int YY_parser_name_CLASS::FOR=285;
+const int YY_parser_name_CLASS::RETURN=286;
 
 
 #line 341 "/usr/share/bison++/bison.cc"
- /* const YY_parse_CLASS::token */
+ /* const YY_parser_name_CLASS::token */
 #endif
 /*apres const  */
-YY_parse_CLASS::YY_parse_CLASS(YY_parse_CONSTRUCTOR_PARAM) YY_parse_CONSTRUCTOR_INIT
+YY_parser_name_CLASS::YY_parser_name_CLASS(YY_parser_name_CONSTRUCTOR_PARAM) YY_parser_name_CONSTRUCTOR_INIT
 {
-#if YY_parse_DEBUG != 0
-YY_parse_DEBUG_FLAG=0;
+#if YY_parser_name_DEBUG != 0
+YY_parser_name_DEBUG_FLAG=0;
 #endif
-YY_parse_CONSTRUCTOR_CODE;
+YY_parser_name_CONSTRUCTOR_CODE;
 };
 #endif
 
  #line 352 "/usr/share/bison++/bison.cc"
 
 
-#define	YYFINAL		29
+#define	YYFINAL		162
 #define	YYFLAG		-32768
-#define	YYNTBASE	14
+#define	YYNTBASE	50
 
-#define YYTRANSLATE(x) ((unsigned)(x) <= 260 ? yytranslate[x] : 20)
+#define YYTRANSLATE(x) ((unsigned)(x) <= 286 ? yytranslate[x] : 83)
 
 static const char yytranslate[] = {     0,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,    11,
-    12,     8,     6,     2,     7,     2,     9,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,    13,     2,
-     5,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,    39,     2,     2,    32,
+    33,    37,    40,    46,    41,    36,    38,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,    48,    43,    45,
+    42,    44,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+    34,     2,    35,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,    47,     2,    49,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -457,91 +569,292 @@ static const char yytranslate[] = {     0,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     1,     2,     3,     4,    10
+     2,     2,     2,     2,     2,     1,     2,     3,     4,     5,
+     6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
+    16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
+    26,    27,    28,    29,    30,    31
 };
 
-#if YY_parse_DEBUG != 0
+#if YY_parser_name_DEBUG != 0
 static const short yyprhs[] = {     0,
-     0,     3,     4,     6,     8,    12,    16,    20,    24,    28,
-    31,    34,    37,    39,    44,    47
+     0,     2,     3,     6,     9,    11,    13,    15,    17,    20,
+    23,    25,    27,    29,    31,    35,    37,    39,    41,    43,
+    45,    47,    49,    51,    53,    55,    57,    59,    61,    63,
+    67,    70,    73,    76,    79,    82,    85,    87,    91,    93,
+    95,    97,   101,   103,   105,   108,   111,   113,   117,   122,
+   130,   135,   138,   145,   147,   149,   153,   159,   160,   163,
+   164,   168,   170,   173,   174,   176,   178,   179,   182,   183,
+   187,   193,   195,   198,   205,   206,   208,   210,   212,   214,
+   216,   218,   219,   222,   223,   227,   234,   235,   238,   244,
+   254,   257,   258
 };
 
-static const short yyrhs[] = {    19,
-    17,     0,     0,     4,     0,     3,     0,    15,     6,    15,
-     0,    15,     7,    15,     0,    15,     8,    15,     0,    15,
-     9,    15,     0,    11,    15,    12,     0,     7,    15,     0,
-    15,    13,     0,    17,    16,     0,    16,     0,     3,     5,
-    15,    13,     0,    19,    18,     0,     0
+static const short yyrhs[] = {    51,
+     0,     0,    52,    51,     0,    53,    43,     0,    77,     0,
+    79,     0,    80,     0,    81,     0,     4,    43,     0,     5,
+    43,     0,    71,     0,    72,     0,    43,     0,    56,     0,
+    53,    54,    53,     0,    55,     0,    40,     0,    41,     0,
+    37,     0,    38,     0,    39,     0,    44,     0,    10,     0,
+    45,     0,    12,     0,    13,     0,    14,     0,     6,     0,
+     7,     0,    32,    53,    33,     0,    15,    53,     0,     8,
+    53,     0,    16,    58,     0,    58,    16,     0,    17,    58,
+     0,    58,    17,     0,    57,     0,    58,    42,    53,     0,
+    58,     0,    60,     0,    66,     0,    32,    72,    33,     0,
+    74,     0,     3,     0,    18,     3,     0,    19,     3,     0,
+    59,     0,    58,    36,     3,     0,    58,    34,    53,    35,
+     0,    60,    36,     3,    60,    34,    53,    35,     0,    60,
+    32,    64,    33,     0,    58,    61,     0,    32,    72,    33,
+    32,    64,    33,     0,    62,     0,    63,     0,    32,    64,
+    33,     0,    20,     3,    32,    64,    33,     0,     0,    53,
+    65,     0,     0,    46,    53,    65,     0,    34,     0,    67,
+    35,     0,     0,    64,     0,    68,     0,     0,    70,    69,
+     0,     0,    46,    70,    69,     0,    47,    53,    48,    53,
+    49,     0,    47,     0,    51,    49,     0,    21,    73,    32,
+    75,    33,    71,     0,     0,     3,     0,    22,     0,    23,
+     0,    24,     0,    25,     0,    26,     0,     0,     3,    76,
+     0,     0,    46,     3,    76,     0,    27,    32,    53,    33,
+    52,    78,     0,     0,    28,    52,     0,    29,    32,    53,
+    33,    52,     0,    30,    32,    64,    43,    53,    43,    64,
+    33,    52,     0,    31,    82,     0,     0,    53,     0
 };
 
 #endif
 
-#if (YY_parse_DEBUG != 0) || defined(YY_parse_ERROR_VERBOSE) 
+#if (YY_parser_name_DEBUG != 0) || defined(YY_parser_name_ERROR_VERBOSE) 
 static const short yyrline[] = { 0,
-    37,    38,    41,    42,    43,    44,    45,    46,    47,    48,
-    50,    52,    53,    56,    59,    60
+    33,    36,    37,    40,    41,    42,    43,    44,    45,    46,
+    47,    48,    49,    52,    53,    54,    57,    57,    57,    57,
+    57,    57,    57,    57,    57,    57,    57,    57,    57,    59,
+    60,    61,    62,    63,    64,    65,    66,    69,    71,    72,
+    73,    74,    75,    78,    79,    80,    81,    84,    85,    86,
+    90,    91,    92,    95,    96,    99,   101,   103,   104,   107,
+   108,   111,   112,   116,   117,   118,   121,   122,   125,   126,
+   129,   131,   132,   136,   138,   139,   142,   142,   142,   142,
+   142,   144,   145,   148,   149,   152,   154,   155,   158,   160,
+   162,   164,   165
 };
 
-static const char * const yytname[] = {   "$","error","$illegal.","ID","INTEGER",
-"'='","'+'","'-'","'*'","'/'","UNIMUS","'('","')'","';'","program","expression",
-"expr","expressions","assignment","assignments",""
+static const char * const yytname[] = {   "$","error","$illegal.","ID","BREAK",
+"CONTINUE","AND","OR","NOT","GREATER","GREATEREQUAL","LESS","LESSEQUAL","EQUAL",
+"NOTEQUAL","UMINUS","PLUSPLUS","MINUSMINUS","LOCAL","SCOPEOP","DOUPLEDOT","FUNCTION",
+"NUMBER","STRING","NIL","TRUE","FALSE","IF","ELSE","WHILE","FOR","RETURN","'('",
+"')'","'['","']'","'.'","'*'","'/'","'%'","'+'","'-'","'='","';'","'>'","'<'",
+"','","'{'","':'","'}'","program","stmt1","stmt","expr","op","term","assignexpr",
+"primary","lvalue","member","call","callsuffix","normcall","methodcall","elist",
+"elist1","objectdef","objectdef1","indexed","indexed1","indexedelem","block",
+"funcdef","funcdef1","const","idlist","idlist1","ifstmt","ifstmt1","whilestmt",
+"forstmt","returnstmt","returnstmt1",""
 };
 #endif
 
 static const short yyr1[] = {     0,
-    14,    14,    15,    15,    15,    15,    15,    15,    15,    15,
-    16,    17,    17,    18,    19,    19
+    50,    51,    51,    52,    52,    52,    52,    52,    52,    52,
+    52,    52,    52,    53,    53,    53,    54,    54,    54,    54,
+    54,    54,    54,    54,    54,    54,    54,    54,    54,    55,
+    55,    55,    55,    55,    55,    55,    55,    56,    57,    57,
+    57,    57,    57,    58,    58,    58,    58,    59,    59,    59,
+    60,    60,    60,    61,    61,    62,    63,    64,    64,    65,
+    65,    66,    66,    67,    67,    67,    68,    68,    69,    69,
+    70,    71,    71,    72,    73,    73,    74,    74,    74,    74,
+    74,    75,    75,    76,    76,    77,    78,    78,    79,    80,
+    81,    82,    82
 };
 
 static const short yyr2[] = {     0,
-     2,     0,     1,     1,     3,     3,     3,     3,     3,     2,
-     2,     2,     1,     4,     2,     0
+     1,     0,     2,     2,     1,     1,     1,     1,     2,     2,
+     1,     1,     1,     1,     3,     1,     1,     1,     1,     1,
+     1,     1,     1,     1,     1,     1,     1,     1,     1,     3,
+     2,     2,     2,     2,     2,     2,     1,     3,     1,     1,
+     1,     3,     1,     1,     2,     2,     1,     3,     4,     7,
+     4,     2,     6,     1,     1,     3,     5,     0,     2,     0,
+     3,     1,     2,     0,     1,     1,     0,     2,     0,     3,
+     5,     1,     2,     6,     0,     1,     1,     1,     1,     1,
+     1,     0,     2,     0,     3,     6,     0,     2,     5,     9,
+     2,     0,     1
 };
 
-static const short yydefact[] = {    16,
-     0,     4,     3,     0,     0,     0,    13,     1,    15,     0,
-     4,    10,     0,     0,     0,     0,     0,    11,    12,     0,
-     9,     5,     6,     7,     8,    14,     0,     0,     0
+static const short yydefact[] = {     2,
+    44,     0,     0,    58,    58,     0,     0,     0,     0,    75,
+    77,    78,    79,    80,    81,     0,     0,     0,    92,    58,
+    62,    13,    72,     1,     2,    60,    16,    14,    37,    39,
+    47,    40,    65,    41,     0,    66,    69,    11,    12,    43,
+     5,     6,     7,     8,     9,    10,    58,    32,    31,     0,
+    33,     0,    35,    45,    46,    76,     0,    58,    58,    58,
+    93,    91,    60,     0,    60,    73,     3,    28,    29,    23,
+    25,    26,    27,    19,    20,    21,    17,    18,     4,    22,
+    24,    58,    58,    59,    34,    36,     0,    58,    58,     0,
+    58,    52,    54,    55,    58,     0,    63,     0,    68,     0,
+    82,    60,    60,    60,    65,    30,    42,    58,    60,    15,
+     0,    65,     0,    48,    38,    65,     0,    69,     0,    84,
+     0,     2,     2,    58,    58,    60,    61,    58,    56,    49,
+    51,     0,     0,    70,     0,    83,     2,     0,     2,    89,
+    60,    65,    71,    65,    58,    84,    11,     2,    86,    58,
+    53,    57,     0,    85,    88,    65,    50,     2,    90,     0,
+     0,     0
 };
 
-static const short yydefgoto[] = {    27,
-     6,     7,     8,     9,     1
+static const short yydefgoto[] = {   160,
+    67,    25,    26,    83,    27,    28,    29,    30,    31,    32,
+    92,    93,    94,    33,    84,    34,    35,    36,    99,    37,
+    38,    39,    57,    40,   121,   136,    41,   149,    42,    43,
+    44,    62
 };
 
-static const short yypact[] = {     4,
-    11,     0,-32768,    13,    13,    19,-32768,    13,-32768,    13,
--32768,-32768,    35,    13,    13,    13,    13,-32768,-32768,    27,
--32768,    -6,    -6,-32768,-32768,-32768,     7,     8,-32768
+static const short yypact[] = {   254,
+-32768,   -35,   -34,   314,   314,    48,    48,    11,    13,    24,
+-32768,-32768,-32768,-32768,-32768,    12,    20,    31,    15,   287,
+-32768,-32768,    15,   -20,   254,   350,-32768,-32768,-32768,   556,
+-32768,   -10,-32768,-32768,    29,-32768,    -1,-32768,-32768,-32768,
+-32768,-32768,-32768,-32768,-32768,-32768,   314,   525,   525,    44,
+    -8,   -10,    -8,-32768,-32768,-32768,    36,   314,   314,   314,
+   391,-32768,   401,    41,   337,-32768,   -20,-32768,-32768,-32768,
+-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,
+-32768,   314,   314,-32768,-32768,-32768,    67,   314,   314,    73,
+   314,-32768,-32768,-32768,   314,    74,-32768,    32,-32768,    45,
+    78,   411,   452,   525,    39,-32768,-32768,   314,   525,   525,
+    53,    54,   464,-32768,    10,    55,    48,    -1,    59,    40,
+    60,   254,   254,   314,   314,    94,    63,   314,-32768,-32768,
+-32768,    37,   -17,-32768,    91,-32768,   254,   -20,   149,   218,
+   474,    62,-32768,    66,   314,    40,    25,   254,-32768,   314,
+-32768,-32768,   515,-32768,   182,    69,-32768,   254,   218,   103,
+   105,-32768
 };
 
 static const short yypgoto[] = {-32768,
-    -4,     1,-32768,-32768,-32768
+     0,  -112,     1,-32768,-32768,-32768,-32768,    -5,-32768,    -3,
+-32768,-32768,-32768,   -53,     2,-32768,-32768,-32768,    -2,    17,
+   -27,    -7,-32768,-32768,-32768,   -33,-32768,-32768,-32768,-32768,
+-32768,-32768
 };
 
 
-#define	YYLAST		47
+#define	YYLAST		598
 
 
-static const short yytable[] = {    12,
-    13,    16,    17,    -2,    10,    20,    28,    29,    19,    22,
-    23,    24,    25,     2,     3,    11,     3,     4,     0,     4,
-     0,     5,     0,     5,    14,    15,    16,    17,     0,     0,
-     0,    18,    14,    15,    16,    17,     0,     0,     0,    26,
-    14,    15,    16,    17,     0,     0,    21
+static const short yytable[] = {    24,
+    51,    53,    52,    52,    48,    49,   105,    45,    46,   139,
+   140,    87,    64,    54,    95,    55,   145,     1,    96,    61,
+    63,    95,     4,    65,   -74,    96,    56,    90,    66,     5,
+     6,     7,     8,     9,   112,   155,    11,    12,    13,    14,
+    15,   116,   100,    58,    98,   159,    20,    65,    21,   -58,
+     1,    59,   -74,    80,    81,    82,    87,   -74,   102,   103,
+   104,    47,    60,    97,    10,     8,     9,   101,    88,   111,
+    89,   142,    90,   107,   144,   114,   117,   119,    47,    50,
+   120,   124,   109,   110,   128,   135,   129,   131,   104,   113,
+   125,   115,   137,   146,   151,   104,   156,   -59,   152,    68,
+    69,   158,   161,    70,   162,    71,    72,    73,   126,   147,
+   127,   132,   154,   133,   118,   134,     0,     0,     0,     0,
+     0,   138,   138,     0,   141,   104,     0,     0,   104,     0,
+    74,    75,    76,    77,    78,     0,   138,    80,    81,    82,
+     0,     0,   143,     0,     0,   153,     0,   138,   -87,     0,
+   104,     1,     2,     3,     0,     0,     4,   138,     0,     0,
+     0,     0,     0,     5,     6,     7,     8,     9,     0,    10,
+    11,    12,    13,    14,    15,    16,   148,    17,    18,    19,
+    20,     0,    21,   -58,     1,     2,     3,     0,     0,     4,
+     0,    22,     0,     0,     0,    23,     5,     6,     7,     8,
+     9,     0,    10,    11,    12,    13,    14,    15,    16,     0,
+    17,    18,    19,    20,     0,    21,   -58,     0,     0,     0,
+     1,     2,     3,     0,    22,     4,     0,     0,    23,     0,
+    -2,     0,     5,     6,     7,     8,     9,     0,    10,    11,
+    12,    13,    14,    15,    16,     0,    17,    18,    19,     0,
+     0,    21,   -58,     0,     0,     0,     1,     2,     3,     0,
+    22,     4,     0,     0,    23,     0,    -2,     0,     5,     6,
+     7,     8,     9,     0,    10,    11,    12,    13,    14,    15,
+    16,     0,    17,    18,    19,    20,     0,    21,   -58,     1,
+     0,     0,     0,     0,     4,     0,    22,     0,     0,     0,
+    23,     5,     6,     7,     8,     9,     0,    10,    11,    12,
+    13,    14,    15,     0,     0,     0,     1,     0,    20,     0,
+    21,     4,     0,     0,     0,     0,     0,     0,     5,     6,
+     7,     8,     9,    47,     0,    11,    12,    13,    14,    15,
+     0,     0,    68,    69,     0,    20,    70,    21,    71,    72,
+    73,     0,     0,     0,     0,    68,    69,     0,     0,    70,
+    47,    71,    72,    73,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,    74,    75,    76,    77,    78,     0,     0,
+    80,    81,    82,     0,   108,     0,    74,    75,    76,    77,
+    78,     0,    79,    80,    81,    82,    68,    69,     0,     0,
+    70,     0,    71,    72,    73,     0,    68,    69,     0,     0,
+    70,     0,    71,    72,    73,     0,    68,    69,     0,     0,
+    70,     0,    71,    72,    73,   -60,     0,    74,    75,    76,
+    77,    78,     0,   106,    80,    81,    82,    74,    75,    76,
+    77,    78,     0,   122,    80,    81,    82,    74,    75,    76,
+    77,    78,     0,     0,    80,    81,    82,    68,    69,     0,
+     0,    70,     0,    71,    72,    73,     0,     0,     0,    68,
+    69,     0,     0,    70,     0,    71,    72,    73,     0,    68,
+    69,     0,     0,    70,   123,    71,    72,    73,    74,    75,
+    76,    77,    78,     0,     0,    80,    81,    82,   130,     0,
+    74,    75,    76,    77,    78,     0,     0,    80,    81,    82,
+    74,    75,    76,    77,    78,     0,   150,    80,    81,    82,
+    68,    69,     0,     0,    70,     0,    71,    72,    73,     0,
+    68,    69,     0,     0,    70,     0,    71,    72,    73,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,   157,
+     0,    74,    75,    76,    77,    78,     0,     0,    80,    81,
+    82,    74,    75,    76,    77,    78,     0,     0,    80,    81,
+    82,    85,    86,     0,     0,    87,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,    88,     0,    89,
+     0,    90,     0,     0,     0,     0,     0,    91
 };
 
-static const short yycheck[] = {     4,
-     5,     8,     9,     0,     5,    10,     0,     0,     8,    14,
-    15,    16,    17,     3,     4,     3,     4,     7,    -1,     7,
-    -1,    11,    -1,    11,     6,     7,     8,     9,    -1,    -1,
-    -1,    13,     6,     7,     8,     9,    -1,    -1,    -1,    13,
-     6,     7,     8,     9,    -1,    -1,    12
+static const short yycheck[] = {     0,
+     6,     7,     6,     7,     4,     5,    60,    43,    43,   122,
+   123,    20,    20,     3,    32,     3,    34,     3,    36,    19,
+    20,    32,     8,    23,     0,    36,     3,    36,    49,    15,
+    16,    17,    18,    19,    88,   148,    22,    23,    24,    25,
+    26,    95,    50,    32,    46,   158,    32,    47,    34,    35,
+     3,    32,    28,    44,    45,    46,    20,    33,    58,    59,
+    60,    47,    32,    35,    21,    18,    19,    32,    32,     3,
+    34,   125,    36,    33,   128,     3,     3,    33,    47,    32,
+     3,    43,    82,    83,    32,    46,    33,    33,    88,    89,
+    32,    91,    33,     3,    33,    95,   150,    35,    33,     6,
+     7,    33,     0,    10,     0,    12,    13,    14,   108,   137,
+   109,   117,   146,   117,    98,   118,    -1,    -1,    -1,    -1,
+    -1,   122,   123,    -1,   124,   125,    -1,    -1,   128,    -1,
+    37,    38,    39,    40,    41,    -1,   137,    44,    45,    46,
+    -1,    -1,    49,    -1,    -1,   145,    -1,   148,     0,    -1,
+   150,     3,     4,     5,    -1,    -1,     8,   158,    -1,    -1,
+    -1,    -1,    -1,    15,    16,    17,    18,    19,    -1,    21,
+    22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+    32,    -1,    34,    35,     3,     4,     5,    -1,    -1,     8,
+    -1,    43,    -1,    -1,    -1,    47,    15,    16,    17,    18,
+    19,    -1,    21,    22,    23,    24,    25,    26,    27,    -1,
+    29,    30,    31,    32,    -1,    34,    35,    -1,    -1,    -1,
+     3,     4,     5,    -1,    43,     8,    -1,    -1,    47,    -1,
+    49,    -1,    15,    16,    17,    18,    19,    -1,    21,    22,
+    23,    24,    25,    26,    27,    -1,    29,    30,    31,    -1,
+    -1,    34,    35,    -1,    -1,    -1,     3,     4,     5,    -1,
+    43,     8,    -1,    -1,    47,    -1,    49,    -1,    15,    16,
+    17,    18,    19,    -1,    21,    22,    23,    24,    25,    26,
+    27,    -1,    29,    30,    31,    32,    -1,    34,    35,     3,
+    -1,    -1,    -1,    -1,     8,    -1,    43,    -1,    -1,    -1,
+    47,    15,    16,    17,    18,    19,    -1,    21,    22,    23,
+    24,    25,    26,    -1,    -1,    -1,     3,    -1,    32,    -1,
+    34,     8,    -1,    -1,    -1,    -1,    -1,    -1,    15,    16,
+    17,    18,    19,    47,    -1,    22,    23,    24,    25,    26,
+    -1,    -1,     6,     7,    -1,    32,    10,    34,    12,    13,
+    14,    -1,    -1,    -1,    -1,     6,     7,    -1,    -1,    10,
+    47,    12,    13,    14,    -1,    -1,    -1,    -1,    -1,    -1,
+    -1,    -1,    -1,    37,    38,    39,    40,    41,    -1,    -1,
+    44,    45,    46,    -1,    48,    -1,    37,    38,    39,    40,
+    41,    -1,    43,    44,    45,    46,     6,     7,    -1,    -1,
+    10,    -1,    12,    13,    14,    -1,     6,     7,    -1,    -1,
+    10,    -1,    12,    13,    14,    -1,     6,     7,    -1,    -1,
+    10,    -1,    12,    13,    14,    35,    -1,    37,    38,    39,
+    40,    41,    -1,    33,    44,    45,    46,    37,    38,    39,
+    40,    41,    -1,    33,    44,    45,    46,    37,    38,    39,
+    40,    41,    -1,    -1,    44,    45,    46,     6,     7,    -1,
+    -1,    10,    -1,    12,    13,    14,    -1,    -1,    -1,     6,
+     7,    -1,    -1,    10,    -1,    12,    13,    14,    -1,     6,
+     7,    -1,    -1,    10,    33,    12,    13,    14,    37,    38,
+    39,    40,    41,    -1,    -1,    44,    45,    46,    35,    -1,
+    37,    38,    39,    40,    41,    -1,    -1,    44,    45,    46,
+    37,    38,    39,    40,    41,    -1,    43,    44,    45,    46,
+     6,     7,    -1,    -1,    10,    -1,    12,    13,    14,    -1,
+     6,     7,    -1,    -1,    10,    -1,    12,    13,    14,    -1,
+    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    35,
+    -1,    37,    38,    39,    40,    41,    -1,    -1,    44,    45,
+    46,    37,    38,    39,    40,    41,    -1,    -1,    44,    45,
+    46,    16,    17,    -1,    -1,    20,    -1,    -1,    -1,    -1,
+    -1,    -1,    -1,    -1,    -1,    -1,    -1,    32,    -1,    34,
+    -1,    36,    -1,    -1,    -1,    -1,    -1,    42
 };
 
 #line 352 "/usr/share/bison++/bison.cc"
@@ -559,7 +872,7 @@ static const short yycheck[] = {     4,
    the next  is replaced by the list of actions, each action
    as one case of the switch.  */ 
 
-#if YY_parse_USE_GOTO != 0
+#if YY_parser_name_USE_GOTO != 0
 /* 
  SUPRESSION OF GOTO : on some C++ compiler (sun c++)
   the goto is strictly forbidden if any constructor/destructor
@@ -608,7 +921,7 @@ int __alloca_free_ptr(char *ptr,char *ref)
 #define __ALLOCA_alloca(size) malloc(size)
 #define __ALLOCA_free(ptr,ref) __alloca_free_ptr((char *)ptr,(char *)ref)
 
-#ifdef YY_parse_LSP_NEEDED
+#ifdef YY_parser_name_LSP_NEEDED
 #define __ALLOCA_return(num) \
             do { return( __ALLOCA_free(yyss,yyssa)+\
 		    __ALLOCA_free(yyvs,yyvsa)+\
@@ -629,7 +942,7 @@ int __alloca_free_ptr(char *ptr,char *ref)
 /* ENDALLOCA SIMULATION */
 
 #define yyerrok         (yyerrstatus = 0)
-#define yyclearin       (YY_parse_CHAR = YYEMPTY)
+#define yyclearin       (YY_parser_name_CHAR = YYEMPTY)
 #define YYEMPTY         -2
 #define YYEOF           0
 #define YYACCEPT        __ALLOCA_return(0)
@@ -643,30 +956,30 @@ int __alloca_free_ptr(char *ptr,char *ref)
 #define YYRECOVERING()  (!!yyerrstatus)
 #define YYBACKUP(token, value) \
 do                                                              \
-  if (YY_parse_CHAR == YYEMPTY && yylen == 1)                               \
-    { YY_parse_CHAR = (token), YY_parse_LVAL = (value);                 \
-      yychar1 = YYTRANSLATE (YY_parse_CHAR);                                \
+  if (YY_parser_name_CHAR == YYEMPTY && yylen == 1)                               \
+    { YY_parser_name_CHAR = (token), YY_parser_name_LVAL = (value);                 \
+      yychar1 = YYTRANSLATE (YY_parser_name_CHAR);                                \
       YYPOPSTACK;                                               \
       YYGOTO(yybackup);                                            \
     }                                                           \
   else                                                          \
-    { YY_parse_ERROR ("syntax error: cannot back up"); YYERROR; }   \
+    { YY_parser_name_ERROR ("syntax error: cannot back up"); YYERROR; }   \
 while (0)
 
 #define YYTERROR        1
 #define YYERRCODE       256
 
-#ifndef YY_parse_PURE
+#ifndef YY_parser_name_PURE
 /* UNPURE */
-#define YYLEX           YY_parse_LEX()
+#define YYLEX           YY_parser_name_LEX()
 #ifndef YY_USE_CLASS
 /* If nonreentrant, and not class , generate the variables here */
-int     YY_parse_CHAR;                      /*  the lookahead symbol        */
-YY_parse_STYPE      YY_parse_LVAL;              /*  the semantic value of the */
+int     YY_parser_name_CHAR;                      /*  the lookahead symbol        */
+YY_parser_name_STYPE      YY_parser_name_LVAL;              /*  the semantic value of the */
 				/*  lookahead symbol    */
-int YY_parse_NERRS;                 /*  number of parse errors so far */
-#ifdef YY_parse_LSP_NEEDED
-YY_parse_LTYPE YY_parse_LLOC;   /*  location data for the lookahead     */
+int YY_parser_name_NERRS;                 /*  number of parse errors so far */
+#ifdef YY_parser_name_LSP_NEEDED
+YY_parser_name_LTYPE YY_parser_name_LLOC;   /*  location data for the lookahead     */
 			/*  symbol                              */
 #endif
 #endif
@@ -674,15 +987,15 @@ YY_parse_LTYPE YY_parse_LLOC;   /*  location data for the lookahead     */
 
 #else
 /* PURE */
-#ifdef YY_parse_LSP_NEEDED
-#define YYLEX           YY_parse_LEX(&YY_parse_LVAL, &YY_parse_LLOC)
+#ifdef YY_parser_name_LSP_NEEDED
+#define YYLEX           YY_parser_name_LEX(&YY_parser_name_LVAL, &YY_parser_name_LLOC)
 #else
-#define YYLEX           YY_parse_LEX(&YY_parse_LVAL)
+#define YYLEX           YY_parser_name_LEX(&YY_parser_name_LVAL)
 #endif
 #endif
 #ifndef YY_USE_CLASS
-#if YY_parse_DEBUG != 0
-int YY_parse_DEBUG_FLAG;                    /*  nonzero means print parse trace     */
+#if YY_parser_name_DEBUG != 0
+int YY_parser_name_DEBUG_FLAG;                    /*  nonzero means print parse trace     */
 /* Since this is uninitialized, it does not stop multiple parsers
    from coexisting.  */
 #endif
@@ -740,14 +1053,14 @@ static void __yy_bcopy (from, to, count)
 
 int
 #ifdef YY_USE_CLASS
- YY_parse_CLASS::
+ YY_parser_name_CLASS::
 #endif
-     YY_parse_PARSE(YY_parse_PARSE_PARAM)
+     YY_parser_name_PARSE(YY_parser_name_PARSE_PARAM)
 #ifndef __STDC__
 #ifndef __cplusplus
 #ifndef YY_USE_CLASS
 /* parameter definition without protypes */
-YY_parse_PARSE_PARAM_DEF
+YY_parser_name_PARSE_PARAM_DEF
 #endif
 #endif
 #endif
@@ -755,20 +1068,20 @@ YY_parse_PARSE_PARAM_DEF
   register int yystate;
   register int yyn;
   register short *yyssp;
-  register YY_parse_STYPE *yyvsp;
+  register YY_parser_name_STYPE *yyvsp;
   int yyerrstatus;      /*  number of tokens to shift before error messages enabled */
   int yychar1=0;          /*  lookahead token as an internal (translated) token number */
 
   short yyssa[YYINITDEPTH];     /*  the state stack                     */
-  YY_parse_STYPE yyvsa[YYINITDEPTH];        /*  the semantic value stack            */
+  YY_parser_name_STYPE yyvsa[YYINITDEPTH];        /*  the semantic value stack            */
 
   short *yyss = yyssa;          /*  refer to the stacks thru separate pointers */
-  YY_parse_STYPE *yyvs = yyvsa;     /*  to allow yyoverflow to reallocate them elsewhere */
+  YY_parser_name_STYPE *yyvs = yyvsa;     /*  to allow yyoverflow to reallocate them elsewhere */
 
-#ifdef YY_parse_LSP_NEEDED
-  YY_parse_LTYPE yylsa[YYINITDEPTH];        /*  the location stack                  */
-  YY_parse_LTYPE *yyls = yylsa;
-  YY_parse_LTYPE *yylsp;
+#ifdef YY_parser_name_LSP_NEEDED
+  YY_parser_name_LTYPE yylsa[YYINITDEPTH];        /*  the location stack                  */
+  YY_parser_name_LTYPE *yyls = yylsa;
+  YY_parser_name_LTYPE *yylsp;
 
 #define YYPOPSTACK   (yyvsp--, yyssp--, yylsp--)
 #else
@@ -777,16 +1090,16 @@ YY_parse_PARSE_PARAM_DEF
 
   int yystacksize = YYINITDEPTH;
 
-#ifdef YY_parse_PURE
-  int YY_parse_CHAR;
-  YY_parse_STYPE YY_parse_LVAL;
-  int YY_parse_NERRS;
-#ifdef YY_parse_LSP_NEEDED
-  YY_parse_LTYPE YY_parse_LLOC;
+#ifdef YY_parser_name_PURE
+  int YY_parser_name_CHAR;
+  YY_parser_name_STYPE YY_parser_name_LVAL;
+  int YY_parser_name_NERRS;
+#ifdef YY_parser_name_LSP_NEEDED
+  YY_parser_name_LTYPE YY_parser_name_LLOC;
 #endif
 #endif
 
-  YY_parse_STYPE yyval;             /*  the variable used to return         */
+  YY_parser_name_STYPE yyval;             /*  the variable used to return         */
 				/*  semantic values from the action     */
 				/*  routines                            */
 
@@ -794,14 +1107,14 @@ YY_parse_PARSE_PARAM_DEF
 /* start loop, in which YYGOTO may be used. */
 YYBEGINGOTO
 
-#if YY_parse_DEBUG != 0
-  if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+  if (YY_parser_name_DEBUG_FLAG)
     fprintf(stderr, "Starting parse\n");
 #endif
   yystate = 0;
   yyerrstatus = 0;
-  YY_parse_NERRS = 0;
-  YY_parse_CHAR = YYEMPTY;          /* Cause a token to be read.  */
+  YY_parser_name_NERRS = 0;
+  YY_parser_name_CHAR = YYEMPTY;          /* Cause a token to be read.  */
 
   /* Initialize stack pointers.
      Waste one element of value and location stack
@@ -810,7 +1123,7 @@ YYBEGINGOTO
 
   yyssp = yyss - 1;
   yyvsp = yyvs;
-#ifdef YY_parse_LSP_NEEDED
+#ifdef YY_parser_name_LSP_NEEDED
   yylsp = yyls;
 #endif
 
@@ -825,10 +1138,10 @@ YYLABEL(yynewstate)
     {
       /* Give user a chance to reallocate the stack */
       /* Use copies of these so that the &'s don't force the real ones into memory. */
-      YY_parse_STYPE *yyvs1 = yyvs;
+      YY_parser_name_STYPE *yyvs1 = yyvs;
       short *yyss1 = yyss;
-#ifdef YY_parse_LSP_NEEDED
-      YY_parse_LTYPE *yyls1 = yyls;
+#ifdef YY_parser_name_LSP_NEEDED
+      YY_parser_name_LTYPE *yyls1 = yyls;
 #endif
 
       /* Get the current used size of the three stacks, in elements.  */
@@ -837,7 +1150,7 @@ YYLABEL(yynewstate)
 #ifdef yyoverflow
       /* Each stack pointer address is followed by the size of
 	 the data in use in that stack, in bytes.  */
-#ifdef YY_parse_LSP_NEEDED
+#ifdef YY_parser_name_LSP_NEEDED
       /* This used to be a conditional around just the two extra args,
 	 but that might be undefined if yyoverflow is a macro.  */
       yyoverflow("parser stack overflow",
@@ -853,14 +1166,14 @@ YYLABEL(yynewstate)
 #endif
 
       yyss = yyss1; yyvs = yyvs1;
-#ifdef YY_parse_LSP_NEEDED
+#ifdef YY_parser_name_LSP_NEEDED
       yyls = yyls1;
 #endif
 #else /* no yyoverflow */
       /* Extend the stack our own way.  */
       if (yystacksize >= YYMAXDEPTH)
 	{
-	  YY_parse_ERROR("parser stack overflow");
+	  YY_parser_name_ERROR("parser stack overflow");
 	  __ALLOCA_return(2);
 	}
       yystacksize *= 2;
@@ -869,11 +1182,11 @@ YYLABEL(yynewstate)
       yyss = (short *) __ALLOCA_alloca (yystacksize * sizeof (*yyssp));
       __yy_bcopy ((char *)yyss1, (char *)yyss, size * sizeof (*yyssp));
       __ALLOCA_free(yyss1,yyssa);
-      yyvs = (YY_parse_STYPE *) __ALLOCA_alloca (yystacksize * sizeof (*yyvsp));
+      yyvs = (YY_parser_name_STYPE *) __ALLOCA_alloca (yystacksize * sizeof (*yyvsp));
       __yy_bcopy ((char *)yyvs1, (char *)yyvs, size * sizeof (*yyvsp));
       __ALLOCA_free(yyvs1,yyvsa);
-#ifdef YY_parse_LSP_NEEDED
-      yyls = (YY_parse_LTYPE *) __ALLOCA_alloca (yystacksize * sizeof (*yylsp));
+#ifdef YY_parser_name_LSP_NEEDED
+      yyls = (YY_parser_name_LTYPE *) __ALLOCA_alloca (yystacksize * sizeof (*yylsp));
       __yy_bcopy ((char *)yyls1, (char *)yyls, size * sizeof (*yylsp));
       __ALLOCA_free(yyls1,yylsa);
 #endif
@@ -881,12 +1194,12 @@ YYLABEL(yynewstate)
 
       yyssp = yyss + size - 1;
       yyvsp = yyvs + size - 1;
-#ifdef YY_parse_LSP_NEEDED
+#ifdef YY_parser_name_LSP_NEEDED
       yylsp = yyls + size - 1;
 #endif
 
-#if YY_parse_DEBUG != 0
-      if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+      if (YY_parser_name_DEBUG_FLAG)
 	fprintf(stderr, "Stack size increased to %d\n", yystacksize);
 #endif
 
@@ -894,8 +1207,8 @@ YYLABEL(yynewstate)
 	YYABORT;
     }
 
-#if YY_parse_DEBUG != 0
-  if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+  if (YY_parser_name_DEBUG_FLAG)
     fprintf(stderr, "Entering state %d\n", yystate);
 #endif
 
@@ -917,39 +1230,39 @@ YYLABEL(yybackup)
   /* yychar is either YYEMPTY or YYEOF
      or a valid token in external form.  */
 
-  if (YY_parse_CHAR == YYEMPTY)
+  if (YY_parser_name_CHAR == YYEMPTY)
     {
-#if YY_parse_DEBUG != 0
-      if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+      if (YY_parser_name_DEBUG_FLAG)
 	fprintf(stderr, "Reading a token: ");
 #endif
-      YY_parse_CHAR = YYLEX;
+      YY_parser_name_CHAR = YYLEX;
     }
 
   /* Convert token to internal form (in yychar1) for indexing tables with */
 
-  if (YY_parse_CHAR <= 0)           /* This means end of input. */
+  if (YY_parser_name_CHAR <= 0)           /* This means end of input. */
     {
       yychar1 = 0;
-      YY_parse_CHAR = YYEOF;                /* Don't call YYLEX any more */
+      YY_parser_name_CHAR = YYEOF;                /* Don't call YYLEX any more */
 
-#if YY_parse_DEBUG != 0
-      if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+      if (YY_parser_name_DEBUG_FLAG)
 	fprintf(stderr, "Now at end of input.\n");
 #endif
     }
   else
     {
-      yychar1 = YYTRANSLATE(YY_parse_CHAR);
+      yychar1 = YYTRANSLATE(YY_parser_name_CHAR);
 
-#if YY_parse_DEBUG != 0
-      if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+      if (YY_parser_name_DEBUG_FLAG)
 	{
-	  fprintf (stderr, "Next token is %d (%s", YY_parse_CHAR, yytname[yychar1]);
+	  fprintf (stderr, "Next token is %d (%s", YY_parser_name_CHAR, yytname[yychar1]);
 	  /* Give the individual parser a way to print the precise meaning
 	     of a token, for further debugging info.  */
 #ifdef YYPRINT
-	  YYPRINT (stderr, YY_parse_CHAR, YY_parse_LVAL);
+	  YYPRINT (stderr, YY_parser_name_CHAR, YY_parser_name_LVAL);
 #endif
 	  fprintf (stderr, ")\n");
 	}
@@ -984,18 +1297,18 @@ YYLABEL(yybackup)
 
   /* Shift the lookahead token.  */
 
-#if YY_parse_DEBUG != 0
-  if (YY_parse_DEBUG_FLAG)
-    fprintf(stderr, "Shifting token %d (%s), ", YY_parse_CHAR, yytname[yychar1]);
+#if YY_parser_name_DEBUG != 0
+  if (YY_parser_name_DEBUG_FLAG)
+    fprintf(stderr, "Shifting token %d (%s), ", YY_parser_name_CHAR, yytname[yychar1]);
 #endif
 
   /* Discard the token being shifted unless it is eof.  */
-  if (YY_parse_CHAR != YYEOF)
-    YY_parse_CHAR = YYEMPTY;
+  if (YY_parser_name_CHAR != YYEOF)
+    YY_parser_name_CHAR = YYEMPTY;
 
-  *++yyvsp = YY_parse_LVAL;
-#ifdef YY_parse_LSP_NEEDED
-  *++yylsp = YY_parse_LLOC;
+  *++yyvsp = YY_parser_name_LVAL;
+#ifdef YY_parser_name_LSP_NEEDED
+  *++yylsp = YY_parser_name_LLOC;
 #endif
 
   /* count tokens shifted since error; after three, turn off error status.  */
@@ -1017,8 +1330,8 @@ YYLABEL(yyreduce)
   if (yylen > 0)
     yyval = yyvsp[1-yylen]; /* implement default value of the action */
 
-#if YY_parse_DEBUG != 0
-  if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+  if (YY_parser_name_DEBUG_FLAG)
     {
       int i;
 
@@ -1037,82 +1350,18 @@ YYLABEL(yyreduce)
 
   switch (yyn) {
 
-case 1:
-#line 37 "example.y"
-{;;
-    break;}
-case 2:
-#line 38 "example.y"
-{;;
-    break;}
-case 3:
-#line 41 "example.y"
-{yyval.intValue=yyvsp[0].intValue;;
-    break;}
-case 4:
-#line 42 "example.y"
-{printf("Found ID\n");;
-    break;}
-case 5:
-#line 43 "example.y"
-{yyval.intValue=yyvsp[-2].intValue+yyvsp[0].intValue;;
-    break;}
-case 6:
-#line 44 "example.y"
-{yyval.intValue=yyvsp[-2].intValue-yyvsp[0].intValue;;
-    break;}
-case 7:
-#line 45 "example.y"
-{yyval.intValue=yyvsp[-2].intValue*yyvsp[0].intValue;;
-    break;}
-case 8:
-#line 46 "example.y"
-{yyval.intValue=yyvsp[-2].intValue/yyvsp[0].intValue;;
-    break;}
-case 9:
-#line 47 "example.y"
-{yyval.intValue=yyvsp[-1].intValue;;
-    break;}
-case 10:
-#line 48 "example.y"
-{yyval.intValue=yyvsp[0].intValue;;
-    break;}
-case 11:
-#line 50 "example.y"
-{fprintf(stdout, "Result is %d\n", yyvsp[-1].intValue);;
-    break;}
-case 12:
-#line 52 "example.y"
-{;;
-    break;}
-case 13:
-#line 53 "example.y"
-{;;
-    break;}
-case 14:
-#line 56 "example.y"
-{assign (yyvsp[-3].stringValue,yyvsp[-1].intValue);;
-    break;}
-case 15:
-#line 59 "example.y"
-{;;
-    break;}
-case 16:
-#line 60 "example.y"
-{;;
-    break;}
 }
 
 #line 839 "/usr/share/bison++/bison.cc"
    /* the action file gets copied in in place of this dollarsign  */
   yyvsp -= yylen;
   yyssp -= yylen;
-#ifdef YY_parse_LSP_NEEDED
+#ifdef YY_parser_name_LSP_NEEDED
   yylsp -= yylen;
 #endif
 
-#if YY_parse_DEBUG != 0
-  if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+  if (YY_parser_name_DEBUG_FLAG)
     {
       short *ssp1 = yyss - 1;
       fprintf (stderr, "state stack now");
@@ -1124,12 +1373,12 @@ case 16:
 
   *++yyvsp = yyval;
 
-#ifdef YY_parse_LSP_NEEDED
+#ifdef YY_parser_name_LSP_NEEDED
   yylsp++;
   if (yylen == 0)
     {
-      yylsp->first_line = YY_parse_LLOC.first_line;
-      yylsp->first_column = YY_parse_LLOC.first_column;
+      yylsp->first_line = YY_parser_name_LLOC.first_line;
+      yylsp->first_column = YY_parser_name_LLOC.first_column;
       yylsp->last_line = (yylsp-1)->last_line;
       yylsp->last_column = (yylsp-1)->last_column;
       yylsp->text = 0;
@@ -1161,9 +1410,9 @@ YYLABEL(yyerrlab)   /* here on detecting error */
   if (! yyerrstatus)
     /* If not already recovering from an error, report this error.  */
     {
-      ++YY_parse_NERRS;
+      ++YY_parser_name_NERRS;
 
-#ifdef YY_parse_ERROR_VERBOSE
+#ifdef YY_parser_name_ERROR_VERBOSE
       yyn = yypact[yystate];
 
       if (yyn > YYFLAG && yyn < YYLAST)
@@ -1196,15 +1445,15 @@ YYLABEL(yyerrlab)   /* here on detecting error */
 			count++;
 		      }
 		}
-	      YY_parse_ERROR(msg);
+	      YY_parser_name_ERROR(msg);
 	      free(msg);
 	    }
 	  else
-	    YY_parse_ERROR ("parse error; also virtual memory exceeded");
+	    YY_parser_name_ERROR ("parse error; also virtual memory exceeded");
 	}
       else
-#endif /* YY_parse_ERROR_VERBOSE */
-	YY_parse_ERROR("parse error");
+#endif /* YY_parser_name_ERROR_VERBOSE */
+	YY_parser_name_ERROR("parse error");
     }
 
   YYGOTO(yyerrlab1);
@@ -1215,15 +1464,15 @@ YYLABEL(yyerrlab1)   /* here on error raised explicitly by an action */
       /* if just tried and failed to reuse lookahead token after an error, discard it.  */
 
       /* return failure if at end of input */
-      if (YY_parse_CHAR == YYEOF)
+      if (YY_parser_name_CHAR == YYEOF)
 	YYABORT;
 
-#if YY_parse_DEBUG != 0
-      if (YY_parse_DEBUG_FLAG)
-	fprintf(stderr, "Discarding token %d (%s).\n", YY_parse_CHAR, yytname[yychar1]);
+#if YY_parser_name_DEBUG != 0
+      if (YY_parser_name_DEBUG_FLAG)
+	fprintf(stderr, "Discarding token %d (%s).\n", YY_parser_name_CHAR, yytname[yychar1]);
 #endif
 
-      YY_parse_CHAR = YYEMPTY;
+      YY_parser_name_CHAR = YYEMPTY;
     }
 
   /* Else will try to reuse lookahead token
@@ -1247,12 +1496,12 @@ YYLABEL(yyerrpop)   /* pop the current state because it cannot handle the error 
   if (yyssp == yyss) YYABORT;
   yyvsp--;
   yystate = *--yyssp;
-#ifdef YY_parse_LSP_NEEDED
+#ifdef YY_parser_name_LSP_NEEDED
   yylsp--;
 #endif
 
-#if YY_parse_DEBUG != 0
-  if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+  if (YY_parser_name_DEBUG_FLAG)
     {
       short *ssp1 = yyss - 1;
       fprintf (stderr, "Error: state stack now");
@@ -1286,14 +1535,14 @@ YYLABEL(yyerrhandle)
   if (yyn == YYFINAL)
     YYACCEPT;
 
-#if YY_parse_DEBUG != 0
-  if (YY_parse_DEBUG_FLAG)
+#if YY_parser_name_DEBUG != 0
+  if (YY_parser_name_DEBUG_FLAG)
     fprintf(stderr, "Shifting error token, ");
 #endif
 
-  *++yyvsp = YY_parse_LVAL;
-#ifdef YY_parse_LSP_NEEDED
-  *++yylsp = YY_parse_LLOC;
+  *++yyvsp = YY_parser_name_LVAL;
+#ifdef YY_parser_name_LSP_NEEDED
+  *++yylsp = YY_parser_name_LLOC;
 #endif
 
   yystate = yyn;
@@ -1305,24 +1554,4 @@ YYLABEL(yyerrhandle)
 /* END */
 
  #line 1038 "/usr/share/bison++/bison.cc"
-#line 62 "example.y"
-
-int yyerror (char* yaccProvidedMessage){
-	fprintf(stderr,"%s: at line %d,before token: %s\n",yaccPrividedMessage,yylineno,yytext);
-	fprintf(stderr, "INPUT NOT VALID\n");
-}
-
-int main(int argc,char**argv){
-	if(argc>1){
-		if(!(yyin=fopen(argv[1],"r"))){
-			fprintf(stderr, "Cannot read file: %s\n",argv[1] );
-	
-			return 1;
-		}else{
-			yyin=stdin;
-		}
-		yyparse();
-		return 0;
-	}
-
-}
+#line 168 "syntax.y"
