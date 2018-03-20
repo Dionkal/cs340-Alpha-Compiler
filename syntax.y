@@ -9,10 +9,9 @@
 	extern FILE* yyin;
 
 %}
-%name parser_name
 
 %start 	program
-%token  ID BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL UMINUS PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NUMBER STRING NIL TRUE FALSE IF ELSE WHILE FOR RETURN
+%token  ID BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NUMBER STRING NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
 %left '(' ')' 
 %left '[' ']'
@@ -31,10 +30,11 @@
 %%
 
 program:	stmt1
+			|/*empty*/
 			;
 
-stmt1:		/*empty*/
-			|stmt stmt1
+stmt1:		stmt1 stmt
+           |stmt
 			;
 
 stmt:		expr ';'
@@ -58,7 +58,7 @@ expr:		assignexpr
 op:   		'+'|'-'|'*'|'/'|'%'|'>'| GREATEREQUAL |'<'| LESSEQUAL | EQUAL | NOTEQUAL| AND|OR ;
 
 term: 		'('expr ')'
-			| UMINUS expr
+			| '-' expr %prec UMINUS
 			| NOT expr
 			|PLUSPLUS lvalue
 			|lvalue PLUSPLUS
@@ -129,15 +129,12 @@ indexed1:	/*empty*/
 
 indexedelem:'{' expr ':' expr '}' ;
 
-block:		'{'
-			|stmt1
-			'}'
+block:		'{' stmt1'}'
+             |'{''}'
 			;	
 
-funcdef:	FUNCTION funcdef1 '(' idlist ')' block ;
-
-funcdef1:	/*empty*/
-			|ID
+funcdef:	FUNCTION ID '(' idlist ')' block 
+			| FUNCTION '(' idlist ')' block 
 			;
 
 const:		NUMBER | STRING | NIL |TRUE|FALSE;
