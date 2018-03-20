@@ -50,9 +50,11 @@ stmt:		expr ';'
 			;
 
 expr:		assignexpr
-			|expr op expr
+			|expr expr1
 			|term
 			;
+
+expr1:		op expr1;
 
 
 op:   		'+'|'-'|'*'|'/'|'%'|'>'| GREATEREQUAL |'<'| LESSEQUAL | EQUAL | NOTEQUAL| AND|OR ;
@@ -157,9 +159,7 @@ whilestmt:	WHILE '(' expr ')' stmt ;
 
 forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt ;
 
-returnstmt:	RETURN returnstmt1;
-
-returnstmt1:/*empty*/
-			|expr
+returnstmt:	RETURN ';'
+			|RETURN expr ';'
 			;
 
