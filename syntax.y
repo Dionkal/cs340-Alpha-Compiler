@@ -49,15 +49,24 @@ stmt:		expr ';'
 			|';'
 			;
 
-expr:		assignexpr
-			|expr expr1
+expr:			assignexpr
+			|expr '+' expr
+			|expr '-' expr
+			|expr '*' expr
+			|expr '/' expr
+			|expr '%' expr
+			|expr '>' expr
+			|expr '<' expr
+			|expr GREATEREQUAL expr
+			|expr LESSEQUAL expr
+			|expr EQUAL expr
+			|expr NOTEQUAL expr
+			|expr AND expr
+			|expr OR expr
 			|term
 			;
 
-expr1:		op expr1;
 
-
-op:   		'+'|'-'|'*'|'/'|'%'|'>'| GREATEREQUAL |'<'| LESSEQUAL | EQUAL | NOTEQUAL| AND|OR ;
 
 term: 		'('expr ')'
 			| '-' expr %prec UMINUS
@@ -115,13 +124,13 @@ objectdef:	'[' elist ']'
 			|'[' indexed ']'
 			;
 
-objectdef1:	/*empty*/
-			|elist
-			|indexed
-			;
 
-indexed:	indexed ',' indexedelem 
-			| 
+indexed:	indexedelem more;
+
+more:           ',' indexedelem more
+                 |/*empty*/
+                  ; 
+	
 
 indexedelem:'{' expr ':' expr '}' ;
 
