@@ -19,9 +19,10 @@ integer	[0-9]+
 "="	{return '=';}
 ";"	{return ';';}
 
-(integer) {yylval.intValue= atoi(yytext); return INTEGER;}
-(id) 	{yylval.stringValue = strdup(yytext); return ID;}
+{integer} {return INTEGER;}
+{id} 	{return ID;}
 
-[ \t\n]+ {}
+[ \t]+ {}
 
 . {fprintf(stderr,"Cannot match character %s with any rules with any rule\n", yytext);}
+

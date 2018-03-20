@@ -11,11 +11,23 @@
 %}
 
 %start 	program
-%token  ID BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NUMBER STRING NIL TRUE FALSE IF ELSE WHILE FOR RETURN
+
+%union {
+	char* stringValue;
+	float floatValue;
+	//symbol_t entry* ptr pointer se struct tou symbol_t
+}
+
+%token <stringValue> ID 
+%token <floatValue> NUMBER
+%token <stringValue> STRING 
+%token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUBLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
+
+//%type<ptr> expr
 
 %left '(' ')' 
 %left '[' ']'
-%left '.' DOUPLEDOT
+%left '.' DOUBLEDOT
 %right NOT PLUSPLUS MINUSMINUS UMINUS 
 %left '*' '/' '%'
 %left '+' '-'
@@ -34,7 +46,7 @@ program:	stmt1
 			;
 
 stmt1:		stmt1 stmt
-           |stmt
+            |stmt
 			;
 
 stmt:		expr ';'
@@ -49,15 +61,26 @@ stmt:		expr ';'
 			|';'
 			;
 
-expr:		assignexpr
-			|expr op expr
-			|term
+expr:		 assignexpr 
+			|expr '+' expr 
+			|expr '-' expr 
+			|expr '*' expr 
+			|expr '/' expr 
+			|expr '%' expr 
+			|expr '>' expr 
+			|expr '<' expr 
+			|expr GREATEREQUAL expr 
+			|expr LESSEQUAL expr 
+			|expr EQUAL expr 
+			|expr NOTEQUAL expr 
+			|expr AND expr 
+			|expr OR expr 
+			|term 
 			;
 
 
-op:   		'+'|'-'|'*'|'/'|'%'|'>'| GREATEREQUAL |'<'| LESSEQUAL | EQUAL | NOTEQUAL| AND|OR ;
 
-term: 		'('expr ')'
+term: 		'('expr ')' 
 			| '-' expr %prec UMINUS
 			| NOT expr
 			|PLUSPLUS lvalue
@@ -67,7 +90,7 @@ term: 		'('expr ')'
 			|primary
 			;
 
-assignexpr:	lvalue '=' expr ;
+assignexpr:	lvalue '=' expr ; 
 
 primary:	lvalue 
 			|call
@@ -99,7 +122,7 @@ callsuffix:	normcall
 
 normcall:   '(' elist ')';
 
-methodcall:	DOUPLEDOT ID '(' elist ')' ;
+methodcall:	DOUBLEDOT ID '(' elist ')' ;
 
 elist:		/*empty*/
 			|expr elist1
@@ -109,23 +132,17 @@ elist1:		/*empty*/
 			|','expr elist1
 			;
 
-objectdef:	'[' 
-			|objectdef1
-			']'
+objectdef:	'[' elist ']'
+			|'[' indexed ']'
 			;
 
-objectdef1:	/*empty*/
-			|elist
-			|indexed
-			;
 
-indexed:	/*empty*/
-			|indexedelem indexed1
-			;
+indexed:	indexedelem more;
 
-indexed1:	/*empty*/
-			|',' indexedelem indexed1
-			;
+more:           ',' indexedelem more
+                 |/*empty*/
+                  ; 
+	
 
 indexedelem:'{' expr ':' expr '}' ;
 
@@ -157,9 +174,7 @@ whilestmt:	WHILE '(' expr ')' stmt ;
 
 forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt ;
 
-returnstmt:	RETURN returnstmt1;
-
-returnstmt1:/*empty*/
-			|expr
+returnstmt:	RETURN ';'
+			|RETURN expr ';'
 			;
 
