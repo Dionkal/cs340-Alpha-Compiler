@@ -9,10 +9,9 @@
 	extern FILE* yyin;
 
 %}
-%name parser_name
 
 %start 	program
-%token  ID BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL UMINUS PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NUMBER STRING NIL TRUE FALSE IF ELSE WHILE FOR RETURN
+%token  ID BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NUMBER STRING NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
 %left '(' ')' 
 %left '[' ']'
@@ -31,10 +30,11 @@
 %%
 
 program:	stmt1
+			|/*empty*/
 			;
 
-stmt1:		/*empty*/
-			|stmt stmt1
+stmt1:		stmt1 stmt
+           |stmt
 			;
 
 stmt:		expr ';'
@@ -49,16 +49,27 @@ stmt:		expr ';'
 			|';'
 			;
 
-expr:		assignexpr
-			|expr op expr
+expr:			assignexpr
+			|expr '+' expr
+			|expr '-' expr
+			|expr '*' expr
+			|expr '/' expr
+			|expr '%' expr
+			|expr '>' expr
+			|expr '<' expr
+			|expr GREATEREQUAL expr
+			|expr LESSEQUAL expr
+			|expr EQUAL expr
+			|expr NOTEQUAL expr
+			|expr AND expr
+			|expr OR expr
 			|term
 			;
 
 
-op:   		'+'|'-'|'*'|'/'|'%'|'>'| GREATEREQUAL |'<'| LESSEQUAL | EQUAL | NOTEQUAL| AND|OR ;
 
 term: 		'('expr ')'
-			| UMINUS expr
+			| '-' expr %prec UMINUS
 			| NOT expr
 			|PLUSPLUS lvalue
 			|lvalue PLUSPLUS
@@ -109,35 +120,26 @@ elist1:		/*empty*/
 			|','expr elist1
 			;
 
-objectdef:	'[' 
-			|objectdef1
-			']'
+objectdef:	'[' elist ']'
+			|'[' indexed ']'
 			;
 
-objectdef1:	/*empty*/
-			|elist
-			|indexed
-			;
 
-indexed:	/*empty*/
-			|indexedelem indexed1
-			;
+indexed:	indexedelem more;
 
-indexed1:	/*empty*/
-			|',' indexedelem indexed1
-			;
+more:           ',' indexedelem more
+                 |/*empty*/
+                  ; 
+	
 
 indexedelem:'{' expr ':' expr '}' ;
 
-block:		'{'
-			|stmt1
-			'}'
+block:		'{' stmt1'}'
+             |'{''}'
 			;	
 
-funcdef:	FUNCTION funcdef1 '(' idlist ')' block ;
-
-funcdef1:	/*empty*/
-			|ID
+funcdef:	FUNCTION ID '(' idlist ')' block 
+			| FUNCTION '(' idlist ')' block 
 			;
 
 const:		NUMBER | STRING | NIL |TRUE|FALSE;
@@ -160,9 +162,7 @@ whilestmt:	WHILE '(' expr ')' stmt ;
 
 forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt ;
 
-returnstmt:	RETURN returnstmt1;
-
-returnstmt1:/*empty*/
-			|expr
+returnstmt:	RETURN ';'
+			|RETURN expr ';'
 			;
 
