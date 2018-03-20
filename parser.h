@@ -55,23 +55,23 @@ extern int yydebug;
     LESSEQUAL = 265,
     EQUAL = 266,
     NOTEQUAL = 267,
-    UMINUS = 268,
-    PLUSPLUS = 269,
-    MINUSMINUS = 270,
-    LOCAL = 271,
-    SCOPEOP = 272,
-    DOUPLEDOT = 273,
-    FUNCTION = 274,
-    NUMBER = 275,
-    STRING = 276,
-    NIL = 277,
-    TRUE = 278,
-    FALSE = 279,
-    IF = 280,
-    ELSE = 281,
-    WHILE = 282,
-    FOR = 283,
-    RETURN = 284
+    PLUSPLUS = 268,
+    MINUSMINUS = 269,
+    LOCAL = 270,
+    SCOPEOP = 271,
+    DOUPLEDOT = 272,
+    FUNCTION = 273,
+    NUMBER = 274,
+    STRING = 275,
+    NIL = 276,
+    TRUE = 277,
+    FALSE = 278,
+    IF = 279,
+    ELSE = 280,
+    WHILE = 281,
+    FOR = 282,
+    RETURN = 283,
+    UMINUS = 284
   };
 #endif
 /* Tokens.  */
@@ -85,23 +85,23 @@ extern int yydebug;
 #define LESSEQUAL 265
 #define EQUAL 266
 #define NOTEQUAL 267
-#define UMINUS 268
-#define PLUSPLUS 269
-#define MINUSMINUS 270
-#define LOCAL 271
-#define SCOPEOP 272
-#define DOUPLEDOT 273
-#define FUNCTION 274
-#define NUMBER 275
-#define STRING 276
-#define NIL 277
-#define TRUE 278
-#define FALSE 279
-#define IF 280
-#define ELSE 281
-#define WHILE 282
-#define FOR 283
-#define RETURN 284
+#define PLUSPLUS 268
+#define MINUSMINUS 269
+#define LOCAL 270
+#define SCOPEOP 271
+#define DOUPLEDOT 272
+#define FUNCTION 273
+#define NUMBER 274
+#define STRING 275
+#define NIL 276
+#define TRUE 277
+#define FALSE 278
+#define IF 279
+#define ELSE 280
+#define WHILE 281
+#define FOR 282
+#define RETURN 283
+#define UMINUS 284
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
