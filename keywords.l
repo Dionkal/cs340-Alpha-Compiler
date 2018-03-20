@@ -3,9 +3,9 @@
 #include "scanner.h"
 #include <iomanip>
 using namespace std;
+
 	
 %}
-
 %option yylineno
 %option noyywrap
 
@@ -14,7 +14,7 @@ real	[0-9]+"."[0-9]+
 
 /*Punctuation*/
 leftBracket1	\{
-rightBracet1	\}	
+rightBracket1	\}	
 leftBracket2	\[
 rightBracket2	\]
 leftBracket3	\(
@@ -26,8 +26,7 @@ doubleColon	[:]{2}
 period			\.
 doublePeriod[.]{2}
 
-string			\"[^\n"]*\" 
-comment1	\/{2}.*
+comment1		\/{2}.*
 
 ID				[a-zA-Z][a-zA-Z0-9_]*
 Whitespace 		[ \t\n]
@@ -161,74 +160,159 @@ nil				{
 
 {Whitespace}	;
 
+{leftBracket1}  { 
+          	addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
+        } 
+{rightBracket1}  { 
+          	addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+        } 
+{leftBracket2}  { 
+          	addToken(PUNCTUATION,string("LEFT_SQR_BRACKET"),string(yytext),yylineno);
+        } 
+{rightBracket2}  { 
+          	addToken(PUNCTUATION,string("RIGHT_SQR_BRACKET"),string(yytext),yylineno); 
+        } 
+{leftBracket3}  { 
+          	addToken(PUNCTUATION,string("LEFT_PARENTHESIS"),string(yytext),yylineno);
+        } 
+{rightBracket3}  { 
+          	addToken(PUNCTUATION,string("RIGHT_PARENTHESIS"),string(yytext),yylineno); 
+        } 
+{semicolon}    { 
+          	addToken(PUNCTUATION,string("SEMICOLON"),string(yytext),yylineno);
+        } 
+{comma}      { 
+          	addToken(PUNCTUATION,string("COMMA"),string(yytext),yylineno);
+        } 
+{colon}      { 
+          	addToken(PUNCTUATION,string("COLON"),string(yytext),yylineno);
+        } 
+{doubleColon}  { 
+        	addToken(PUNCTUATION,string("DOUBLE_COLON"),string(yytext),yylineno);
+        } 
+{period}    { 
+          	addToken(PUNCTUATION,string("PERIOD"),string(yytext),yylineno); 
+        } 
+{doublePeriod}  { 
+        	addToken(PUNCTUATION,string("DOUBLE_PERIOD"),string(yytext),yylineno);
+} 
 
-{string}		{
-				
+
+"\""		{ 	
+			char input = *yytext; /*get input*/
+  			char next;
+  			string output;
+  			int stringLine = yylineno;
+  			int isLegal = 1;
+
+  			while (input != EOF && (input = yyinput()) != '\0' ) {
+    		/*Check cases which start with '\'*/
+    			if (input == '\\') {
+      				//Lookahead
+      				next = yyinput();
+
+      				if (next == 'n') {
+        				output += '\n';
+        				continue;
+      				}else if (next == 't') {
+        				output += '\t';
+        				continue;
+        			}else if (next == '\\') {
+        				output += '\\';
+        				continue;
+      				}else if (next == '\"') {
+        				output += '\"';
+        				continue;
+        			}else{
+        				printf("Error: Illegal escape character \'%c%c\' in string at line %d\n",input,next,yylineno);
+        				isLegal = 0;
+        			}
 				}
 
-{comment1}		;
+
+				/*check if string ends legally*/
+				if(input== '\"'){
+					if(isLegal) addToken(STRING, string("STRING"), output, stringLine);	
+					break;		
+				}
+
+    			output += input; 
+  			}
+  		
+  		if (input == '\0') {
+    		printf("Error: End-of-file reached while in string: %s at line #%d\n",yytext,stringLine);
+    	}
+}
+
+
+{comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
 
 "/*"			{	
-					int c,lineBegin,lineEnd,nested=0; /*lineBegin and lineEnd for printing where the comment is,and nested checks if the comment is nested*/
-					string lines;/*for output*/
-					lineBegin=yylineno;
-					lines=string.to_string(lineBegin);
+					char c;
+			int start_line;
+			string startToEnd;
+			ostringstream convert1,convert2;
+			std :: vector <int> v;
 
-					while(1){
-
-						while( (c=input()) != '*' && c!=EOF){
-
-							while( (c=input())=='/'){
-
-								if((c=input())=='*'){//possible nested
-											
-									//idios kodikas		
-									nested++;			
-								}	
-							}
-
-							while(c == '\\' && (c=input())=='n'){//edo tora thelei den thelei input den ksero ego mperdeutei
-								;
-							}				
-
-							lineEnd=yylineno;
-							lineEnd=string.to_string(lineEnd);
-							lines=lines + "-" + lineEnd;
-							addToken(string("MULTILINE COMMENT"),lines,yylineno); 
+			v.push_back (yylineno);
+	
+			while(((c = yyinput()) != '\0') && (c  != EOF) )
+			{
+				if(c == '*')
+				{
+					if((c = yyinput()) == '/')
+					{
+						if(!v.empty())
+						{
+							start_line=v.back();
+							v.pop_back();
+							
+							convert1<<start_line;
+							convert2<<yylineno;
+							startToEnd=convert1.str()+"-"+convert2.str();
+							addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line); 
+							convert1.str(std::string());
+							convert2.str(std::string());
+							
 						}
-
-						if(c=='*'){
-							while( (c=input())=='*'){//ta lookforward prepei na ta pao piso
-								unput(c);/*put it back*/
-							}
-
-							if(c=='/')
-								//ki an einai nested na to valo edo i guess
-								break;/*here is the end of the commnent*/
-						}
-
-						if(c==EOF){
-							printf("EOF found");
-							break;
-						}
-
-					}
+						if(v.empty()) break;
+						
+					}	
+					else unput(c);
+				}else if(c == '/')
+				{
+					if((c = yyinput()) == '*')
+					v.push_back(yylineno);
+					
+					else
+					unput(c);
+				}
+				
+				
+			}
+			
+			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
 				}
 
-.				printf("Invalid character\n");		
+.			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
 				
 %%
 //Global token vector
-vector  <alpha_token_t>* vctr_ptr;
+vector  <alpha_token_t>* vctr_ptr; 
 //Global token number
 int token_number = 0;
 //Global lex object
 yyFlexLexer temp;
 
+int alpha_yylex(void* yylval){ 
+  vctr_ptr = (vector <alpha_token_t>*) yylval;  
+  return  temp.yylex(); 
+} 
+
 void addToken(type token_t,string token_sT, string value, int line){
 	alpha_token_t token_struct;
 	
-	token_number++;
+	token_number++; 
 
 	token_struct.number_of_token = token_number; 		//save token number
 	token_struct.line_number = line;	  				//save line number
@@ -236,13 +320,28 @@ void addToken(type token_t,string token_sT, string value, int line){
 	token_struct.str_subType = token_sT;				//save token subtype as string
 	token_struct.token_value = value;					//save value of token as string
 
+	switch(token_t){
+		case KEYWORD: 		
+		case OPERATOR: 		
+		case PUNCTUATION: 	 
+		case COMMENT: 
+			token_struct.arrow_type = "<--enumerated";
+			break;
+		case IDENTIFIER: 	
+		case STRING:
+			token_struct.arrow_type = "<--char*";
+			break;
+		case INT_CONST: 	
+			token_struct.arrow_type = "<--int";
+			break;
+		case REAL_CONST: 	
+			token_struct.arrow_type ="<--floating point";
+		 	break;
+		default:	
+			token_struct.arrow_type = "<--_UKNOWN_TYPE_";
+	}
 	//add token struct to global vector 
-	vctr_ptr->push_back(token_struct); 
-}
-
-int alpha_yylex(void* yylval){
-	vctr_ptr = (vector <alpha_token_t>*) yylval;
-	return  temp.yylex();
+	vctr_ptr->push_back(token_struct);  
 }
 
 
@@ -254,17 +353,62 @@ string typeToString(type t){
 		case REAL_CONST: 	return "REAL_CONST";
 		case STRING: 		return "STRING";
 		case OPERATOR: 		return "OPERATOR";
+		case PUNCTUATION: 	return "PUNCTUATION";
+		case COMMENT: 		return "COMMENT";
+		default:			return "_UKNOWN_TYPE_";
 	}
 }
 
-int main (){
-	vector <alpha_token_t> token_vector;
-	alpha_yylex( &token_vector);
+int main (int argc, char *argv[]){
+	vector <alpha_token_t> token_vector; 
 
-	for(alpha_token_t token :token_vector){
-		//print token info 
-		cout  <<left  <<std::setw(5)<<token.number_of_token <<": #" << token.line_number <<" \"" <<std::setw(6)<<token.token_value <<"\"\t";
-		cout  <<left << typeToString(token.token_type) <<"\t" <<setw(8) <<token.str_subType  <<setw(8) <<endl;
+	if (argc < 2 || argc > 3) {
+		printf("Invalid parameter\nUsage: <program> <path to input file> <optional "
+           "path to output file>\n");
+		exit(1);
+	}
+	
+	
+	std::filebuf fb_in;
+	std::filebuf fb_out;
+	if (fb_in.open (argv[1],std::ios::in)){
+		std::istream is(&fb_in);
+	
+	
+		if (argc == 3) {
+	
+			fb_out.open (argv[2],std::ios::out);
+			std::ostream os(&fb_out);
+			temp.switch_streams(&is,&os);
+
+			alpha_yylex( &token_vector);
+  
+  
+			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
+			//print token info 
+				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
+				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+			}
+		}else{
+			std::ostream os(NULL);
+			os.rdbuf(std::cout.rdbuf());
+			temp.switch_streams(&is,&os);
+			
+			alpha_yylex( &token_vector);
+  
+  
+			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
+			//print token info 
+				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
+				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+			}
+		}
+	
+
+	}else{
+		cout <<"Error opening file: " << string(argv[1]) <<endl;
+		exit(-1);
+	
 	}
 
   	return 0;

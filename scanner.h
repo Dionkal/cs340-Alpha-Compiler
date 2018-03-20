@@ -1,13 +1,27 @@
 #include <string>
 #include <vector>
+#include <iostream>
+#include <stdio.h>
+#include <sstream> 
+#include <fstream>
 
-typedef struct alpha_token_t alpha_token_t;
+using namespace std;
 
- struct  alpha_token_t{
-	int token_no;
-	int line_no;
-	void* token_type; 
-	String token_value;
-};
+typedef enum{KEYWORD,IDENTIFIER,INT_CONST,REAL_CONST,STRING,OPERATOR,PUNCTUATION,COMMENT} type;
 
-int addToken(char* value, int value_lenght, char* type);
+typedef struct{
+	int number_of_token;
+	int line_number;
+	type token_type; 
+	string str_subType;
+	string token_value;
+	string arrow_type;
+
+}alpha_token_t;
+
+/*Adds the given token to the global vector*/
+void addToken(type token_t,string token_sT, string value, int line);
+
+
+/*code for strings*/
+void stringAction();

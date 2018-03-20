@@ -1,0 +1,6 @@
+
+scanner
+
+lex\.yy\.cc
+
+*.in
