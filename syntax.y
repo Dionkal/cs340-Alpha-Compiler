@@ -111,9 +111,8 @@ elist1:		/*empty*/
 			|','expr elist1
 			;
 
-objectdef:	'[' 
-			|objectdef1
-			']'
+objectdef:	'[' elist ']'
+			|'[' indexed ']'
 			;
 
 objectdef1:	/*empty*/
@@ -121,13 +120,8 @@ objectdef1:	/*empty*/
 			|indexed
 			;
 
-indexed:	/*empty*/
-			|indexedelem indexed1
-			;
-
-indexed1:	/*empty*/
-			|',' indexedelem indexed1
-			;
+indexed:	indexed ',' indexedelem 
+			| 
 
 indexedelem:'{' expr ':' expr '}' ;
 
