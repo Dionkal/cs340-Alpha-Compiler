@@ -11,11 +11,23 @@
 %}
 
 %start 	program
-%token  ID BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NUMBER STRING NIL TRUE FALSE IF ELSE WHILE FOR RETURN
+
+%union {
+	char* stringValue;
+	float floatValue;
+	//symbol_t entry* ptr pointer se struct tou symbol_t
+}
+
+%token <stringValue> ID 
+%token <floatValue> NUMBER
+%token <stringValue> STRING 
+%token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
+
+//%type<ptr> expr
 
 %left '(' ')' 
 %left '[' ']'
-%left '.' DOUPLEDOT
+%left '.' DOUBLEDOT
 %right NOT PLUSPLUS MINUSMINUS UMINUS 
 %left '*' '/' '%'
 %left '+' '-'
@@ -33,8 +45,8 @@ program:	stmt1						{printf("Program started");}
 			|/*empty*/					{printf("Program did not start");}
 			;
 
-stmt1:		stmt1 stmt1 				{printf("Statement in line:%d",yylineno);}
-           |stmt 						{printf("Statement in line:%d",yylineno);}
+stmt1:		stmt1 stmt
+            |stmt
 			;
 
 stmt:		expr ';' 					{printf("stmt:Expression with ';' in line:%d",yylineno);}
@@ -78,7 +90,8 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d",yylineno);}
 			|primary 					{printf("term:primary in line:%d",yylineno);}
 			;
 
-assignexpr:	lvalue '=' expr ; 			{printf("assignexpr:lvalue=expr in line:%d",yylineno);}
+assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d",yylineno);}
+			;
 
 primary:	lvalue 						{printf("primary: lvalue in line:%d",yylineno);}
 			|call 						{printf("primary: call in line:%d",yylineno);}
@@ -108,9 +121,11 @@ callsuffix:	normcall					{printf("callsuffix: normcall in line:%d",yylineno);}
 			|methodcall 				{printf("callsuffix: methodcall in line:%d",yylineno);}
 			;
 
-normcall:   '(' elist ')';				{printf("normcall: (elist) in line:%d",yylineno);}
+normcall:   '(' elist ')'				{printf("normcall: (elist) in line:%d",yylineno);}
+			;
 
-methodcall:	DOUPLEDOT ID '(' elist ')' ; {printf("methodcall: DOUPLEDOT ID (elist) in line:%d",yylineno);}
+methodcall:	DOUPLEDOT ID '(' elist ')'  {printf("methodcall: DOUPLEDOT ID (elist) in line:%d",yylineno);}
+			;
 
 elist:		/*empty*/					{printf("elist: empty list in line:%d",yylineno);}
 			|expr elist1 				{printf("elist: expr elist1 list in line:%d",yylineno);}
@@ -125,14 +140,16 @@ objectdef:	'[' elist ']' 						{printf("objectdef: [elist] in line:%d",yylineno)
 			;
 
 
-indexed:	indexedelem more;					{printf("indexed: indexedelem more in line:%d",yylineno);}
+indexed:	indexedelem more					{printf("indexed: indexedelem more in line:%d",yylineno);}
+			;
 
-more:           ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d",yylineno);}
-                 |/*empty*/            			{printf("more: empty in line:%d",yylineno);}
-                  ; 
+more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d",yylineno);}
+            |/*empty*/            			{printf("more: empty in line:%d",yylineno);}
+            ; 
 	
 
-indexedelem:'{' expr ':' expr '}' ; 			{printf("indexedelem: {expr:expr} in line:%d",yylineno);}
+indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d",yylineno);}
+			;
 
 block:		'{' stmt1'}'						{printf("block: {stmt1} in line:%d",yylineno);}		
              |'{''}' 							{printf("block: {} in line:%d",yylineno);}
@@ -142,7 +159,8 @@ funcdef:	FUNCTION ID '(' idlist ')' block 	{printf("funcdef: FUNCTION ID (idlist
 			| FUNCTION '(' idlist ')' block 	{printf("funcdef: FUNCTION (idlist) block in line:%d",yylineno);}
 			;
 
-const:		NUMBER | STRING | NIL |TRUE|FALSE; 	{printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d",yylineno);}
+const:		NUMBER | STRING | NIL |TRUE|FALSE 	{printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d",yylineno);}
+			;
 
 idlist:		/*empty*/							{printf("idlist: empty in line:%d",yylineno);}
 			|ID idlist1 						{printf("idlist: ID idlist1 in line:%d",yylineno);}
@@ -152,15 +170,17 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d",yylineno);}
 			|',' ID idlist1 					{printf("idlist1: ,ID idlist1 in line:%d",yylineno);}
 			;
 
-ifstmt:		IF '(' expr ')' stmt ifstmt1; 		{printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d",yylineno);}
+ifstmt:		IF '(' expr ')' stmt ifstmt1		{printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d",yylineno);}
+			;
 
 ifstmt1:	/*empty*/							{printf("ifstmt1: empty in line:%d",yylineno);}
 			|ELSE stmt 							{printf("ifstmt1: ELSE stmt in line:%d",yylineno);}
 			;
 
-whilestmt:	WHILE '(' expr ')' stmt ; 			{printf("whilestmt: WHILE (expr) stmt in line:%d",yylineno);}
+whilestmt:	WHILE '(' expr ')' stmt 			{printf("whilestmt: WHILE (expr) stmt in line:%d",yylineno);}
+			;
 
-forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt ; {printf("forstmt: FOR (elist;expr;elist) stmt in 																		line:%d",yylineno);}
+forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt {printf("forstmt: FOR (elist;expr;elist) stmt in 								;											line:%d",yylineno);}
 
 returnstmt:	RETURN ';' 							{printf("returnstmt: RETURN; in line:%d",yylineno);}
 			|RETURN expr ';'					{printf("returnstmt: RETURN expr; in line:%d",yylineno);}
