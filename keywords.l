@@ -34,168 +34,201 @@ Whitespace 		[ \t\n]
 %%
 
 if				{
-					addToken(KEYWORD,string("IF"),string(yytext),yylineno); 
+					return IF;
+					//addToken(KEYWORD,string("IF"),string(yytext),yylineno); 
 				}
 else 			{ 
-					 
-					addToken(KEYWORD,string("ELSE"),string(yytext),yylineno);
+					return ELSE; 
+					//addToken(KEYWORD,string("ELSE"),string(yytext),yylineno);
 				}
 while			{ 
-					 
-					addToken(KEYWORD,string("WHILE"),string(yytext),yylineno);
+					return WHILE; 
+					//addToken(KEYWORD,string("WHILE"),string(yytext),yylineno);
 				}
 for				{ 
           			
-					 
-					addToken(KEYWORD,string("FOR"),string(yytext),yylineno);
+					return FOR;
+					//addToken(KEYWORD,string("FOR"),string(yytext),yylineno);
 				}
 function		{ 
           			
-					 
-					addToken(KEYWORD,string("FUNCTION"),string(yytext),yylineno);
+					return FUNCTION; 
+					//addToken(KEYWORD,string("FUNCTION"),string(yytext),yylineno);
 				}
 return			{ 
           			
-					 
-					addToken(KEYWORD,string("RETURN"),string(yytext),yylineno);
+					return RETURN; 
+					//addToken(KEYWORD,string("RETURN"),string(yytext),yylineno);
 				}
 break			{ 
           			
-					 
-					addToken(KEYWORD,string("BREAK"),string(yytext),yylineno);
+					return BREAK; 
+					//addToken(KEYWORD,string("BREAK"),string(yytext),yylineno);
 				}
 continue		{ 
           			
-					 
-					addToken(KEYWORD,string("CONTINUE"),string(yytext),yylineno);
+					return CONTINUE; 
+					//addToken(KEYWORD,string("CONTINUE"),string(yytext),yylineno);
 				}
 and				{ 
           			
-					 
-					addToken(KEYWORD,string("AND"),string(yytext),yylineno); 
+					return AND; 
+					//addToken(KEYWORD,string("AND"),string(yytext),yylineno); 
 				}
 not				{ 
           			
-					 
-					addToken(KEYWORD,string("NOT"),string(yytext),yylineno);
+					return NOT; 
+					//addToken(KEYWORD,string("NOT"),string(yytext),yylineno);
 				}
 or				{ 
           			
-					 
-					addToken(KEYWORD,string("OR"),string(yytext),yylineno);
+					return OR; 
+					//addToken(KEYWORD,string("OR"),string(yytext),yylineno);
 				}
 local			{ 
           			
-					 
-					addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno); 
+					return LOCAL; 
+					//addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno); 
 				}
 true			{ 
           			
-					 
-					addToken(KEYWORD,string("TRUE"),string(yytext),yylineno);
+					return TRUE; 
+					//addToken(KEYWORD,string("TRUE"),string(yytext),yylineno);
 				}
 false			{ 
           			
-					 
-					addToken(KEYWORD,string("FALSE"),string(yytext),yylineno); 
+					return FALSE; 
+					//addToken(KEYWORD,string("FALSE"),string(yytext),yylineno); 
 				}
 nil				{ 
           			
-					 
-					addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
+					return NULL; 
+					//addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
-{ID}			{
-					addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
+{ID}			{	
+					yylval.stringValue = strdup(yytext);
+					return ID;
+					//addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
 				
 "="				{ 
-          			addToken(OPERATOR,string("ASSIGNMENT"),string(yytext),yylineno);
+					return '=';
+          			//addToken(OPERATOR,string("ASSIGNMENT"),string(yytext),yylineno);
 				}				
 "+"				{ 
-          			addToken(OPERATOR,string("PLUS"),string(yytext),yylineno);
+          			return '+';
+					//addToken(OPERATOR,string("PLUS"),string(yytext),yylineno);
 				}				
 "-"				{ 
-          			addToken(OPERATOR,string("MINUS"),string(yytext),yylineno);
+          			return '-';
+					//addToken(OPERATOR,string("MINUS"),string(yytext),yylineno);
 				}
 "*"				{ 
-          			addToken(OPERATOR,string("MULTIPLICATION"),string(yytext),yylineno);
+          			return '*';
+					//addToken(OPERATOR,string("MULTIPLICATION"),string(yytext),yylineno);
 				}
 "/"				{ 
-          			addToken(OPERATOR,string("DIVISION"),string(yytext),yylineno);
+          			return '/';
+					//addToken(OPERATOR,string("DIVISION"),string(yytext),yylineno);
 				}
 "%"				{ 
-          			addToken(OPERATOR,string("MODULO"),string(yytext),yylineno);
+          			return '%';
+					//addToken(OPERATOR,string("MODULO"),string(yytext),yylineno);
 				}
 "=="			{ 
-          			addToken(OPERATOR,string("EQUALS"),string(yytext),yylineno);
+          			return EQUAL;
+					//addToken(OPERATOR,string("EQUALS"),string(yytext),yylineno);
 				}
 "!="			{ 
-          			addToken(OPERATOR,string("NOT_EQUALS"),string(yytext),yylineno);
+          			return NOTEQUAL;
+					//addToken(OPERATOR,string("NOT_EQUALS"),string(yytext),yylineno);
 				}
 "++"			{	 
-          			addToken(OPERATOR,string("PLUS_PLUS"),string(yytext),yylineno);
+          			return PLUSPLUS;
+					//addToken(OPERATOR,string("PLUS_PLUS"),string(yytext),yylineno);
 				}
 "--"			{ 
-          			addToken(OPERATOR,string("MINUS_MINUS"),string(yytext),yylineno);
+          			return MINUSMINUS;
+					//addToken(OPERATOR,string("MINUS_MINUS"),string(yytext),yylineno);
 				}
 ">"				{ 
-          			addToken(OPERATOR,string("GREATER"),string(yytext),yylineno);
+          			return '>';
+					//addToken(OPERATOR,string("GREATER"),string(yytext),yylineno);
 				}
 "<"				{ 
-          			addToken(OPERATOR,string("LESS"),string(yytext),yylineno);
+          			return '<';
+					//addToken(OPERATOR,string("LESS"),string(yytext),yylineno);
 				}
 ">="			{ 
-          			addToken(OPERATOR,string("G_EQUAL"),string(yytext),yylineno);
+          			return GREATEREQUAL;
+					//addToken(OPERATOR,string("G_EQUAL"),string(yytext),yylineno);
 				}
 "<="			{ 
-          			addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
+          			return LESSEQUAL;
+					//addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
 				}
 {integer}		{
-					addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
+					yylval.floatValue = atof(yytext);
+					return NUMBER;
+					//addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
 				}
 
 {real}			{
-					addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
+					yylval.floatValue = atof(yytext);
+					return NUMBER;
+					//addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
 				}
 
 {Whitespace}	;
 
 {leftBracket1}  { 
-          	addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
-        } 
+					return '{';
+					//addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
+				} 
 {rightBracket1}  { 
-          	addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
-        } 
+					return '}';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				} 
 {leftBracket2}  { 
-          	addToken(PUNCTUATION,string("LEFT_SQR_BRACKET"),string(yytext),yylineno);
-        } 
+					return '[';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				} 
 {rightBracket2}  { 
-          	addToken(PUNCTUATION,string("RIGHT_SQR_BRACKET"),string(yytext),yylineno); 
-        } 
+					return ']';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				}
 {leftBracket3}  { 
-          	addToken(PUNCTUATION,string("LEFT_PARENTHESIS"),string(yytext),yylineno);
-        } 
+					return '(';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				}
 {rightBracket3}  { 
-          	addToken(PUNCTUATION,string("RIGHT_PARENTHESIS"),string(yytext),yylineno); 
-        } 
+					return ')';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				}
 {semicolon}    { 
-          	addToken(PUNCTUATION,string("SEMICOLON"),string(yytext),yylineno);
-        } 
-{comma}      { 
-          	addToken(PUNCTUATION,string("COMMA"),string(yytext),yylineno);
-        } 
-{colon}      { 
-          	addToken(PUNCTUATION,string("COLON"),string(yytext),yylineno);
-        } 
-{doubleColon}  { 
-        	addToken(PUNCTUATION,string("DOUBLE_COLON"),string(yytext),yylineno);
-        } 
-{period}    { 
-          	addToken(PUNCTUATION,string("PERIOD"),string(yytext),yylineno); 
-        } 
+					return ';';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				}
+{comma}     	{ 
+					return ',';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+			    }
+{colon}      	{ 
+					return ':';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				} 
+{doubleColon}   { 
+					return SCOPEOP;
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+			    } 
+{period}    	{ 
+					return '.';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+			    } 
 {doublePeriod}  { 
-        	addToken(PUNCTUATION,string("DOUBLE_PERIOD"),string(yytext),yylineno);
-} 
+					return DOUPLEDOT;
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+			    }  
 
 
 "\""		{ 	
@@ -232,7 +265,11 @@ nil				{
 
 				/*check if string ends legally*/
 				if(input== '\"'){
-					if(isLegal) addToken(STRING, string("STRING"), output, stringLine);	
+					if(isLegal){
+					// addToken(STRING, string("STRING"), output, stringLine);
+						yylval.stringValue = strdup(yytext);
+						return STRING;
+					}					 
 					break;		
 				}
 
@@ -245,9 +282,9 @@ nil				{
 }
 
 
-{comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
+{comment1}		; //addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
 
-"/*"			{	
+"/*"	{	
 					char c;
 			int start_line;
 			string startToEnd;
@@ -292,7 +329,7 @@ nil				{
 			}
 			
 			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
-				}
+		}
 
 .			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
 				
