@@ -11,11 +11,23 @@
 %}
 
 %start 	program
-%token  ID BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NUMBER STRING NIL TRUE FALSE IF ELSE WHILE FOR RETURN
+
+%union {
+	char* stringValue;
+	float floatValue;
+	//symbol_t entry* ptr pointer se struct tou symbol_t
+}
+
+%token <stringValue> ID 
+%token <floatValue> NUMBER
+%token <stringValue> STRING 
+%token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUBLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
+
+//%type<ptr> expr
 
 %left '(' ')' 
 %left '[' ']'
-%left '.' DOUPLEDOT
+%left '.' DOUBLEDOT
 %right NOT PLUSPLUS MINUSMINUS UMINUS 
 %left '*' '/' '%'
 %left '+' '-'
@@ -33,8 +45,8 @@ program:	stmt1						{printf("Program started");}
 			|/*empty*/					{printf("Program did not start");}
 			;
 
-stmt1:		stmt1 stmt1 				{printf("Statement in line:%d",yylineno);}
-           |stmt 						{printf("Statement in line:%d",yylineno);}
+stmt1:		stmt1 stmt
+            |stmt
 			;
 
 stmt:		expr ';' 					{printf("stmt:Expression with ';' in line:%d",yylineno);}
