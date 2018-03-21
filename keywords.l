@@ -1,6 +1,7 @@
 %{
 	
 #include "scanner.h"
+#include "symTable.h"
 #include <iomanip>
 using namespace std;
 
@@ -334,6 +335,10 @@ nil				{
 .			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
 				
 %%
+//Global Hashtables
+std::map<string,symTableEntry> SymTableName;
+std::map<string,symTableEntry> SymTableScope; 
+
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr; 
 //Global token number
