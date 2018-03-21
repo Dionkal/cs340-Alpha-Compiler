@@ -1,7 +1,8 @@
 %{
 	
 #include "scanner.h"
-#include "symTable.h"
+#include "parser.h"
+#include <string.h>
 #include <iomanip>
 using namespace std;
 
@@ -103,7 +104,7 @@ false			{
 				}
 nil				{ 
           			
-					return NULL; 
+					return NIL; 
 					//addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
 {ID}			{	
@@ -180,13 +181,10 @@ nil				{
 					//addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
 				}
 
-{Whitespace}	;
-
-{leftBracket1}  { 
-					return '{';
+{Whitespace}	{
 					//addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
 				} 
-{rightBracket1}  { 
+"}"  			{ 
 					return '}';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				} 
@@ -267,7 +265,7 @@ nil				{
 				/*check if string ends legally*/
 				if(input== '\"'){
 					if(isLegal){
-					// addToken(STRING, string("STRING"), output, stringLine);
+					// addToken(STRING_TYPE, string("STRING_TYPE"), output, stringLine);
 						yylval.stringValue = strdup(yytext);
 						return STRING;
 					}					 
@@ -308,7 +306,7 @@ nil				{
 							convert1<<start_line;
 							convert2<<yylineno;
 							startToEnd=convert1.str()+"-"+convert2.str();
-							addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line); 
+							//addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line); 
 							convert1.str(std::string());
 							convert2.str(std::string());
 							
@@ -370,7 +368,7 @@ void addToken(type token_t,string token_sT, string value, int line){
 			token_struct.arrow_type = "<--enumerated";
 			break;
 		case IDENTIFIER: 	
-		case STRING:
+		case STRING_TYPE:
 			token_struct.arrow_type = "<--char*";
 			break;
 		case INT_CONST: 	
@@ -393,7 +391,7 @@ string typeToString(type t){
 		case IDENTIFIER: 	return "IDENTIFIER";
 		case INT_CONST: 	return "INT_CONST";
 		case REAL_CONST: 	return "REAL_CONST";
-		case STRING: 		return "STRING";
+		case STRING_TYPE: 		return "STRING_TYPE";
 		case OPERATOR: 		return "OPERATOR";
 		case PUNCTUATION: 	return "PUNCTUATION";
 		case COMMENT: 		return "COMMENT";
