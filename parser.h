@@ -75,35 +75,6 @@ extern int yydebug;
     UMINUS = 285
   };
 #endif
-/* Tokens.  */
-#define ID 258
-#define NUMBER 259
-#define STRING 260
-#define BREAK 261
-#define CONTINUE 262
-#define AND 263
-#define OR 264
-#define NOT 265
-#define GREATEREQUAL 266
-#define LESSEQUAL 267
-#define EQUAL 268
-#define NOTEQUAL 269
-#define PLUSPLUS 270
-#define MINUSMINUS 271
-#define LOCAL 272
-#define SCOPEOP 273
-#define DOUPLEDOT 274
-#define FUNCTION 275
-#define NIL 276
-#define TRUE 277
-#define FALSE 278
-#define IF 279
-#define ELSE 280
-#define WHILE 281
-#define FOR 282
-#define RETURN 283
-#define DOUBLEDOT 284
-#define UMINUS 285
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -116,7 +87,7 @@ union YYSTYPE
 	float floatValue;
 	//symbol_t entry* ptr pointer se struct tou symbol_t
 
-#line 120 "parser.h" /* yacc.c:1909  */
+#line 91 "parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
