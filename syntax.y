@@ -64,7 +64,7 @@ stmt:		expr ';' 					{printf("stmt:Expression with ';' in line:%d\n",yylineno);}
 
 expr:		assignexpr 					{printf("expr:assignexpr in line:%d\n",yylineno);}
 			|expr '+' expr 				{printf("expr:expr + expr in line:%d\n",yylineno);}
-			|expr '-' expr 				{printf("expr:expr - expr in line:%d\n",yylineno);}
+			|expr '-' expr 				{printf("lexpr:expr - expr in line:%d\n",yylineno);}
 			|expr '*' expr 				{printf("expr:expr * expr in line:%d\n",yylineno);}
 			|expr '/' expr 				{printf("expr:expr / expr in line:%d\n",yylineno);}
 			|expr '%' expr 				{printf("expr:expr mod expr in line:%d\n",yylineno);}
@@ -152,8 +152,8 @@ more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d\
 indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
 			;
 
-block:		'{' stmt1'}'						{printf("block: {stmt1} in line:%d\n",yylineno);}		
-             |'{''}' 							{printf("block: {} in line:%d\n",yylineno);}
+block:		'{' {++scope;} stmt1'}'	{scope--; /*isos mesa se hide auto*/}				{printf("block: {stmt1} in line:%d\n",yylineno);}		
+             |'{' {++scope;} '}' {scope--; /*isos mesa se hide auto*/} {printf("block: {} in line:%d\n",yylineno);}
 			;	
 
 funcdef:	FUNCTION ID '(' idlist ')' block 	{printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);}
