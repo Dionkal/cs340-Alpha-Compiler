@@ -1,8 +1,8 @@
-all:clean fl main 
+all:clean bi fl main 
 main: 
-	g++ lex.yy.cc  -o scanner 
+	g++ lex.yy.c parser.c  -o scanner 
 fl:  
-	flex -c++ keywords.l
+	flex  keywords.l
 bi:
 	bison --yacc --defines --output=parser.c -v syntax.y 
 clean: 

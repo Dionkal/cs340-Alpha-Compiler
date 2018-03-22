@@ -4,3 +4,9 @@ scanner
 lex\.yy\.cc
 
 *.in
+
+lex\.yy\.c
+
+parser\.c
+
+parser\.h

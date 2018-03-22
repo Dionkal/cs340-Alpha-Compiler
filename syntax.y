@@ -1,8 +1,8 @@
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
-	int yyerror (char *yaccProvidedMessage);
-	int yylex(void);
+	void yyerror (const char *yaccProvidedMessage);
+	extern int yylex(void);
 
 	extern int yylineno;
 	extern char* yytext;
@@ -67,7 +67,7 @@ expr:		assignexpr 					{printf("expr:assignexpr in line:%d",yylineno);}
 			|expr '-' expr 				{printf("expr:expr - expr in line:%d",yylineno);}
 			|expr '*' expr 				{printf("expr:expr * expr in line:%d",yylineno);}
 			|expr '/' expr 				{printf("expr:expr / expr in line:%d",yylineno);}
-			|expr '%' expr 				{printf("expr:expr % expr in line:%d",yylineno);}
+			|expr '%' expr 				{printf("expr:expr mod expr in line:%d",yylineno);}
 			|expr '>' expr 				{printf("expr:expr > expr in line:%d",yylineno);}
 			|expr '<' expr 				{printf("expr:expr < expr in line:%d",yylineno);}
 			|expr GREATEREQUAL expr 	{printf("expr:expr >= expr in line:%d",yylineno);}
@@ -189,7 +189,7 @@ returnstmt:	RETURN ';' 							{printf("returnstmt: RETURN; in line:%d",yylineno)
 
 %%
 
-int yyerror(char *yaccProvideMessage){
+void yyerror(const char *yaccProvideMessage){
 	fprintf(stdout,"%s: at line %d, before token: %s\n",yaccProvideMessage,yylineno,yytext);
 	fprintf(stdout,"INPUT NOT VALID");
 
