@@ -1,5 +1,5 @@
-//this is a scommenta brah
 
+5
 /*this is a c style comment*/
 
 int func0(int b,int c){
