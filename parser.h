@@ -46,23 +46,23 @@ extern int yydebug;
   enum yytokentype
   {
     ID = 258,
-    BREAK = 259,
-    CONTINUE = 260,
-    AND = 261,
-    OR = 262,
-    NOT = 263,
-    GREATEREQUAL = 264,
-    LESSEQUAL = 265,
-    EQUAL = 266,
-    NOTEQUAL = 267,
-    PLUSPLUS = 268,
-    MINUSMINUS = 269,
-    LOCAL = 270,
-    SCOPEOP = 271,
-    DOUPLEDOT = 272,
-    FUNCTION = 273,
-    NUMBER = 274,
-    STRING = 275,
+    NUMBER = 259,
+    STRING = 260,
+    BREAK = 261,
+    CONTINUE = 262,
+    AND = 263,
+    OR = 264,
+    NOT = 265,
+    GREATEREQUAL = 266,
+    LESSEQUAL = 267,
+    EQUAL = 268,
+    NOTEQUAL = 269,
+    PLUSPLUS = 270,
+    MINUSMINUS = 271,
+    LOCAL = 272,
+    SCOPEOP = 273,
+    DOUPLEDOT = 274,
+    FUNCTION = 275,
     NIL = 276,
     TRUE = 277,
     FALSE = 278,
@@ -71,28 +71,29 @@ extern int yydebug;
     WHILE = 281,
     FOR = 282,
     RETURN = 283,
-    UMINUS = 284
+    DOUBLEDOT = 284,
+    UMINUS = 285
   };
 #endif
 /* Tokens.  */
 #define ID 258
-#define BREAK 259
-#define CONTINUE 260
-#define AND 261
-#define OR 262
-#define NOT 263
-#define GREATEREQUAL 264
-#define LESSEQUAL 265
-#define EQUAL 266
-#define NOTEQUAL 267
-#define PLUSPLUS 268
-#define MINUSMINUS 269
-#define LOCAL 270
-#define SCOPEOP 271
-#define DOUPLEDOT 272
-#define FUNCTION 273
-#define NUMBER 274
-#define STRING 275
+#define NUMBER 259
+#define STRING 260
+#define BREAK 261
+#define CONTINUE 262
+#define AND 263
+#define OR 264
+#define NOT 265
+#define GREATEREQUAL 266
+#define LESSEQUAL 267
+#define EQUAL 268
+#define NOTEQUAL 269
+#define PLUSPLUS 270
+#define MINUSMINUS 271
+#define LOCAL 272
+#define SCOPEOP 273
+#define DOUPLEDOT 274
+#define FUNCTION 275
 #define NIL 276
 #define TRUE 277
 #define FALSE 278
@@ -101,11 +102,24 @@ extern int yydebug;
 #define WHILE 281
 #define FOR 282
 #define RETURN 283
-#define UMINUS 284
+#define DOUBLEDOT 284
+#define UMINUS 285
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 16 "syntax.y" /* yacc.c:1909  */
+
+	char* stringValue;
+	float floatValue;
+	//symbol_t entry* ptr pointer se struct tou symbol_t
+
+#line 120 "parser.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
