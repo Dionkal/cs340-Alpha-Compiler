@@ -1,9 +1,8 @@
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
-	int yyerror (char *yaccProvidedMessage);
-	int yylex(void);
-	int scope=0;
+	void yyerror (const char *yaccProvidedMessage);
+	extern int yylex(void);
 
 	extern int yylineno;
 	extern char* yytext;
@@ -11,6 +10,7 @@
 
 %}
 
+%expect 1
 %start 	program
 
 %union {
@@ -189,7 +189,7 @@ returnstmt:	RETURN ';' 							{printf("returnstmt: RETURN; in line:%d",yylineno)
 
 %%
 
-int yyerror(char *yaccProvideMessage){
+void yyerror(const char *yaccProvideMessage){
 	fprintf(stdout,"%s: at line %d, before token: %s\n",yaccProvideMessage,yylineno,yytext);
 	fprintf(stdout,"INPUT NOT VALID");
 

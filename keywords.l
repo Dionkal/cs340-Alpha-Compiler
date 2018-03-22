@@ -1,5 +1,5 @@
 %{
-	
+#define YY_DECL int yylex(void)	
 #include "scanner.h"
 #include "parser.h"
 #include <string.h>
@@ -15,100 +15,99 @@ integer [0-9]+
 real	[0-9]+"."[0-9]+
 
 /*Punctuation*/
-leftBracket1	\{
-rightBracket1	\}	
-leftBracket2	\[
-rightBracket2	\]
-leftBracket3	\(
-rightBracket3	\)
-semicolon		\;
-comma			\,
-colon			\:
+leftBracket1	'\{'
+rightBracket1	'\}'	
+leftBracket2	'\['
+rightBracket2	'\]'
+leftBracket3	'\('
+rightBracket3	'\)'
+semicolon		'\;'
+comma			'\,'
+colon			'\:'
 doubleColon	[:]{2}
-period			\.
+period			'\.'
 doublePeriod[.]{2}
 
 comment1		\/{2}.*
 
-ID				[a-zA-Z][a-zA-Z0-9_]*
+ID_LEX			[a-zA-Z][a-zA-Z0-9_]*
 Whitespace 		[ \t\n]
-
+ANY				.
 %%
 
-if				{
+"if"				{
 					return IF;
 					//addToken(KEYWORD,string("IF"),string(yytext),yylineno); 
 				}
-else 			{ 
+"else" 			{ 
 					return ELSE; 
 					//addToken(KEYWORD,string("ELSE"),string(yytext),yylineno);
 				}
-while			{ 
+"while"			{ 
 					return WHILE; 
 					//addToken(KEYWORD,string("WHILE"),string(yytext),yylineno);
 				}
-for				{ 
+"for"				{ 
           			
 					return FOR;
 					//addToken(KEYWORD,string("FOR"),string(yytext),yylineno);
 				}
-function		{ 
-          			
+"function"		{ 
 					return FUNCTION; 
 					//addToken(KEYWORD,string("FUNCTION"),string(yytext),yylineno);
 				}
-return			{ 
+"return"		{ 
           			
 					return RETURN; 
 					//addToken(KEYWORD,string("RETURN"),string(yytext),yylineno);
 				}
-break			{ 
+"break"			{ 
           			
 					return BREAK; 
 					//addToken(KEYWORD,string("BREAK"),string(yytext),yylineno);
 				}
-continue		{ 
+"continue"		{ 
           			
 					return CONTINUE; 
 					//addToken(KEYWORD,string("CONTINUE"),string(yytext),yylineno);
 				}
-and				{ 
+"and"			{ 
           			
 					return AND; 
 					//addToken(KEYWORD,string("AND"),string(yytext),yylineno); 
 				}
-not				{ 
+"not"				{ 
           			
 					return NOT; 
 					//addToken(KEYWORD,string("NOT"),string(yytext),yylineno);
 				}
-or				{ 
+"or"				{ 
           			
 					return OR; 
 					//addToken(KEYWORD,string("OR"),string(yytext),yylineno);
 				}
-local			{ 
+"local"			{ 
           			
 					return LOCAL; 
 					//addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno); 
 				}
-true			{ 
+"true"			{ 
           			
 					return TRUE; 
 					//addToken(KEYWORD,string("TRUE"),string(yytext),yylineno);
 				}
-false			{ 
+"false"			{ 
           			
 					return FALSE; 
 					//addToken(KEYWORD,string("FALSE"),string(yytext),yylineno); 
 				}
-nil				{ 
+"nil"			{ 
           			
 					return NIL; 
 					//addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
-{ID}			{	
-					yylval.stringValue = strdup(yytext);
+{ID_LEX}		{	
+					// yylval.stringValue = strdup(yytext);
 					return ID;
 					//addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
@@ -169,14 +168,15 @@ nil				{
           			return LESSEQUAL;
 					//addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
 				}
-{integer}		{
-					yylval.floatValue = atof(yytext);
+{integer}		{	
+					// printf("Integer\n");
+					// yylval.floatValue = atof(yytext);
 					return NUMBER;
 					//addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
 				}
 
 {real}			{
-					yylval.floatValue = atof(yytext);
+					//yylval.floatValue = atof(yytext);
 					return NUMBER;
 					//addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
 				}
@@ -266,7 +266,7 @@ nil				{
 				if(input== '\"'){
 					if(isLegal){
 					// addToken(STRING_TYPE, string("STRING_TYPE"), output, stringLine);
-						yylval.stringValue = strdup(yytext);
+						//yylval.stringValue = strdup(yytext);
 						return STRING;
 					}					 
 					break;		
@@ -330,7 +330,7 @@ nil				{
 			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
 		}
 
-.			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
+{ANY}		{printf("Invalid token %s at line: #%d \n",yytext,yylineno);}		
 				
 %%
 //Global Hashtables
@@ -342,11 +342,11 @@ vector  <alpha_token_t>* vctr_ptr;
 //Global token number
 int token_number = 0;
 //Global lex object
-yyFlexLexer temp;
+//yyFlexLexer temp;
 
 int alpha_yylex(void* yylval){ 
   vctr_ptr = (vector <alpha_token_t>*) yylval;  
-  return  temp.yylex(); 
+  return  yylex(); 
 } 
 
 void addToken(type token_t,string token_sT, string value, int line){
@@ -401,55 +401,14 @@ string typeToString(type t){
 
 int main (int argc, char *argv[]){
 	vector <alpha_token_t> token_vector; 
-
+	int k;
 	if (argc < 2 || argc > 3) {
-		printf("Invalid parameter\nUsage: <program> <path to input file> <optional "
-           "path to output file>\n");
-		exit(1);
-	}
-	
-	
-	std::filebuf fb_in;
-	std::filebuf fb_out;
-	if (fb_in.open (argv[1],std::ios::in)){
-		std::istream is(&fb_in);
-	
-	
-		if (argc == 3) {
-	
-			fb_out.open (argv[2],std::ios::out);
-			std::ostream os(&fb_out);
-			temp.switch_streams(&is,&os);
-
-			alpha_yylex( &token_vector);
-  
-  
-			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
-			//print token info 
-				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
-				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
-			}
-		}else{
-			std::ostream os(NULL);
-			os.rdbuf(std::cout.rdbuf());
-			temp.switch_streams(&is,&os);
-			
-			alpha_yylex( &token_vector);
-  
-  
-			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
-			//print token info 
-				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
-				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
-			}
-		}
-	
-
-	}else{
-		cout <<"Error opening file: " << string(argv[1]) <<endl;
-		exit(-1);
-	
-	}
-
+		printf("NO input file\n");
+    }else{
+    	yyin = fopen(argv[1], "r");
+   		k = yyparse();
+    	// printf("K is:%d\n",k);
+    	fclose(yyin);
+    }
   	return 0;
 }
