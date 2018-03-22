@@ -67,7 +67,7 @@ expr:		assignexpr 					{printf("expr:assignexpr in line:%d\n",yylineno);}
 			|expr '-' expr 				{printf("expr:expr - expr in line:%d\n",yylineno);}
 			|expr '*' expr 				{printf("expr:expr * expr in line:%d\n",yylineno);}
 			|expr '/' expr 				{printf("expr:expr / expr in line:%d\n",yylineno);}
-			|expr '%' expr 				{printf("expr:expr % expr in line:%d\n",yylineno);}
+			|expr '%' expr 				{printf("expr:expr mod expr in line:%d\n",yylineno);}
 			|expr '>' expr 				{printf("expr:expr > expr in line:%d\n",yylineno);}
 			|expr '<' expr 				{printf("expr:expr < expr in line:%d\n",yylineno);}
 			|expr GREATEREQUAL expr 	{printf("expr:expr >= expr in line:%d\n",yylineno);}
@@ -84,7 +84,7 @@ expr:		assignexpr 					{printf("expr:assignexpr in line:%d\n",yylineno);}
 term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
 			| '-' expr %prec UMINUS		{{printf("term:-expr in line:%d\n",yylineno);}}
 			| NOT expr 					{printf("term:!expr in line:%d\n",yylineno);}
-			|PLUSPLUS lvalue 			{printf("term:++lvalue in line:%d"\n,yylineno);}
+			|PLUSPLUS lvalue 			{printf("term:++lvalue in line:%d\n",yylineno);}
 			|lvalue PLUSPLUS 			{printf("term:lvalue++ in line:%d\n",yylineno);}
 			|MINUSMINUS lvalue 			{printf("term:--lvalue in line:%d\n",yylineno);}
 			|lvalue MINUSMINUS 			{printf("term:lvalue-- in line:%d\n",yylineno);}
