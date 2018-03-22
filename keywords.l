@@ -406,8 +406,8 @@ int main (int argc, char *argv[]){
 		printf("NO input file\n");
     }else{
     	yyin = fopen(argv[1], "r");
-   		k = yylex();
-    	printf("K is:%d\n",k);
+   		k = yyparse();
+    	// printf("K is:%d\n",k);
     	fclose(yyin);
     }
   	return 0;
