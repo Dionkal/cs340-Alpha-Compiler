@@ -334,9 +334,11 @@ ANY				.
 				
 %%
 //Global Hashtables
-std::map<string,symTableEntry> SymTableName;
-std::map<string,symTableEntry> SymTableScope; 
+std::multimap<string,symTableEntry*> SymTableName;
+std::multimap<unsigned int,symTableEntry*> SymTableScope;
 
+// std::map<string,symTableEntry> SymTableScope; 
+int current_scope = 0;
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr; 
 //Global token number
@@ -411,4 +413,63 @@ int main (int argc, char *argv[]){
     	fclose(yyin);
     }
   	return 0;
+}
+
+
+
+Iterator lookupSym(string key){
+	int target_scope = current_scope;
+	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
+	retList = SymTableName.equal_range(key);
+
+	while(target_scope >= 0){
+		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			if(it->isVisible && it->scope == target_scope){
+				return it;
+			}
+		}
+		target_scope--;	
+	}
+	return NULL;
+}
+
+
+
+Iterator lookupSym(string key, int scope){
+	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
+	retList = SymTableName.equal_range(key);
+
+		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			if(it->isVisible && it->scope == scope){
+				return it;
+			}
+		}
+	return NULL;
+}
+
+
+void insertSym(string key,symTableType type,string* args,int scp,unsigned int line){
+
+	symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
+
+	symptr->name = key;
+	symptr->symType = type;
+	symptr->arguments = args;
+	symptr->scope = scp;
+	symptr->declLine = line;
+	symptr->isVisible = TRUE;
+
+	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
+	SymTableScope.insert( std::pair<unsigned int,symTableEntry*>(scp,symptr) );
+}
+
+
+
+void hideSym(int scope){
+	std::pair <std::multimap<unsigned int,symTableEntry*>::iterator, std::multimap<unsigned int,symTableEntry*>::iterator> retList;
+	retList = SymTableScope.equal_range(scope);
+
+		for (std::multimap<unsigned int,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			(it*)->isVisible = FALSE;
+		}
 }
