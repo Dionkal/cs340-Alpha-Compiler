@@ -10,6 +10,7 @@
 
 %}
 
+%expect 1
 %start 	program
 
 %union {

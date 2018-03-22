@@ -108,7 +108,7 @@ nil				{
 					//addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
 {ID}			{	
-					yylval.stringValue = strdup(yytext);
+					// yylval.stringValue = strdup(yytext);
 					return ID;
 					//addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
@@ -170,13 +170,13 @@ nil				{
 					//addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
 				}
 {integer}		{
-					yylval.floatValue = atof(yytext);
+					// yylval.floatValue = atof(yytext);
 					return NUMBER;
 					//addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
 				}
 
 {real}			{
-					yylval.floatValue = atof(yytext);
+					//yylval.floatValue = atof(yytext);
 					return NUMBER;
 					//addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
 				}
@@ -266,7 +266,7 @@ nil				{
 				if(input== '\"'){
 					if(isLegal){
 					// addToken(STRING_TYPE, string("STRING_TYPE"), output, stringLine);
-						yylval.stringValue = strdup(yytext);
+						//yylval.stringValue = strdup(yytext);
 						return STRING;
 					}					 
 					break;		
