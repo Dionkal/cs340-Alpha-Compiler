@@ -107,7 +107,7 @@ ANY				.
 					//addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
 {ID_LEX}		{	
-					// yylval.stringValue = strdup(yytext);
+					yylval.stringValue = strdup(yytext);
 					return ID;
 					//addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
@@ -170,13 +170,13 @@ ANY				.
 				}
 {integer}		{	
 					// printf("Integer\n");
-					// yylval.floatValue = atof(yytext);
+					yylval.floatValue = atof(yytext);
 					return NUMBER;
 					//addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
 				}
 
 {real}			{
-					//yylval.floatValue = atof(yytext);
+					yylval.floatValue = atof(yytext);
 					return NUMBER;
 					//addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
 				}
@@ -266,7 +266,7 @@ ANY				.
 				if(input== '\"'){
 					if(isLegal){
 					// addToken(STRING_TYPE, string("STRING_TYPE"), output, stringLine);
-						//yylval.stringValue = strdup(yytext);
+						yylval.stringValue = strdup(yytext);
 						return STRING;
 					}					 
 					break;		
@@ -417,15 +417,15 @@ int main (int argc, char *argv[]){
 
 
 
-Iterator lookupSym(string key){
+symTableEntry* lookupSym(string key){
 	int target_scope = current_scope;
 	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
 	retList = SymTableName.equal_range(key);
 
 	while(target_scope >= 0){
 		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
-			if(it->isVisible && it->scope == target_scope){
-				return it;
+			if(it->second->isVisible && it->second->scope == target_scope){
+				return it->second;
 			}
 		}
 		target_scope--;	
@@ -435,13 +435,13 @@ Iterator lookupSym(string key){
 
 
 
-Iterator lookupSym(string key, int scope){
+symTableEntry* lookupSym(string key, int scope){
 	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
 	retList = SymTableName.equal_range(key);
 
 		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
-			if(it->isVisible && it->scope == scope){
-				return it;
+			if(it->second->isVisible && it->second->scope == scope){
+				return it->second;
 			}
 		}
 	return NULL;
@@ -470,6 +470,6 @@ void hideSym(int scope){
 	retList = SymTableScope.equal_range(scope);
 
 		for (std::multimap<unsigned int,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
-			(it*)->isVisible = FALSE;
+			it->second->isVisible = FALSE;
 		}
 }
