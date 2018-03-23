@@ -17,7 +17,7 @@
 %union {
 	char* stringValue;
 	float floatValue;
-	//symbol_t entry* ptr pointer se struct tou symbol_t
+	void* symValue;
 }
 
 %token <stringValue> ID 
@@ -25,6 +25,7 @@
 %token <stringValue> STRING 
 %token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
+%type <symValue> lvalue
 //%type<ptr> expr
 
 %left '(' ')' 
@@ -107,7 +108,7 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										 // symbol doesn't exist
 										 if(ptr == NULL){
 										 	symTableType type;
-										 	if(scope == 0){
+										 	if(current_scope == 0){
 										 		 type = GLOBAL_VAR;
 										 	}else{
 										 		type = LOCAL_VAR;
@@ -116,15 +117,15 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										 }
 										}
 			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
-											symTableEntry* ptr = lookupSym($1,current_scope);
+											symTableEntry* ptr = lookupSym($2,current_scope);
 											if(ptr == NULL){
 												insertSym($2,GLOBAL_VAR,NULL,current_scope,yylineno);			
 											}
 										}
 			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
-											symTableEntry* ptr = lookupSym($1,current_scope);
+											symTableEntry* ptr = lookupSym($2,current_scope);
 											if(ptr == NULL){
-												printf("ERROR there is no global var %s\n",$2)			
+												printf("ERROR there is no global var %s\n",$2);	
 											}	
 										}
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
