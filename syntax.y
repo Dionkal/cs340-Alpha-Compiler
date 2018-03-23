@@ -1,13 +1,14 @@
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
+	#include "symtable.h"
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
 
 	extern int yylineno;
 	extern char* yytext;
 	extern FILE* yyin;
-
+	extern unsigned int current_scope;
 %}
 
 %expect 1
@@ -101,9 +102,31 @@ primary:	lvalue 						{printf("primary: lvalue in line:%d\n",yylineno);}
 			|const 						{printf("primary: const in line:%d\n",yylineno);}
 			;
 
-lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);}
-			|LOCAL ID 					{printf("lvalue: LOCAL ID in line:%d\n",yylineno);}
-			|SCOPEOP ID 				{printf("lvalue: SCOPE ID in line:%d\n",yylineno);}
+lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
+										 symTableEntry* ptr = lookupSym($1);
+										 // symbol doesn't exist
+										 if(ptr == NULL){
+										 	symTableType type;
+										 	if(scope == 0){
+										 		 type = GLOBAL_VAR;
+										 	}else{
+										 		type = LOCAL_VAR;
+										 	}
+										 	insertSym($1,type,NULL,current_scope,yylineno);
+										 }
+										}
+			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
+											symTableEntry* ptr = lookupSym($1,current_scope);
+											if(ptr == NULL){
+												insertSym($2,GLOBAL_VAR,NULL,current_scope,yylineno);			
+											}
+										}
+			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
+											symTableEntry* ptr = lookupSym($1,current_scope);
+											if(ptr == NULL){
+												printf("ERROR there is no global var %s\n",$2)			
+											}	
+										}
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
 			;
 

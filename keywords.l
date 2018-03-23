@@ -2,8 +2,10 @@
 #define YY_DECL int yylex(void)	
 #include "scanner.h"
 #include "parser.h"
+#include "symtable.h"
 #include <string.h>
 #include <iomanip>
+
 using namespace std;
 
 	
@@ -338,7 +340,7 @@ std::multimap<string,symTableEntry*> SymTableName;
 std::multimap<unsigned int,symTableEntry*> SymTableScope;
 
 // std::map<string,symTableEntry> SymTableScope; 
-int current_scope = 0;
+unsigned int current_scope = 0;
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr; 
 //Global token number
