@@ -1,148 +1,148 @@
-1___idlist1: empty in line:1
-2___idlist1: ,ID idlist1 in line:1
-3___idlist: ID idlist1 in line:1
-4___lvalue: ID in line:2
-5___lvalue: ID in line:2
-6___primary: lvalue in line:2
-7___term:primary in line:2
-8___expr:term in line:2
-9___elist1: empty list in line:2
-10___elist: expr elist1 list in line:2
-11___normcall: (elist) in line:2
-12___callsuffix: normcall in line:2
-13___call: lvalue callsuffix in line:2
-14___primary: call in line:2
-15___term:primary in line:2
-16___expr:term in line:2
-17___stmt:Expression with ';' in line:2
-18___returnstmt: RETURN; in line:319___stmt:returnstmt starts in line:3
-20___block: {stmt1} in line:4
-21___funcdef: FUNCTION (idlist) block in line:4
-22___stmt:funcdef starts in line:4
-23___lvalue: ID in line:10
-24___lvalue: ID in line:10
-25___elist: empty list in line:10
-26___normcall: (elist) in line:10
-27___callsuffix: normcall in line:10
-28___call: lvalue callsuffix in line:10
-29___primary: call in line:10
-30___term:primary in line:10
-31___expr:term in line:10
-32___assignexpr:lvalue=expr in line:10
-33___expr:assignexpr in line:10
-34___stmt:Expression with ';' in line:10
-35___lvalue: ID in line:11
-36___primary: const in line:11
-37___term:primary in line:11
-38___expr:term in line:11
-39___assignexpr:lvalue=expr in line:11
-40___expr:assignexpr in line:11
-41___stmt:Expression with ';' in line:11
-42___lvalue: ID in line:12
-43___lvalue: ID in line:12
-44___lvalue: ID in line:12
-45___primary: lvalue in line:12
-46___term:primary in line:12
-47___expr:term in line:12
-48___elist1: empty list in line:12
-49___elist: expr elist1 list in line:12
-50___normcall: (elist) in line:12
-51___callsuffix: normcall in line:12
-52___call: lvalue callsuffix in line:12
-53___primary: call in line:12
-54___term:primary in line:12
-55___expr:term in line:12
-56___elist1: empty list in line:12
-57___elist: expr elist1 list in line:12
-58___normcall: (elist) in line:12
-59___callsuffix: normcall in line:12
-60___call: lvalue callsuffix in line:12
-61___primary: call in line:12
-62___term:primary in line:12
-63___expr:term in line:12
-64___stmt:Expression with ';' in line:12
-65___idlist1: empty in line:14
-66___idlist1: ,ID idlist1 in line:14
-67___idlist: ID idlist1 in line:14
-68___lvalue: ID in line:15
-69___lvalue: ID in line:15
-70___primary: lvalue in line:15
-71___term:primary in line:15
-72___expr:term in line:15
-73___lvalue: ID in line:15
-74___primary: lvalue in line:15
-75___term:primary in line:15
-76___expr:term in line:15
-77___expr:expr + expr in line:15
-78___elist1: empty list in line:15
-79___elist: expr elist1 list in line:15
-80___normcall: (elist) in line:15
-81___callsuffix: normcall in line:15
-82___call: lvalue callsuffix in line:15
-83___primary: call in line:15
-84___term:primary in line:15
-85___expr:term in line:15
-86___stmt:Expression with ';' in line:15
-87___lvalue: LOCAL ID in line:16
-88___lvalue: ID in line:16
-89___primary: lvalue in line:16
-90___term:primary in line:16
-91___expr:term in line:16
-92___assignexpr:lvalue=expr in line:16
-93___expr:assignexpr in line:16
-94___stmt:Expression with ';' in line:16
-95___lvalue: SCOPE ID in line:17
-96___lvalue: ID in line:17
-97___primary: lvalue in line:17
-98___term:primary in line:17
-99___expr:term in line:17
-100___elist1: empty list in line:17
-101___elist: expr elist1 list in line:17
-102___normcall: (elist) in line:17
-103___callsuffix: normcall in line:17
-104___call: lvalue callsuffix in line:17
-105___primary: call in line:17
-106___term:primary in line:17
-107___expr:term in line:17
-108___stmt:Expression with ';' in line:17
-109___idlist1: empty in line:19
-110___idlist: ID idlist1 in line:19
-111___lvalue: ID in line:20
-112___primary: lvalue in line:20
-113___term:primary in line:20
-114___expr:term in line:20
-115___lvalue: ID in line:20
-116___primary: lvalue in line:20
-117___term:primary in line:20
-118___expr:term in line:20
-119___expr:expr + expr in line:20
-120___lvalue: ID in line:20
-121___primary: lvalue in line:20
-122___term:primary in line:20
-123___expr:term in line:20
-124___expr:expr + expr in line:20
-125___stmt:Expression with ';' in line:20
-126___block: {stmt1} in line:21
-127___funcdef: FUNCTION ID (idlist) block in line:21
-128___stmt:funcdef starts in line:21
-129___lvalue: ID in line:22
-130___lvalue: ID in line:22
-131___lvalue: SCOPE ID in line:22
-132___primary: lvalue in line:22
-133___term:primary in line:22
-134___expr:term in line:22
-135___elist1: empty list in line:22
-136___elist: expr elist1 list in line:22
-137___normcall: (elist) in line:22
-138___callsuffix: normcall in line:22
-139___call: lvalue callsuffix in line:22
-140___primary: call in line:22
-141___term:primary in line:22
-142___expr:term in line:22
-143___assignexpr:lvalue=expr in line:22
-144___expr:assignexpr in line:22
-145___stmt:Expression with ';' in line:22
-146___block: {stmt1} in line:23
-147___funcdef: FUNCTION ID (idlist) block in line:23
-148___stmt:funcdef starts in line:23
-149___Program started
+time:1___ ,token: )____>idlist1: empty in line:1
+time:2___ ,token: )____>idlist1: ,ID idlist1 in line:1
+time:3___ ,token: )____>idlist: ID idlist1 in line:1
+time:4___ ,token: print____>lvalue: ID in line:2
+time:5___ ,token: a____>lvalue: ID in line:2
+time:6___ ,token: )____>primary: lvalue in line:2
+time:7___ ,token: )____>term:primary in line:2
+time:8___ ,token: )____>expr:term in line:2
+time:9___ ,token: )____>elist1: empty list in line:2
+time:10___ ,token: )____>elist: expr elist1 list in line:2
+time:11___ ,token: )____>normcall: (elist) in line:2
+time:12___ ,token: )____>callsuffix: normcall in line:2
+time:13___ ,token: )____>call: lvalue callsuffix in line:2
+time:14___ ,token: ;____>primary: call in line:2
+time:15___ ,token: ;____>term:primary in line:2
+time:16___ ,token: ;____>expr:term in line:2
+time:17___ ,token: ;____>stmt:Expression with ';' in line:2
+time:18___ ,token: ;____>returnstmt: RETURN; in line:3time:19___ ,token: ;____>stmt:returnstmt starts in line:3
+time:20___ ,token: }____>block: {stmt1} in line:4
+time:21___ ,token: }____>funcdef: FUNCTION (idlist) block in line:4
+time:22___ ,token: }____>stmt:funcdef starts in line:4
+time:23___ ,token: x____>lvalue: ID in line:10
+time:24___ ,token: input____>lvalue: ID in line:10
+time:25___ ,token: )____>elist: empty list in line:10
+time:26___ ,token: )____>normcall: (elist) in line:10
+time:27___ ,token: )____>callsuffix: normcall in line:10
+time:28___ ,token: )____>call: lvalue callsuffix in line:10
+time:29___ ,token: ;____>primary: call in line:10
+time:30___ ,token: ;____>term:primary in line:10
+time:31___ ,token: ;____>expr:term in line:10
+time:32___ ,token: ;____>assignexpr:lvalue=expr in line:10
+time:33___ ,token: ;____>expr:assignexpr in line:10
+time:34___ ,token: ;____>stmt:Expression with ';' in line:10
+time:35___ ,token: g____>lvalue: ID in line:11
+time:36___ ,token: 12.4____>primary: const in line:11
+time:37___ ,token: 12.4____>term:primary in line:11
+time:38___ ,token: 12.4____>expr:term in line:11
+time:39___ ,token: 12.4____>assignexpr:lvalue=expr in line:11
+time:40___ ,token: 12.4____>expr:assignexpr in line:11
+time:41___ ,token: ;____>stmt:Expression with ';' in line:11
+time:42___ ,token: print____>lvalue: ID in line:12
+time:43___ ,token: typeof____>lvalue: ID in line:12
+time:44___ ,token: x____>lvalue: ID in line:12
+time:45___ ,token: )____>primary: lvalue in line:12
+time:46___ ,token: )____>term:primary in line:12
+time:47___ ,token: )____>expr:term in line:12
+time:48___ ,token: )____>elist1: empty list in line:12
+time:49___ ,token: )____>elist: expr elist1 list in line:12
+time:50___ ,token: )____>normcall: (elist) in line:12
+time:51___ ,token: )____>callsuffix: normcall in line:12
+time:52___ ,token: )____>call: lvalue callsuffix in line:12
+time:53___ ,token: )____>primary: call in line:12
+time:54___ ,token: )____>term:primary in line:12
+time:55___ ,token: )____>expr:term in line:12
+time:56___ ,token: )____>elist1: empty list in line:12
+time:57___ ,token: )____>elist: expr elist1 list in line:12
+time:58___ ,token: )____>normcall: (elist) in line:12
+time:59___ ,token: )____>callsuffix: normcall in line:12
+time:60___ ,token: )____>call: lvalue callsuffix in line:12
+time:61___ ,token: ;____>primary: call in line:12
+time:62___ ,token: ;____>term:primary in line:12
+time:63___ ,token: ;____>expr:term in line:12
+time:64___ ,token: ;____>stmt:Expression with ';' in line:12
+time:65___ ,token: )____>idlist1: empty in line:14
+time:66___ ,token: )____>idlist1: ,ID idlist1 in line:14
+time:67___ ,token: )____>idlist: ID idlist1 in line:14
+time:68___ ,token: print____>lvalue: ID in line:15
+time:69___ ,token: x____>lvalue: ID in line:15
+time:70___ ,token: +____>primary: lvalue in line:15
+time:71___ ,token: +____>term:primary in line:15
+time:72___ ,token: +____>expr:term in line:15
+time:73___ ,token: y____>lvalue: ID in line:15
+time:74___ ,token: )____>primary: lvalue in line:15
+time:75___ ,token: )____>term:primary in line:15
+time:76___ ,token: )____>expr:term in line:15
+time:77___ ,token: )____>expr:expr + expr in line:15
+time:78___ ,token: )____>elist1: empty list in line:15
+time:79___ ,token: )____>elist: expr elist1 list in line:15
+time:80___ ,token: )____>normcall: (elist) in line:15
+time:81___ ,token: )____>callsuffix: normcall in line:15
+time:82___ ,token: )____>call: lvalue callsuffix in line:15
+time:83___ ,token: ;____>primary: call in line:15
+time:84___ ,token: ;____>term:primary in line:15
+time:85___ ,token: ;____>expr:term in line:15
+time:86___ ,token: ;____>stmt:Expression with ';' in line:15
+time:87___ ,token: p____>lvalue: LOCAL ID in line:16
+time:88___ ,token: y____>lvalue: ID in line:16
+time:89___ ,token: ;____>primary: lvalue in line:16
+time:90___ ,token: ;____>term:primary in line:16
+time:91___ ,token: ;____>expr:term in line:16
+time:92___ ,token: ;____>assignexpr:lvalue=expr in line:16
+time:93___ ,token: ;____>expr:assignexpr in line:16
+time:94___ ,token: ;____>stmt:Expression with ';' in line:16
+time:95___ ,token: print____>lvalue: SCOPE ID in line:17
+time:96___ ,token: p____>lvalue: ID in line:17
+time:97___ ,token: )____>primary: lvalue in line:17
+time:98___ ,token: )____>term:primary in line:17
+time:99___ ,token: )____>expr:term in line:17
+time:100___ ,token: )____>elist1: empty list in line:17
+time:101___ ,token: )____>elist: expr elist1 list in line:17
+time:102___ ,token: )____>normcall: (elist) in line:17
+time:103___ ,token: )____>callsuffix: normcall in line:17
+time:104___ ,token: )____>call: lvalue callsuffix in line:17
+time:105___ ,token: ;____>primary: call in line:17
+time:106___ ,token: ;____>term:primary in line:17
+time:107___ ,token: ;____>expr:term in line:17
+time:108___ ,token: ;____>stmt:Expression with ';' in line:17
+time:109___ ,token: )____>idlist1: empty in line:19
+time:110___ ,token: )____>idlist: ID idlist1 in line:19
+time:111___ ,token: a____>lvalue: ID in line:20
+time:112___ ,token: +____>primary: lvalue in line:20
+time:113___ ,token: +____>term:primary in line:20
+time:114___ ,token: +____>expr:term in line:20
+time:115___ ,token: x____>lvalue: ID in line:20
+time:116___ ,token: +____>primary: lvalue in line:20
+time:117___ ,token: +____>term:primary in line:20
+time:118___ ,token: +____>expr:term in line:20
+time:119___ ,token: +____>expr:expr + expr in line:20
+time:120___ ,token: y____>lvalue: ID in line:20
+time:121___ ,token: ;____>primary: lvalue in line:20
+time:122___ ,token: ;____>term:primary in line:20
+time:123___ ,token: ;____>expr:term in line:20
+time:124___ ,token: ;____>expr:expr + expr in line:20
+time:125___ ,token: ;____>stmt:Expression with ';' in line:20
+time:126___ ,token: }____>block: {stmt1} in line:21
+time:127___ ,token: }____>funcdef: FUNCTION ID (idlist) block in line:21
+time:128___ ,token: }____>stmt:funcdef starts in line:21
+time:129___ ,token: y____>lvalue: ID in line:22
+time:130___ ,token: h____>lvalue: ID in line:22
+time:131___ ,token: x____>lvalue: SCOPE ID in line:22
+time:132___ ,token: )____>primary: lvalue in line:22
+time:133___ ,token: )____>term:primary in line:22
+time:134___ ,token: )____>expr:term in line:22
+time:135___ ,token: )____>elist1: empty list in line:22
+time:136___ ,token: )____>elist: expr elist1 list in line:22
+time:137___ ,token: )____>normcall: (elist) in line:22
+time:138___ ,token: )____>callsuffix: normcall in line:22
+time:139___ ,token: )____>call: lvalue callsuffix in line:22
+time:140___ ,token: ;____>primary: call in line:22
+time:141___ ,token: ;____>term:primary in line:22
+time:142___ ,token: ;____>expr:term in line:22
+time:143___ ,token: ;____>assignexpr:lvalue=expr in line:22
+time:144___ ,token: ;____>expr:assignexpr in line:22
+time:145___ ,token: ;____>stmt:Expression with ';' in line:22
+time:146___ ,token: }____>block: {stmt1} in line:23
+time:147___ ,token: }____>funcdef: FUNCTION ID (idlist) block in line:23
+time:148___ ,token: }____>stmt:funcdef starts in line:23
+time:149___ ,token: ____>Program started
