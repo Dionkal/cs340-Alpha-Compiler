@@ -26,3 +26,14 @@ void insertSym(std::string key,symTableType type,symTableEntry* args,int scp,uns
 
 /*Sets the visibility flag of all  symbols of the given scope to FALSE*/
 void hideSym(int scope);
+
+bool lvalueCheckSym(symTableEntry* sym, unsigned int scope, int line);
+
+/*Prints the entire symTable by scope order*/
+void printSymTable();
+
+/*convert symTableType enum to string values*/
+std::string symTableTypeToString(symTableType t);
+
+/*inserts all library functions into the SymTable*/
+void insertLibFuncSym();

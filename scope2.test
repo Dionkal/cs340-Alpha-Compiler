@@ -1,0 +1,7 @@
+x = 5;
+function g(x,y){
+	local z = x + y;
+	return(function f(a,b){
+	return a + b;
+	});
+}

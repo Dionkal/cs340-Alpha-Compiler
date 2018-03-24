@@ -1,7 +1,12 @@
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
+	#include <stack>
+	#include <string>
 	#include "symtable.h"
+	#include <stdio.h>
+	#include <iostream>
+
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
 
@@ -9,6 +14,7 @@
 	extern char* yytext;
 	extern FILE* yyin;
 	extern unsigned int current_scope;
+	std::stack<bool> scopeAccessStack;
 	unsigned int anonymousCounter = 0;
 %}
 
@@ -53,16 +59,16 @@ stmt1:		stmt1 stmt
             |stmt
 			;
 
-stmt:		expr ';' 					{printf("stmt:Expression with ';' in line:%d\n",yylineno);}
-			|ifstmt 					{printf("stmt:ifstmt starts in line:%d\n",yylineno);}
-			|whilestmt 					{printf("stmt:whilestmt starts in line:%d\n",yylineno);}
-			|forstmt 					{printf("stmt:forstmt starts in line:%d\n",yylineno);}
-			|returnstmt 				{printf("stmt:returnstmt starts in line:%d\n",yylineno);}
-			|BREAK ';' 					{printf("stmt:Break with ';' in line:%d\n",yylineno);}
-			|CONTINUE ';'				{printf("stmt:Continue with ';' in line:%d\n",yylineno);}
-			|block 						{printf("stmt:block starts in line:%d\n",yylineno);}
-			|funcdef					{printf("stmt:funcdef starts in line:%d\n",yylineno);}
-			|';'						{printf("stmt:SEMICOLON in line:%d\n",yylineno);}
+stmt:		expr ';' 																{printf("stmt:Expression with ';' in line:%d\n",yylineno);}
+			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno);}
+			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno);}
+			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno);}
+			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno);}
+			|BREAK ';' 																{printf("stmt:Break with ';' in line:%d\n",yylineno);}
+			|CONTINUE ';'															{printf("stmt:Continue with ';' in line:%d\n",yylineno);}
+			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno);}
+			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno);}
+			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno);}
 			;
 
 expr:		assignexpr 					{printf("expr:assignexpr in line:%d\n",yylineno);}
@@ -105,28 +111,45 @@ primary:	lvalue 						{printf("primary: lvalue in line:%d\n",yylineno);}
 			;
 
 lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
+										 
 										 symTableEntry* ptr = lookupSym($1);
-										 // symbol doesn't exist
-										 if(ptr == NULL){
+										 
+										 if(lvalueCheckSym(ptr,current_scope,yylineno)){
 										 	symTableType type;
 										 	if(current_scope == 0){
 										 		type = GLOBAL_VAR;
 										 	}else{
 										 		type = LOCAL_VAR;
 										 	}
-										 	insertSym($1,type,NULL,current_scope,yylineno);
+										 	if( !ptr || (!scopeAccessStack.top() && ptr->symType != LOCAL_VAR && ptr->symType != ARGUMENT_VAR && (ptr->scope == current_scope || ptr->scope == 0))){
+										 		insertSym($1,type,NULL,current_scope,yylineno);
+										 	}else{
+												printf("ERROR cannot access %s in scope %d\n",ptr->name, ptr->scope);
+											}
 										 }
 										}
 			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
 											symTableEntry* ptr = lookupSym($2,current_scope);
-											if(ptr == NULL){
-												insertSym($2,GLOBAL_VAR,NULL,current_scope,yylineno);			
+											
+											if(lvalueCheckSym(ptr,current_scope, yylineno)){
+												symTableType type;
+										 		if(current_scope == 0){
+										 			type = GLOBAL_VAR;
+										 		}else{
+										 			type = LOCAL_VAR;
+										 		}
+												insertSym($2,type,NULL,current_scope,yylineno);			
 											}
 										}
 			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
 											symTableEntry* ptr = lookupSym($2,0);
-											if(ptr == NULL){
+											if(lvalueCheckSym(ptr,0,yylineno)){
 												printf("ERROR there is no global var %s\n",$2);	
+											}else{
+												if(ptr->declLine == 0){
+
+												}
+												/*TODO: print symbol data*/
 											}	
 										}
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
@@ -177,20 +200,27 @@ more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d\
 indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
 			;
 
-block:		'{' stmt1'}'						{printf("block: {stmt1} in line:%d\n",yylineno);}		
+block:		'{' {current_scope++;} stmt1 '}' {hideSym(current_scope--);}						{printf("block: {stmt1} in line:%d\n",yylineno);}		
              |'{''}' 							{printf("funcdefblock: {} in line:%d\n",yylineno);}
 			;	
 
-funcdef:	FUNCTION ID '(' idlist ')' block 	{printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);
+funcdef:	FUNCTION ID '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();} 	
+												{
+													printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);
 													symTableEntry* ptr = lookupSym($2);
+													/*TODO:take idlist argument list and pass it to insertSym*/
 													if(ptr == NULL){
 														insertSym($2,USER_FUNC,NULL,current_scope,yylineno);
 													}else{
-														printf("ERROR: Function %s already defined at line %d\n",$2,yylineno);
+														printf("ERROR: Symbol %s already defined at line %d\n",$2,yylineno);
 													}
 												}
-			| FUNCTION '(' idlist ')' block 	{printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);
-													string anonFunc = "_anonFunc" + string(anonymousCounter++);
+			| FUNCTION '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block 
+												{
+													scopeAccessStack.pop();
+													printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);
+													
+													std::string anonFunc = "_anonFunc" + std::to_string(anonymousCounter++);
 													insertSym(anonFunc,USER_FUNC,NULL,current_scope,yylineno);
 												}
 			;
@@ -199,7 +229,17 @@ const:		NUMBER | STRING | NIL |TRUE|FALSE 	{printf("const: NUMBER | STRING | NIL
 			;
 
 idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
-			|ID idlist1 						{printf("idlist: ID idlist1 in line:%d\n",yylineno);}
+			|ID idlist1 						{
+													printf("idlist: ID idlist1 in line:%d\n",yylineno);
+													symTableEntry* ptr = lookupSym($1);
+													if(lvalueCheckSym(ptr,current_scope,yylineno)){
+										 				if( !ptr || (!scopeAccessStack.top() && ptr->symType != LOCAL_VAR && ptr->symType != ARGUMENT_VAR && (ptr->scope == current_scope || ptr->scope == 0))){
+										 					insertSym($1,type,NULL,current_scope,yylineno);
+										 				}else{
+															printf("ERROR cannot access %s in scope %d\n",ptr->name, ptr->scope);
+														}
+										 			}
+												}
 			;
 
 idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
