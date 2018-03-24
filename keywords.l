@@ -21,7 +21,6 @@ leftBracket2	'\['
 rightBracket2	'\]'
 leftBracket3	'\('
 rightBracket3	'\)'
-semicolon		'\;'
 comma			'\,'
 colon			'\:'
 doubleColon	[:]{2}
@@ -107,7 +106,7 @@ ANY				.
 					//addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
 {ID_LEX}		{	
-					// yylval.stringValue = strdup(yytext);
+					yylval.stringValue = strdup(yytext);
 					return ID;
 					//addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
@@ -170,49 +169,49 @@ ANY				.
 				}
 {integer}		{	
 					// printf("Integer\n");
-					// yylval.floatValue = atof(yytext);
+					yylval.floatValue = atof(yytext);
 					return NUMBER;
 					//addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
 				}
 
 {real}			{
-					//yylval.floatValue = atof(yytext);
+					yylval.floatValue = atof(yytext);
 					return NUMBER;
 					//addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
 				}
 
 {Whitespace}	{
 					//addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
-				} 
-"}"  			{ 
-					return '}';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
-				} 
-{leftBracket2}  { 
+				}
+"{"				{return '{';}
+
+"}"  			{ return '}';} 
+
+"["  			{ 
 					return '[';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				} 
-{rightBracket2}  { 
+"]"  			{ 
 					return ']';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				}
-{leftBracket3}  { 
+"("  			{ 
 					return '(';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				}
-{rightBracket3}  { 
+")"  			{ 
 					return ')';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				}
-{semicolon}    { 
+";"    			{ 
 					return ';';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				}
-{comma}     	{ 
+","     		{ 
 					return ',';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 			    }
-{colon}      	{ 
+":"      		{ 
 					return ':';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				} 
@@ -220,7 +219,7 @@ ANY				.
 					return SCOPEOP;
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 			    } 
-{period}    	{ 
+"."    			{ 
 					return '.';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 			    } 
@@ -266,7 +265,7 @@ ANY				.
 				if(input== '\"'){
 					if(isLegal){
 					// addToken(STRING_TYPE, string("STRING_TYPE"), output, stringLine);
-						//yylval.stringValue = strdup(yytext);
+						yylval.stringValue = strdup(yytext);
 						return STRING;
 					}					 
 					break;		
@@ -330,13 +329,15 @@ ANY				.
 			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
 		}
 
-{ANY}		{printf("Invalid token %s at line: #%d \n",yytext,yylineno);}		
+{ANY}		{printf("LEX: Invalid token %s at line: #%d \n",yytext,yylineno);}		
 				
 %%
 //Global Hashtables
-std::map<string,symTableEntry> SymTableName;
-std::map<string,symTableEntry> SymTableScope; 
+std::multimap<string,symTableEntry*> SymTableName;
+std::multimap<unsigned int,symTableEntry*> SymTableScope;
 
+// std::map<string,symTableEntry> SymTableScope; 
+int current_scope = 0;
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr; 
 //Global token number
@@ -411,4 +412,63 @@ int main (int argc, char *argv[]){
     	fclose(yyin);
     }
   	return 0;
+}
+
+
+
+symTableEntry* lookupSym(string key){
+	int target_scope = current_scope;
+	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
+	retList = SymTableName.equal_range(key);
+
+	while(target_scope >= 0){
+		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			if(it->second->isVisible && it->second->scope == target_scope){
+				return it->second;
+			}
+		}
+		target_scope--;	
+	}
+	return NULL;
+}
+
+
+
+symTableEntry* lookupSym(string key, int scope){
+	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
+	retList = SymTableName.equal_range(key);
+
+		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			if(it->second->isVisible && it->second->scope == scope){
+				return it->second;
+			}
+		}
+	return NULL;
+}
+
+
+void insertSym(string key,symTableType type,string* args,int scp,unsigned int line){
+
+	symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
+
+	symptr->name = key;
+	symptr->symType = type;
+	symptr->arguments = args;
+	symptr->scope = scp;
+	symptr->declLine = line;
+	symptr->isVisible = TRUE;
+
+	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
+	SymTableScope.insert( std::pair<unsigned int,symTableEntry*>(scp,symptr) );
+}
+
+
+
+void hideSym(int scope){
+	std::pair <std::multimap<unsigned int,symTableEntry*>::iterator, std::multimap<unsigned int,symTableEntry*>::iterator> retList;
+	retList = SymTableScope.equal_range(scope);
+
+		for (std::multimap<unsigned int,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			it->second->isVisible = FALSE;
+		}
 }
