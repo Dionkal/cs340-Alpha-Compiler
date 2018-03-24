@@ -420,11 +420,12 @@ int main (int argc, char *argv[]){
 
 
 symTableEntry* lookupSym(string key){
-	int target_scope = current_scope;
+	unsigned int target_scope = current_scope;
 	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
 	retList = SymTableName.equal_range(key);
 
 	while(target_scope >= 0){
+		// TODO: optimize search
 		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
 			if(it->second->isVisible && it->second->scope == target_scope){
 				return it->second;

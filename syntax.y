@@ -9,6 +9,7 @@
 	extern char* yytext;
 	extern FILE* yyin;
 	extern unsigned int current_scope;
+	unsigned int anonymousCounter = 0;
 %}
 
 %expect 1
@@ -109,7 +110,7 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										 if(ptr == NULL){
 										 	symTableType type;
 										 	if(current_scope == 0){
-										 		 type = GLOBAL_VAR;
+										 		type = GLOBAL_VAR;
 										 	}else{
 										 		type = LOCAL_VAR;
 										 	}
@@ -123,7 +124,7 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 											}
 										}
 			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
-											symTableEntry* ptr = lookupSym($2,current_scope);
+											symTableEntry* ptr = lookupSym($2,0);
 											if(ptr == NULL){
 												printf("ERROR there is no global var %s\n",$2);	
 											}	
@@ -177,11 +178,21 @@ indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d
 			;
 
 block:		'{' stmt1'}'						{printf("block: {stmt1} in line:%d\n",yylineno);}		
-             |'{''}' 							{printf("block: {} in line:%d\n",yylineno);}
+             |'{''}' 							{printf("funcdefblock: {} in line:%d\n",yylineno);}
 			;	
 
-funcdef:	FUNCTION ID '(' idlist ')' block 	{printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);}
-			| FUNCTION '(' idlist ')' block 	{printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);}
+funcdef:	FUNCTION ID '(' idlist ')' block 	{printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);
+													symTableEntry* ptr = lookupSym($2);
+													if(ptr == NULL){
+														insertSym($2,USER_FUNC,NULL,current_scope,yylineno);
+													}else{
+														printf("ERROR: Function %s already defined at line %d\n",$2,yylineno);
+													}
+												}
+			| FUNCTION '(' idlist ')' block 	{printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);
+													string anonFunc = "_anonFunc" + string(anonymousCounter++);
+													insertSym(anonFunc,USER_FUNC,NULL,current_scope,yylineno);
+												}
 			;
 
 const:		NUMBER | STRING | NIL |TRUE|FALSE 	{printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d\n",yylineno);}
