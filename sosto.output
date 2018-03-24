@@ -1,0 +1,148 @@
+idlist1: empty in line:1
+idlist1: ,ID idlist1 in line:1
+idlist: ID idlist1 in line:1
+lvalue: ID in line:2
+lvalue: ID in line:2
+primary: lvalue in line:2
+term:primary in line:2
+expr:term in line:2
+elist1: empty list in line:2
+elist: expr elist1 list in line:2
+normcall: (elist) in line:2
+callsuffix: normcall in line:2
+call: lvalue callsuffix in line:2
+primary: call in line:2
+term:primary in line:2
+expr:term in line:2
+stmt:Expression with ';' in line:2
+returnstmt: RETURN; in line:3stmt:returnstmt starts in line:3
+block: {stmt1} in line:4
+funcdef: FUNCTION (idlist) block in line:4
+stmt:funcdef starts in line:4
+lvalue: ID in line:10
+lvalue: ID in line:10
+elist: empty list in line:10
+normcall: (elist) in line:10
+callsuffix: normcall in line:10
+call: lvalue callsuffix in line:10
+primary: call in line:10
+term:primary in line:10
+expr:term in line:10
+assignexpr:lvalue=expr in line:10
+expr:assignexpr in line:10
+stmt:Expression with ';' in line:10
+lvalue: ID in line:11
+primary: const in line:11
+term:primary in line:11
+expr:term in line:11
+assignexpr:lvalue=expr in line:11
+expr:assignexpr in line:11
+stmt:Expression with ';' in line:11
+lvalue: ID in line:12
+lvalue: ID in line:12
+lvalue: ID in line:12
+primary: lvalue in line:12
+term:primary in line:12
+expr:term in line:12
+elist1: empty list in line:12
+elist: expr elist1 list in line:12
+normcall: (elist) in line:12
+callsuffix: normcall in line:12
+call: lvalue callsuffix in line:12
+primary: call in line:12
+term:primary in line:12
+expr:term in line:12
+elist1: empty list in line:12
+elist: expr elist1 list in line:12
+normcall: (elist) in line:12
+callsuffix: normcall in line:12
+call: lvalue callsuffix in line:12
+primary: call in line:12
+term:primary in line:12
+expr:term in line:12
+stmt:Expression with ';' in line:12
+idlist1: empty in line:14
+idlist1: ,ID idlist1 in line:14
+idlist: ID idlist1 in line:14
+lvalue: ID in line:15
+lvalue: ID in line:15
+primary: lvalue in line:15
+term:primary in line:15
+expr:term in line:15
+lvalue: ID in line:15
+primary: lvalue in line:15
+term:primary in line:15
+expr:term in line:15
+expr:expr + expr in line:15
+elist1: empty list in line:15
+elist: expr elist1 list in line:15
+normcall: (elist) in line:15
+callsuffix: normcall in line:15
+call: lvalue callsuffix in line:15
+primary: call in line:15
+term:primary in line:15
+expr:term in line:15
+stmt:Expression with ';' in line:15
+lvalue: LOCAL ID in line:16
+lvalue: ID in line:16
+primary: lvalue in line:16
+term:primary in line:16
+expr:term in line:16
+assignexpr:lvalue=expr in line:16
+expr:assignexpr in line:16
+stmt:Expression with ';' in line:16
+lvalue: SCOPE ID in line:17
+lvalue: ID in line:17
+primary: lvalue in line:17
+term:primary in line:17
+expr:term in line:17
+elist1: empty list in line:17
+elist: expr elist1 list in line:17
+normcall: (elist) in line:17
+callsuffix: normcall in line:17
+call: lvalue callsuffix in line:17
+primary: call in line:17
+term:primary in line:17
+expr:term in line:17
+stmt:Expression with ';' in line:17
+idlist1: empty in line:19
+idlist: ID idlist1 in line:19
+lvalue: ID in line:20
+primary: lvalue in line:20
+term:primary in line:20
+expr:term in line:20
+lvalue: ID in line:20
+primary: lvalue in line:20
+term:primary in line:20
+expr:term in line:20
+expr:expr + expr in line:20
+lvalue: ID in line:20
+primary: lvalue in line:20
+term:primary in line:20
+expr:term in line:20
+expr:expr + expr in line:20
+stmt:Expression with ';' in line:20
+block: {stmt1} in line:21
+funcdef: FUNCTION ID (idlist) block in line:21
+stmt:funcdef starts in line:21
+lvalue: ID in line:22
+lvalue: ID in line:22
+lvalue: SCOPE ID in line:22
+primary: lvalue in line:22
+term:primary in line:22
+expr:term in line:22
+elist1: empty list in line:22
+elist: expr elist1 list in line:22
+normcall: (elist) in line:22
+callsuffix: normcall in line:22
+call: lvalue callsuffix in line:22
+primary: call in line:22
+term:primary in line:22
+expr:term in line:22
+assignexpr:lvalue=expr in line:22
+expr:assignexpr in line:22
+stmt:Expression with ';' in line:22
+block: {stmt1} in line:23
+funcdef: FUNCTION ID (idlist) block in line:23
+stmt:funcdef starts in line:23
+Program started
