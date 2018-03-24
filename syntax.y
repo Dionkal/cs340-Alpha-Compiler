@@ -234,7 +234,7 @@ idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 													symTableEntry* ptr = lookupSym($1);
 													if(lvalueCheckSym(ptr,current_scope,yylineno)){
 										 				if( !ptr || (!scopeAccessStack.top() && ptr->symType != LOCAL_VAR && ptr->symType != ARGUMENT_VAR && (ptr->scope == current_scope || ptr->scope == 0))){
-										 					insertSym($1,type,NULL,current_scope,yylineno);
+										 					insertSym($1,ARGUMENT_VAR,NULL,current_scope,yylineno);
 										 				}else{
 															printf("ERROR cannot access %s in scope %d\n",ptr->name, ptr->scope);
 														}
@@ -243,7 +243,17 @@ idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 			;
 
 idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
-			|',' ID idlist1 					{printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);}
+			|',' ID idlist1 					{
+													printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);
+													symTableEntry* ptr = lookupSym($2);
+													if(lvalueCheckSym(ptr,current_scope,yylineno)){
+										 				if( !ptr || (!scopeAccessStack.top() && ptr->symType != LOCAL_VAR && ptr->symType != ARGUMENT_VAR && (ptr->scope == current_scope || ptr->scope == 0))){
+										 					insertSym($2,ARGUMENT_VAR,NULL,current_scope,yylineno);
+										 				}else{
+															printf("ERROR cannot access %s in scope %d\n",ptr->name, ptr->scope);
+														}
+										 			}
+												}
 			;
 
 ifstmt:		IF '(' expr ')' stmt ifstmt1		{printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
