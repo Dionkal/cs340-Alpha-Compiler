@@ -1,0 +1,6 @@
+int a=10;
+
+function print(a,f){
+	input(::x);
+	return d;
+}

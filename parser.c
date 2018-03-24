@@ -505,9 +505,14 @@ static const yytype_uint8 yyrline[] =
       98,    99,   100,   101,   102,   105,   106,   107,   108,   111,
      112,   113,   113,   117,   118,   119,   122,   123,   126,   129,
      132,   133,   136,   137,   140,   141,   145,   148,   149,   153,
+<<<<<<< HEAD
      156,   156,   156,   157,   157,   157,   160,   160,   160,   161,
      164,   164,   164,   164,   164,   167,   168,   171,   172,   175,
      178,   179,   182,   185,   187,   188
+=======
+     156,   157,   160,   161,   164,   164,   164,   164,   164,   167,
+     168,   171,   172,   175,   178,   179,   182,   185,   187,   188
+>>>>>>> Ioanna
 };
 #endif
 
@@ -1479,401 +1484,666 @@ yyreduce:
         case 2:
 #line 46 "syntax.y" /* yacc.c:1646  */
     {printf("Program started\n");}
+<<<<<<< HEAD
 #line 1483 "parser.c" /* yacc.c:1646  */
+=======
+#line 1488 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 3:
 #line 47 "syntax.y" /* yacc.c:1646  */
     {printf("Program did not start\n");}
+<<<<<<< HEAD
 #line 1489 "parser.c" /* yacc.c:1646  */
+=======
+#line 1494 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 6:
 #line 54 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:Expression with ';' in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1495 "parser.c" /* yacc.c:1646  */
+=======
+#line 1500 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 7:
 #line 55 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:ifstmt starts in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1501 "parser.c" /* yacc.c:1646  */
+=======
+#line 1506 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 8:
 #line 56 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:whilestmt starts in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1507 "parser.c" /* yacc.c:1646  */
+=======
+#line 1512 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 9:
 #line 57 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:forstmt starts in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1513 "parser.c" /* yacc.c:1646  */
+=======
+#line 1518 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 10:
 #line 58 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:returnstmt starts in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1519 "parser.c" /* yacc.c:1646  */
+=======
+#line 1524 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 11:
 #line 59 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:Break with ';' in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1525 "parser.c" /* yacc.c:1646  */
+=======
+#line 1530 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 12:
 #line 60 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:Continue with ';' in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1531 "parser.c" /* yacc.c:1646  */
+=======
+#line 1536 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 13:
 #line 61 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:block starts in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1537 "parser.c" /* yacc.c:1646  */
+=======
+#line 1542 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 14:
 #line 62 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:funcdef starts in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1543 "parser.c" /* yacc.c:1646  */
+=======
+#line 1548 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 15:
 #line 63 "syntax.y" /* yacc.c:1646  */
     {printf("stmt:SEMICOLON in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1549 "parser.c" /* yacc.c:1646  */
+=======
+#line 1554 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 16:
 #line 66 "syntax.y" /* yacc.c:1646  */
     {printf("expr:assignexpr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1555 "parser.c" /* yacc.c:1646  */
+=======
+#line 1560 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 17:
 #line 67 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr + expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1561 "parser.c" /* yacc.c:1646  */
+=======
+#line 1566 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 18:
 #line 68 "syntax.y" /* yacc.c:1646  */
     {printf("lexpr:expr - expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1567 "parser.c" /* yacc.c:1646  */
+=======
+#line 1572 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 19:
 #line 69 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr * expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1573 "parser.c" /* yacc.c:1646  */
+=======
+#line 1578 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 20:
 #line 70 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr / expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1579 "parser.c" /* yacc.c:1646  */
+=======
+#line 1584 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 21:
 #line 71 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr mod expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1585 "parser.c" /* yacc.c:1646  */
+=======
+#line 1590 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 22:
 #line 72 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr > expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1591 "parser.c" /* yacc.c:1646  */
+=======
+#line 1596 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 23:
 #line 73 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr < expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1597 "parser.c" /* yacc.c:1646  */
+=======
+#line 1602 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 24:
 #line 74 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr >= expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1603 "parser.c" /* yacc.c:1646  */
+=======
+#line 1608 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 25:
 #line 75 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr <= expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1609 "parser.c" /* yacc.c:1646  */
+=======
+#line 1614 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 26:
 #line 76 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1615 "parser.c" /* yacc.c:1646  */
+=======
+#line 1620 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 27:
 #line 77 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr != expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1621 "parser.c" /* yacc.c:1646  */
+=======
+#line 1626 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 28:
 #line 78 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr AND expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1627 "parser.c" /* yacc.c:1646  */
+=======
+#line 1632 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 29:
 #line 79 "syntax.y" /* yacc.c:1646  */
     {printf("expr:expr OR expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1633 "parser.c" /* yacc.c:1646  */
+=======
+#line 1638 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 30:
 #line 80 "syntax.y" /* yacc.c:1646  */
     {printf("expr:term in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1639 "parser.c" /* yacc.c:1646  */
+=======
+#line 1644 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 31:
 #line 85 "syntax.y" /* yacc.c:1646  */
     {printf("term:(expr) in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1645 "parser.c" /* yacc.c:1646  */
+=======
+#line 1650 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 32:
 #line 86 "syntax.y" /* yacc.c:1646  */
     {{printf("term:-expr in line:%d\n",yylineno);}}
+<<<<<<< HEAD
 #line 1651 "parser.c" /* yacc.c:1646  */
+=======
+#line 1656 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 33:
 #line 87 "syntax.y" /* yacc.c:1646  */
     {printf("term:!expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1657 "parser.c" /* yacc.c:1646  */
+=======
+#line 1662 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 34:
 #line 88 "syntax.y" /* yacc.c:1646  */
     {printf("term:++lvalue in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1663 "parser.c" /* yacc.c:1646  */
+=======
+#line 1668 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 35:
 #line 89 "syntax.y" /* yacc.c:1646  */
     {printf("term:lvalue++ in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1669 "parser.c" /* yacc.c:1646  */
+=======
+#line 1674 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 36:
 #line 90 "syntax.y" /* yacc.c:1646  */
     {printf("term:--lvalue in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1675 "parser.c" /* yacc.c:1646  */
+=======
+#line 1680 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 37:
 #line 91 "syntax.y" /* yacc.c:1646  */
     {printf("term:lvalue-- in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1681 "parser.c" /* yacc.c:1646  */
+=======
+#line 1686 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 38:
 #line 92 "syntax.y" /* yacc.c:1646  */
     {printf("term:primary in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1687 "parser.c" /* yacc.c:1646  */
+=======
+#line 1692 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 39:
 #line 95 "syntax.y" /* yacc.c:1646  */
     {printf("assignexpr:lvalue=expr in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1693 "parser.c" /* yacc.c:1646  */
+=======
+#line 1698 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 40:
 #line 98 "syntax.y" /* yacc.c:1646  */
     {printf("primary: lvalue in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1699 "parser.c" /* yacc.c:1646  */
+=======
+#line 1704 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 41:
 #line 99 "syntax.y" /* yacc.c:1646  */
     {printf("primary: call in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1705 "parser.c" /* yacc.c:1646  */
+=======
+#line 1710 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 42:
 #line 100 "syntax.y" /* yacc.c:1646  */
     {printf("primary: objectdef in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1711 "parser.c" /* yacc.c:1646  */
+=======
+#line 1716 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 43:
 #line 101 "syntax.y" /* yacc.c:1646  */
     {printf("primary: (funcdef) in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1717 "parser.c" /* yacc.c:1646  */
+=======
+#line 1722 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 44:
 #line 102 "syntax.y" /* yacc.c:1646  */
     {printf("primary: const in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1723 "parser.c" /* yacc.c:1646  */
+=======
+#line 1728 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 45:
 #line 105 "syntax.y" /* yacc.c:1646  */
     {printf("lvalue: ID in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1729 "parser.c" /* yacc.c:1646  */
+=======
+#line 1734 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 46:
 #line 106 "syntax.y" /* yacc.c:1646  */
     {printf("lvalue: LOCAL ID in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1735 "parser.c" /* yacc.c:1646  */
+=======
+#line 1740 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 47:
 #line 107 "syntax.y" /* yacc.c:1646  */
     {printf("lvalue: SCOPE ID in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1741 "parser.c" /* yacc.c:1646  */
+=======
+#line 1746 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 48:
 #line 108 "syntax.y" /* yacc.c:1646  */
     {printf("lvalue: member in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1747 "parser.c" /* yacc.c:1646  */
+=======
+#line 1752 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 49:
 #line 111 "syntax.y" /* yacc.c:1646  */
     {printf("member: lvalue.ID in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1753 "parser.c" /* yacc.c:1646  */
+=======
+#line 1758 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 50:
 #line 112 "syntax.y" /* yacc.c:1646  */
     {printf("member: lvalue [expr] in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1759 "parser.c" /* yacc.c:1646  */
+=======
+#line 1764 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 51:
 #line 113 "syntax.y" /* yacc.c:1646  */
     {printf("member: call.ID in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1765 "parser.c" /* yacc.c:1646  */
+=======
+#line 1770 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 52:
 #line 114 "syntax.y" /* yacc.c:1646  */
     {printf("member: call [expr] in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1771 "parser.c" /* yacc.c:1646  */
+=======
+#line 1776 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 53:
 #line 117 "syntax.y" /* yacc.c:1646  */
     {printf("call: (elist) in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1777 "parser.c" /* yacc.c:1646  */
+=======
+#line 1782 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 54:
 #line 118 "syntax.y" /* yacc.c:1646  */
     {printf("call: lvalue callsuffix in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1783 "parser.c" /* yacc.c:1646  */
+=======
+#line 1788 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 55:
 #line 119 "syntax.y" /* yacc.c:1646  */
     {printf("call: (func) (elist) in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1789 "parser.c" /* yacc.c:1646  */
+=======
+#line 1794 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 56:
 #line 122 "syntax.y" /* yacc.c:1646  */
     {printf("callsuffix: normcall in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1795 "parser.c" /* yacc.c:1646  */
+=======
+#line 1800 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 57:
 #line 123 "syntax.y" /* yacc.c:1646  */
     {printf("callsuffix: methodcall in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1801 "parser.c" /* yacc.c:1646  */
+=======
+#line 1806 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 58:
 #line 126 "syntax.y" /* yacc.c:1646  */
     {printf("normcall: (elist) in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1807 "parser.c" /* yacc.c:1646  */
+=======
+#line 1812 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 59:
 #line 129 "syntax.y" /* yacc.c:1646  */
     {printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1813 "parser.c" /* yacc.c:1646  */
+=======
+#line 1818 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 60:
 #line 132 "syntax.y" /* yacc.c:1646  */
     {printf("elist: empty list in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1819 "parser.c" /* yacc.c:1646  */
+=======
+#line 1824 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 61:
 #line 133 "syntax.y" /* yacc.c:1646  */
     {printf("elist: expr elist1 list in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1825 "parser.c" /* yacc.c:1646  */
+=======
+#line 1830 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 62:
 #line 136 "syntax.y" /* yacc.c:1646  */
     {printf("elist1: empty list in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1831 "parser.c" /* yacc.c:1646  */
+=======
+#line 1836 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 63:
 #line 137 "syntax.y" /* yacc.c:1646  */
     {printf("elist1: ,expr elist1 in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1837 "parser.c" /* yacc.c:1646  */
+=======
+#line 1842 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 64:
 #line 140 "syntax.y" /* yacc.c:1646  */
     {printf("objectdef: [elist] in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1843 "parser.c" /* yacc.c:1646  */
+=======
+#line 1848 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 65:
 #line 141 "syntax.y" /* yacc.c:1646  */
     {printf("objectdef: [indexed] in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1849 "parser.c" /* yacc.c:1646  */
+=======
+#line 1854 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 66:
 #line 145 "syntax.y" /* yacc.c:1646  */
     {printf("indexed: indexedelem more in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1855 "parser.c" /* yacc.c:1646  */
+=======
+#line 1860 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 67:
 #line 148 "syntax.y" /* yacc.c:1646  */
     {printf("more: ,indexedelem more in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1861 "parser.c" /* yacc.c:1646  */
+=======
+#line 1866 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 68:
 #line 149 "syntax.y" /* yacc.c:1646  */
     {printf("more: empty in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1867 "parser.c" /* yacc.c:1646  */
+=======
+#line 1872 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 69:
 #line 153 "syntax.y" /* yacc.c:1646  */
     {printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
+<<<<<<< HEAD
 #line 1873 "parser.c" /* yacc.c:1646  */
+=======
+#line 1878 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
     break;
 
   case 70:
 #line 156 "syntax.y" /* yacc.c:1646  */
+<<<<<<< HEAD
     {++scope;}
 #line 1879 "parser.c" /* yacc.c:1646  */
     break;
@@ -2006,6 +2276,104 @@ yyreduce:
 
 
 #line 2009 "parser.c" /* yacc.c:1646  */
+=======
+    {printf("block: {stmt1} in line:%d\n",yylineno);}
+#line 1884 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 71:
+#line 157 "syntax.y" /* yacc.c:1646  */
+    {printf("block: {} in line:%d\n",yylineno);}
+#line 1890 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 72:
+#line 160 "syntax.y" /* yacc.c:1646  */
+    {printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);}
+#line 1896 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 73:
+#line 161 "syntax.y" /* yacc.c:1646  */
+    {printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);}
+#line 1902 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 78:
+#line 164 "syntax.y" /* yacc.c:1646  */
+    {printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d\n",yylineno);}
+#line 1908 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 79:
+#line 167 "syntax.y" /* yacc.c:1646  */
+    {printf("idlist: empty in line:%d\n",yylineno);}
+#line 1914 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 80:
+#line 168 "syntax.y" /* yacc.c:1646  */
+    {printf("idlist: ID idlist1 in line:%d\n",yylineno);}
+#line 1920 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 81:
+#line 171 "syntax.y" /* yacc.c:1646  */
+    {printf("idlist1: empty in line:%d\n",yylineno);}
+#line 1926 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 82:
+#line 172 "syntax.y" /* yacc.c:1646  */
+    {printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);}
+#line 1932 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 83:
+#line 175 "syntax.y" /* yacc.c:1646  */
+    {printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
+#line 1938 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 84:
+#line 178 "syntax.y" /* yacc.c:1646  */
+    {printf("ifstmt1: empty in line:%d\n",yylineno);}
+#line 1944 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 85:
+#line 179 "syntax.y" /* yacc.c:1646  */
+    {printf("ifstmt1: ELSE stmt in line:%d\n",yylineno);}
+#line 1950 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 86:
+#line 182 "syntax.y" /* yacc.c:1646  */
+    {printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
+#line 1956 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 87:
+#line 185 "syntax.y" /* yacc.c:1646  */
+    {printf("forstmt: FOR (elist;expr;elist) stmt in 								;											line:%d\n",yylineno);}
+#line 1962 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 88:
+#line 187 "syntax.y" /* yacc.c:1646  */
+    {printf("returnstmt: RETURN; in line:%d",yylineno);}
+#line 1968 "parser.c" /* yacc.c:1646  */
+    break;
+
+  case 89:
+#line 188 "syntax.y" /* yacc.c:1646  */
+    {printf("returnstmt: RETURN expr; in line:%d",yylineno);}
+#line 1974 "parser.c" /* yacc.c:1646  */
+    break;
+
+
+#line 1978 "parser.c" /* yacc.c:1646  */
+>>>>>>> Ioanna
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

@@ -153,11 +153,11 @@ more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d\
 indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
 			;
 
-block:		'{' {++scope;} stmt1'}'	{hide(scope--;)}				{printf("block: {stmt1} in line:%d\n",yylineno);}		
-             |'{' {++scope;} '}' {scope--; /*isos mesa se hide auto*/}{printf("block: {} in line:%d\n",yylineno);}
+block:		'{' stmt1'}'					{printf("block: {stmt1} in line:%d\n",yylineno);}		
+             |'{'  '}' {printf("block: {} in line:%d\n",yylineno);}
 			;	
 
-funcdef:	FUNCTION ID '(' {++scope;} idlist ')' {scope--;} block 	{printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);}
+funcdef:	FUNCTION ID '('  idlist ')'  block 	{printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);}
 			| FUNCTION '(' idlist ')' block 	{printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);}
 			;
 
