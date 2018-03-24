@@ -1484,493 +1484,493 @@ yyreduce:
     {
         case 2:
 #line 47 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("Program started\n");}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program started\n");}
 #line 1489 "parser.c" /* yacc.c:1646  */
     break;
 
   case 3:
 #line 48 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("Program did not start\n");}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program did not start\n");}
 #line 1495 "parser.c" /* yacc.c:1646  */
     break;
 
   case 6:
 #line 55 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:Expression with ';' in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:Expression with ';' in line:%d\n",yylineno);}
 #line 1501 "parser.c" /* yacc.c:1646  */
     break;
 
   case 7:
 #line 56 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:ifstmt starts in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:ifstmt starts in line:%d\n",yylineno);}
 #line 1507 "parser.c" /* yacc.c:1646  */
     break;
 
   case 8:
 #line 57 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:whilestmt starts in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:whilestmt starts in line:%d\n",yylineno);}
 #line 1513 "parser.c" /* yacc.c:1646  */
     break;
 
   case 9:
 #line 58 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:forstmt starts in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:forstmt starts in line:%d\n",yylineno);}
 #line 1519 "parser.c" /* yacc.c:1646  */
     break;
 
   case 10:
 #line 59 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:returnstmt starts in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:returnstmt starts in line:%d\n",yylineno);}
 #line 1525 "parser.c" /* yacc.c:1646  */
     break;
 
   case 11:
 #line 60 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:Break with ';' in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:Break with ';' in line:%d\n",yylineno);}
 #line 1531 "parser.c" /* yacc.c:1646  */
     break;
 
   case 12:
 #line 61 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:Continue with ';' in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:Continue with ';' in line:%d\n",yylineno);}
 #line 1537 "parser.c" /* yacc.c:1646  */
     break;
 
   case 13:
 #line 62 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:block starts in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:block starts in line:%d\n",yylineno);}
 #line 1543 "parser.c" /* yacc.c:1646  */
     break;
 
   case 14:
 #line 63 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:funcdef starts in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:funcdef starts in line:%d\n",yylineno);}
 #line 1549 "parser.c" /* yacc.c:1646  */
     break;
 
   case 15:
 #line 64 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("stmt:SEMICOLON in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:SEMICOLON in line:%d\n",yylineno);}
 #line 1555 "parser.c" /* yacc.c:1646  */
     break;
 
   case 16:
 #line 67 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:assignexpr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:assignexpr in line:%d\n",yylineno);}
 #line 1561 "parser.c" /* yacc.c:1646  */
     break;
 
   case 17:
 #line 68 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr + expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr + expr in line:%d\n",yylineno);}
 #line 1567 "parser.c" /* yacc.c:1646  */
     break;
 
   case 18:
 #line 69 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("lexpr:expr - expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lexpr:expr - expr in line:%d\n",yylineno);}
 #line 1573 "parser.c" /* yacc.c:1646  */
     break;
 
   case 19:
 #line 70 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr * expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr * expr in line:%d\n",yylineno);}
 #line 1579 "parser.c" /* yacc.c:1646  */
     break;
 
   case 20:
 #line 71 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr / expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr / expr in line:%d\n",yylineno);}
 #line 1585 "parser.c" /* yacc.c:1646  */
     break;
 
   case 21:
 #line 72 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr mod expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr mod expr in line:%d\n",yylineno);}
 #line 1591 "parser.c" /* yacc.c:1646  */
     break;
 
   case 22:
 #line 73 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr > expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr > expr in line:%d\n",yylineno);}
 #line 1597 "parser.c" /* yacc.c:1646  */
     break;
 
   case 23:
 #line 74 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr < expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr < expr in line:%d\n",yylineno);}
 #line 1603 "parser.c" /* yacc.c:1646  */
     break;
 
   case 24:
 #line 75 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr >= expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr >= expr in line:%d\n",yylineno);}
 #line 1609 "parser.c" /* yacc.c:1646  */
     break;
 
   case 25:
 #line 76 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr <= expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr <= expr in line:%d\n",yylineno);}
 #line 1615 "parser.c" /* yacc.c:1646  */
     break;
 
   case 26:
 #line 77 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);}
 #line 1621 "parser.c" /* yacc.c:1646  */
     break;
 
   case 27:
 #line 78 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr != expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr != expr in line:%d\n",yylineno);}
 #line 1627 "parser.c" /* yacc.c:1646  */
     break;
 
   case 28:
 #line 79 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr AND expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr AND expr in line:%d\n",yylineno);}
 #line 1633 "parser.c" /* yacc.c:1646  */
     break;
 
   case 29:
 #line 80 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:expr OR expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr OR expr in line:%d\n",yylineno);}
 #line 1639 "parser.c" /* yacc.c:1646  */
     break;
 
   case 30:
 #line 81 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("expr:term in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:term in line:%d\n",yylineno);}
 #line 1645 "parser.c" /* yacc.c:1646  */
     break;
 
   case 31:
 #line 86 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("term:(expr) in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:(expr) in line:%d\n",yylineno);}
 #line 1651 "parser.c" /* yacc.c:1646  */
     break;
 
   case 32:
 #line 87 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); {printf("term:-expr in line:%d\n",yylineno);}}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); {printf("term:-expr in line:%d\n",yylineno);}}
 #line 1657 "parser.c" /* yacc.c:1646  */
     break;
 
   case 33:
 #line 88 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("term:!expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:!expr in line:%d\n",yylineno);}
 #line 1663 "parser.c" /* yacc.c:1646  */
     break;
 
   case 34:
 #line 89 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("term:++lvalue in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:++lvalue in line:%d\n",yylineno);}
 #line 1669 "parser.c" /* yacc.c:1646  */
     break;
 
   case 35:
 #line 90 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("term:lvalue++ in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:lvalue++ in line:%d\n",yylineno);}
 #line 1675 "parser.c" /* yacc.c:1646  */
     break;
 
   case 36:
 #line 91 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("term:--lvalue in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:--lvalue in line:%d\n",yylineno);}
 #line 1681 "parser.c" /* yacc.c:1646  */
     break;
 
   case 37:
 #line 92 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("term:lvalue-- in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:lvalue-- in line:%d\n",yylineno);}
 #line 1687 "parser.c" /* yacc.c:1646  */
     break;
 
   case 38:
 #line 93 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("term:primary in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:primary in line:%d\n",yylineno);}
 #line 1693 "parser.c" /* yacc.c:1646  */
     break;
 
   case 39:
 #line 96 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("assignexpr:lvalue=expr in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("assignexpr:lvalue=expr in line:%d\n",yylineno);}
 #line 1699 "parser.c" /* yacc.c:1646  */
     break;
 
   case 40:
 #line 99 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("primary: lvalue in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: lvalue in line:%d\n",yylineno);}
 #line 1705 "parser.c" /* yacc.c:1646  */
     break;
 
   case 41:
 #line 100 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("primary: call in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: call in line:%d\n",yylineno);}
 #line 1711 "parser.c" /* yacc.c:1646  */
     break;
 
   case 42:
 #line 101 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("primary: objectdef in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
 #line 1717 "parser.c" /* yacc.c:1646  */
     break;
 
   case 43:
 #line 102 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("primary: (funcdef) in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: (funcdef) in line:%d\n",yylineno);}
 #line 1723 "parser.c" /* yacc.c:1646  */
     break;
 
   case 44:
 #line 103 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("primary: const in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: const in line:%d\n",yylineno);}
 #line 1729 "parser.c" /* yacc.c:1646  */
     break;
 
   case 45:
 #line 106 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("lvalue: ID in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lvalue: ID in line:%d\n",yylineno);}
 #line 1735 "parser.c" /* yacc.c:1646  */
     break;
 
   case 46:
 #line 107 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("lvalue: LOCAL ID in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lvalue: LOCAL ID in line:%d\n",yylineno);}
 #line 1741 "parser.c" /* yacc.c:1646  */
     break;
 
   case 47:
 #line 108 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("lvalue: SCOPE ID in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lvalue: SCOPE ID in line:%d\n",yylineno);}
 #line 1747 "parser.c" /* yacc.c:1646  */
     break;
 
   case 48:
 #line 109 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("lvalue: member in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lvalue: member in line:%d\n",yylineno);}
 #line 1753 "parser.c" /* yacc.c:1646  */
     break;
 
   case 49:
 #line 112 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("member: lvalue.ID in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: lvalue.ID in line:%d\n",yylineno);}
 #line 1759 "parser.c" /* yacc.c:1646  */
     break;
 
   case 50:
 #line 113 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("member: lvalue [expr] in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: lvalue [expr] in line:%d\n",yylineno);}
 #line 1765 "parser.c" /* yacc.c:1646  */
     break;
 
   case 51:
 #line 114 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("member: call.ID in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call.ID in line:%d\n",yylineno);}
 #line 1771 "parser.c" /* yacc.c:1646  */
     break;
 
   case 52:
 #line 115 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("member: call [expr] in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call [expr] in line:%d\n",yylineno);}
 #line 1777 "parser.c" /* yacc.c:1646  */
     break;
 
   case 53:
 #line 118 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("call: (elist) in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: (elist) in line:%d\n",yylineno);}
 #line 1783 "parser.c" /* yacc.c:1646  */
     break;
 
   case 54:
 #line 119 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("call: lvalue callsuffix in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: lvalue callsuffix in line:%d\n",yylineno);}
 #line 1789 "parser.c" /* yacc.c:1646  */
     break;
 
   case 55:
 #line 120 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("call: (func) (elist) in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: (func) (elist) in line:%d\n",yylineno);}
 #line 1795 "parser.c" /* yacc.c:1646  */
     break;
 
   case 56:
 #line 123 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("callsuffix: normcall in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);}
 #line 1801 "parser.c" /* yacc.c:1646  */
     break;
 
   case 57:
 #line 124 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("callsuffix: methodcall in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);}
 #line 1807 "parser.c" /* yacc.c:1646  */
     break;
 
   case 58:
 #line 127 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("normcall: (elist) in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);}
 #line 1813 "parser.c" /* yacc.c:1646  */
     break;
 
   case 59:
 #line 130 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);}
 #line 1819 "parser.c" /* yacc.c:1646  */
     break;
 
   case 60:
 #line 133 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("elist: empty list in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist: empty list in line:%d\n",yylineno);}
 #line 1825 "parser.c" /* yacc.c:1646  */
     break;
 
   case 61:
 #line 134 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("elist: expr elist1 list in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist: expr elist1 list in line:%d\n",yylineno);}
 #line 1831 "parser.c" /* yacc.c:1646  */
     break;
 
   case 62:
 #line 137 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("elist1: empty list in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist1: empty list in line:%d\n",yylineno);}
 #line 1837 "parser.c" /* yacc.c:1646  */
     break;
 
   case 63:
 #line 138 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("elist1: ,expr elist1 in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist1: ,expr elist1 in line:%d\n",yylineno);}
 #line 1843 "parser.c" /* yacc.c:1646  */
     break;
 
   case 64:
 #line 141 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("objectdef: [elist] in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [elist] in line:%d\n",yylineno);}
 #line 1849 "parser.c" /* yacc.c:1646  */
     break;
 
   case 65:
 #line 142 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("objectdef: [indexed] in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [indexed] in line:%d\n",yylineno);}
 #line 1855 "parser.c" /* yacc.c:1646  */
     break;
 
   case 66:
 #line 146 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("indexed: indexedelem more in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("indexed: indexedelem more in line:%d\n",yylineno);}
 #line 1861 "parser.c" /* yacc.c:1646  */
     break;
 
   case 67:
 #line 149 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("more: ,indexedelem more in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("more: ,indexedelem more in line:%d\n",yylineno);}
 #line 1867 "parser.c" /* yacc.c:1646  */
     break;
 
   case 68:
 #line 150 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("more: empty in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("more: empty in line:%d\n",yylineno);}
 #line 1873 "parser.c" /* yacc.c:1646  */
     break;
 
   case 69:
 #line 154 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
 #line 1879 "parser.c" /* yacc.c:1646  */
     break;
 
   case 70:
 #line 157 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("block: {stmt1} in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("block: {stmt1} in line:%d\n",yylineno);}
 #line 1885 "parser.c" /* yacc.c:1646  */
     break;
 
   case 71:
 #line 158 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("block: {} in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("block: {} in line:%d\n",yylineno);}
 #line 1891 "parser.c" /* yacc.c:1646  */
     break;
 
   case 72:
 #line 161 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);}
 #line 1897 "parser.c" /* yacc.c:1646  */
     break;
 
   case 73:
 #line 162 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);}
 #line 1903 "parser.c" /* yacc.c:1646  */
     break;
 
   case 78:
 #line 165 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d\n",yylineno);}
 #line 1909 "parser.c" /* yacc.c:1646  */
     break;
 
   case 79:
 #line 168 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("idlist: empty in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("idlist: empty in line:%d\n",yylineno);}
 #line 1915 "parser.c" /* yacc.c:1646  */
     break;
 
   case 80:
 #line 169 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("idlist: ID idlist1 in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("idlist: ID idlist1 in line:%d\n",yylineno);}
 #line 1921 "parser.c" /* yacc.c:1646  */
     break;
 
   case 81:
 #line 172 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("idlist1: empty in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("idlist1: empty in line:%d\n",yylineno);}
 #line 1927 "parser.c" /* yacc.c:1646  */
     break;
 
   case 82:
 #line 173 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);}
 #line 1933 "parser.c" /* yacc.c:1646  */
     break;
 
   case 83:
 #line 176 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
 #line 1939 "parser.c" /* yacc.c:1646  */
     break;
 
   case 84:
 #line 179 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("ifstmt1: empty in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: empty in line:%d\n",yylineno);}
 #line 1945 "parser.c" /* yacc.c:1646  */
     break;
 
   case 85:
 #line 180 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("ifstmt1: ELSE stmt in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: ELSE stmt in line:%d\n",yylineno);}
 #line 1951 "parser.c" /* yacc.c:1646  */
     break;
 
   case 86:
 #line 183 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
 #line 1957 "parser.c" /* yacc.c:1646  */
     break;
 
   case 87:
 #line 186 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("forstmt: FOR (elist;expr;elist) stmt in 								;											line:%d\n",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("forstmt: FOR (elist;expr;elist) stmt in 								;											line:%d\n",yylineno);}
 #line 1963 "parser.c" /* yacc.c:1646  */
     break;
 
   case 88:
 #line 188 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("returnstmt: RETURN; in line:%d",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN; in line:%d",yylineno);}
 #line 1969 "parser.c" /* yacc.c:1646  */
     break;
 
   case 89:
 #line 189 "syntax.y" /* yacc.c:1646  */
-    {k++; printf("%d___",k); printf("returnstmt: RETURN expr; in line:%d",yylineno);}
+    {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN expr; in line:%d",yylineno);}
 #line 1975 "parser.c" /* yacc.c:1646  */
     break;
 
