@@ -21,7 +21,6 @@ leftBracket2	'\['
 rightBracket2	'\]'
 leftBracket3	'\('
 rightBracket3	'\)'
-semicolon		'\;'
 comma			'\,'
 colon			'\:'
 doubleColon	[:]{2}
@@ -183,36 +182,36 @@ ANY				.
 
 {Whitespace}	{
 					//addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
-				} 
-"}"  			{ 
-					return '}';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
-				} 
-{leftBracket2}  { 
+				}
+"{"				{return '{';}
+
+"}"  			{ return '}';} 
+
+"["  			{ 
 					return '[';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				} 
-{rightBracket2}  { 
+"]"  			{ 
 					return ']';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				}
-{leftBracket3}  { 
+"("  			{ 
 					return '(';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				}
-{rightBracket3}  { 
+")"  			{ 
 					return ')';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				}
-{semicolon}    { 
+";"    			{ 
 					return ';';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				}
-{comma}     	{ 
+","     		{ 
 					return ',';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 			    }
-{colon}      	{ 
+":"      		{ 
 					return ':';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 				} 
@@ -220,7 +219,7 @@ ANY				.
 					return SCOPEOP;
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 			    } 
-{period}    	{ 
+"."    			{ 
 					return '.';
 					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
 			    } 
@@ -330,7 +329,7 @@ ANY				.
 			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
 		}
 
-{ANY}		{printf("Invalid token %s at line: #%d \n",yytext,yylineno);}		
+{ANY}		{printf("LEX: Invalid token %s at line: #%d \n",yytext,yylineno);}		
 				
 %%
 //Global Hashtables
