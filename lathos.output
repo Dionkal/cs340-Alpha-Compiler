@@ -1,6 +1,0 @@
-1___lvalue: ID in line:1
-2___primary: lvalue in line:1
-3___term:primary in line:1
-4___expr:term in line:1
-syntax error: at line 1, before token: a
-INPUT NOT VALID

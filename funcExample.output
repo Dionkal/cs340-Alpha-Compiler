@@ -1,0 +1,16 @@
+time:1___ ,token: )____>idlist1: empty in line:1
+time:2___ ,token: )____>idlist1: ,ID idlist1 in line:1
+time:3___ ,token: )____>idlist: ID idlist1 in line:1
+time:4___ ,token: ;____>returnstmt: RETURN; in line:2time:5___ ,token: ;____>stmt:returnstmt starts in line:2
+time:6___ ,token: }____>block: {stmt1} in line:3
+time:7___ ,token: }____>funcdef: FUNCTION (idlist) block in line:3
+time:8___ ,token: }____>stmt:funcdef starts in line:3
+time:9___ ,token: )____>idlist: empty in line:5
+time:10___ ,token: 0____>primary: const in line:6
+time:11___ ,token: 0____>term:primary in line:6
+time:12___ ,token: 0____>expr:term in line:6
+time:13___ ,token: ;____>returnstmt: RETURN expr; in line:6time:14___ ,token: ;____>stmt:returnstmt starts in line:6
+time:15___ ,token: }____>block: {stmt1} in line:7
+time:16___ ,token: }____>funcdef: FUNCTION ID (idlist) block in line:7
+time:17___ ,token: }____>stmt:funcdef starts in line:7
+time:18___ ,token: ____>Program started
