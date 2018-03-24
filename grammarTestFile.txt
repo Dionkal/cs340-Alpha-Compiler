@@ -1,5 +1,4 @@
 
-5
 /*this is a c style comment*/
 
 function func0(b,c){
@@ -9,7 +8,7 @@ function func0(b,c){
 
 //one line comment
 
-function(){
+a=function(){
 	a=5,b=2,c=10,d,e=3,k=40;
 
 	for(a=1; a<15; a++){
