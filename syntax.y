@@ -101,7 +101,14 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
 			|primary 					{printf("term:primary in line:%d\n",yylineno);}
 			;
 
-assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);}
+assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $1;
+											if(ptr== NULL){
+												std::cout<< "ERROR:Cannot assign to null lvalue at line " <<yylineno <<std::endl;
+											}else if(ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC){
+												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" as left value of assignment at line " <<yylineno <<std::endl;
+											}
+										}
 			;
 
 primary:	lvalue 						{printf("primary: lvalue in line:%d\n",yylineno);}
@@ -126,7 +133,9 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										 		std::cout  <<"ERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<std::endl;
 										 	}else{
 										 		if(ptr == NULL ) insertSym($1,type,NULL,current_scope,yylineno);
+												ptr = lookupSym($1);
 											}
+											$$ =(void*) ptr;
 										 }
 										}
 			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
@@ -139,18 +148,16 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										 		}else{
 										 			type = LOCAL_VAR;
 										 		}
-												insertSym($2,type,NULL,current_scope,yylineno);			
+												if(ptr == NULL) insertSym($2,type,NULL,current_scope,yylineno);			
+												ptr = lookupSym($2,current_scope);
+												$$ = (void*) ptr;
 											}
 										}
 			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
 											symTableEntry* ptr = lookupSym($2,0);
 											if(lvalueCheckSym(ptr,0,yylineno)){
-												printf("ERROR there is no global var %s\n",$2);	
-											}else{
-												if(ptr->declLine == 0){
-
-												}
-												/*TODO: print symbol data*/
+												if(ptr == NULL) std::cout << "ERROR there is no global var " << $2 <<std::endl;	
+												$$= (void*) ptr;	
 											}	
 										}
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}

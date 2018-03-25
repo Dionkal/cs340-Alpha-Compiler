@@ -416,7 +416,6 @@ int main (int argc, char *argv[]){
    		k = yyparse();
    		scopeAccessStack.pop();
 
-    	// printf("K is:%d\n",k);
     	printSymTable();
     	fclose(yyin);
     }
@@ -433,7 +432,6 @@ symTableEntry* lookupSym(string key){
 	
 	retList = SymTableName.equal_range(key);
 
-		// TODO: optimize search
 		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
 			if(it->second->isVisible && it->second->scope > max_scope){
 				max_scope = it->second->scope;
@@ -489,12 +487,7 @@ bool lvalueCheckSym(symTableEntry* sym, unsigned int scope, int line){
 	if(sym == NULL) return true;
 
 	if(sym->symType == LIB_FUNC){
-		printf("ERROR: cannot name symbol at line %d as library function %s\n",line,sym->name);
-		return false;
-	}
-
-	if(sym->scope == scope && sym->symType == USER_FUNC) {
-		printf("ERROR: function %s used as lvalue at line %d\n",sym->name, line);
+		std::cout <<"ERROR: cannot name symbol at line "  <<line <<" as library function "<<sym->name <<std::endl;
 		return false;
 	}
 	return true;
