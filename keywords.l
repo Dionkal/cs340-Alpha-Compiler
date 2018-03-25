@@ -461,7 +461,8 @@ symTableEntry* lookupSym(string key, int scope){
 void insertSym(string key,symTableType type,symTableEntry* args,int scp,unsigned int line){
 
 	/*insert new symbol*/
-	symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
+	// symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
+	symTableEntry* symptr = new symTableEntry(); 
 	symptr->name = key;
 	symptr->symType = type;
 	symptr->arguments = args;
