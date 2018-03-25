@@ -448,7 +448,7 @@ symTableEntry* lookupSym(string key, int scope){
 	retList = SymTableName.equal_range(key);
 
 		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
-			if(it->second->isVisible && it->second->scope == scope){
+			if(it->second->isVisible && it->second->scope == scope ){
 				return it->second;
 			}
 		}
@@ -465,7 +465,7 @@ void insertSym(string key,symTableType type,symTableEntry* args,int scp,unsigned
 	symptr->arguments = args;
 	symptr->scope = scp;
 	symptr->declLine = line;
-	symptr->isVisible = TRUE;
+	symptr->isVisible = true;
 
 	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
 	SymTableScope.insert( std::pair<unsigned int,symTableEntry*>(scp,symptr) );
@@ -538,4 +538,12 @@ void insertLibFuncSym(){
 	insertSym("sqrt",LIB_FUNC,NULL,0,0);
 	insertSym("cos",LIB_FUNC,NULL,0,0);
 	insertSym("sin",LIB_FUNC,NULL,0,0);
+}
+
+
+bool checkCollisionSym(string key){
+	if(key =="print" || key == "input" || key == "objectmemberkeys" || key == "objecttotalmembers" || key == "objectcopy" || key == "totalarguments" || key == "argument" || key == "typeof" || key == "strtonum" || key == "sqrt" || key == "cos" || key == "sin"){
+		return true;
+	}
+	return false;
 }

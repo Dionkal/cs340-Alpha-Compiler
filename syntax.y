@@ -94,18 +94,41 @@ expr:		assignexpr 					{printf("expr:assignexpr in line:%d\n",yylineno);}
 term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
 			| '-' expr %prec UMINUS		{{printf("term:-expr in line:%d\n",yylineno);}}
 			| NOT expr 					{printf("term:!expr in line:%d\n",yylineno);}
-			|PLUSPLUS lvalue 			{printf("term:++lvalue in line:%d\n",yylineno);}
-			|lvalue PLUSPLUS 			{printf("term:lvalue++ in line:%d\n",yylineno);}
-			|MINUSMINUS lvalue 			{printf("term:--lvalue in line:%d\n",yylineno);}
-			|lvalue MINUSMINUS 			{printf("term:lvalue-- in line:%d\n",yylineno);}
+			|PLUSPLUS lvalue 			{	printf("term:++lvalue in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $2;
+											
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
+												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno <<std::endl;
+											}
+										}
+			|lvalue PLUSPLUS 			{	printf("term:lvalue++ in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $1;
+
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
+												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno <<std::endl;
+											}
+										}
+			|MINUSMINUS lvalue 			{	printf("term:--lvalue in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $2;
+
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
+												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno <<std::endl;
+											}
+										}
+			|lvalue MINUSMINUS 			{	printf("term:lvalue-- in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $1;
+											
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
+												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno <<std::endl;
+											}
+										}
 			|primary 					{printf("term:primary in line:%d\n",yylineno);}
 			;
 
 assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
 											symTableEntry* ptr = (symTableEntry*) $1;
-											if(ptr== NULL){
-												std::cout<< "ERROR:Cannot assign to null lvalue at line " <<yylineno <<std::endl;
-											}else if(ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC){
+											
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
 												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" as left value of assignment at line " <<yylineno <<std::endl;
 											}
 										}
@@ -122,43 +145,48 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										 
 										 symTableEntry* ptr = lookupSym($1);
 
-										 if(lvalueCheckSym(ptr,current_scope,yylineno)){
+										if(ptr==NULL){
 										 	symTableType type;
 										 	if(current_scope == 0){
 										 		type = GLOBAL_VAR;
 										 	}else{
 										 		type = LOCAL_VAR;
 										 	}
-										 	if( ptr != NULL && scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
+										 	insertSym($1,type,NULL,current_scope,yylineno);
+											ptr = lookupSym($1);
+										}else{
+
+										 	if( scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
 										 		std::cout  <<"ERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<std::endl;
-										 	}else{
-										 		if(ptr == NULL ) insertSym($1,type,NULL,current_scope,yylineno);
-												ptr = lookupSym($1);
-											}
-											$$ =(void*) ptr;
-										 }
+										 		ptr = NULL;
+										 	}
+										}
+										 $$ =(void*) ptr;
 										}
 			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
 											symTableEntry* ptr = lookupSym($2,current_scope);
 											
-											if(lvalueCheckSym(ptr,current_scope, yylineno)){
-												symTableType type;
-										 		if(current_scope == 0){
-										 			type = GLOBAL_VAR;
-										 		}else{
-										 			type = LOCAL_VAR;
-										 		}
-												if(ptr == NULL) insertSym($2,type,NULL,current_scope,yylineno);			
-												ptr = lookupSym($2,current_scope);
-												$$ = (void*) ptr;
+											if(ptr==NULL){
+												if(checkCollisionSym($2)){
+													std::cout <<"ERROR: cannot name symbol at line "  <<yylineno <<" as library function "<<$2 <<std::endl;
+												}else{
+													symTableType type;
+										 			if(current_scope == 0){
+										 				type = GLOBAL_VAR;
+										 			}else{
+										 				type = LOCAL_VAR;
+										 			}
+										 			insertSym($2,type,NULL,current_scope,yylineno);
+										 			ptr = lookupSym($2);
+												}
 											}
+											$$ = (void*) ptr;
 										}
 			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
 											symTableEntry* ptr = lookupSym($2,0);
-											if(lvalueCheckSym(ptr,0,yylineno)){
-												if(ptr == NULL) std::cout << "ERROR there is no global var " << $2 <<std::endl;	
-												$$= (void*) ptr;	
-											}	
+											
+											if(ptr == NULL) std::cout << "ERROR there is no global var " << $2 <<std::endl;	
+											$$= (void*) ptr;	
 										}
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
 			;
@@ -217,21 +245,25 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
 
 funcdef:	FUNCTION ID  	
 												{
-													symTableEntry* ptr = lookupSym($2);
-													/*TODO:take idlist argument list and pass it to insertSym*/
-													if(ptr == NULL){
-														insertSym($2,USER_FUNC,NULL,current_scope,yylineno);
+													symTableEntry* ptr = lookupSym($2,current_scope);
+													/*TODO:take idlist argument list and pass it to insertSym*/										
+													if(ptr== NULL){
+														if(checkCollisionSym($2)){
+															std::cout <<"ERROR: cannot define function at line "  <<yylineno <<" as library function "<<$2 <<std::endl;
+														}else{
+															insertSym($2,USER_FUNC,NULL,current_scope,yylineno);
+															
+														}
 													}else{
-														printf("ERROR: Symbol %s already defined at line %d\n",$2,yylineno);
+														printf("ERROR: Symbol %s already defined at line %d\n",$2,ptr->declLine);
 													}
+													
 												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
 			| FUNCTION 
 												{
-													scopeAccessStack.pop();
-													
 													std::string anonFunc = "_anonFunc" + std::to_string(anonymousCounter++);
 													insertSym(anonFunc,USER_FUNC,NULL,current_scope,yylineno);
-												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block 
+												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
 			;		
 
 const:		NUMBER | STRING | NIL |TRUE|FALSE 	{printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d\n",yylineno);}
@@ -240,28 +272,34 @@ const:		NUMBER | STRING | NIL |TRUE|FALSE 	{printf("const: NUMBER | STRING | NIL
 idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 			|ID idlist1 						{
 													printf("idlist: ID idlist1 in line:%d\n",yylineno);
-													symTableEntry* ptr = lookupSym($1);
-													if(lvalueCheckSym(ptr,current_scope,yylineno)){
-										 				if( ptr != NULL && scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
-										 					std::cout  <<"ERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<std::endl;
-										 				}else{
-										 					if(ptr == NULL ) insertSym($1,ARGUMENT_VAR,NULL,current_scope,yylineno);
+													symTableEntry* ptr = lookupSym($1,current_scope);
+													
+													if(ptr == NULL){
+														if(checkCollisionSym($1)){
+															std::cout <<"ERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$1 <<std::endl;
+														}else{
+															insertSym($1,ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
-										 			}
+													}else{
+														std::cout <<"ERROR: Symbol "  <<$1 <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine <<std::endl;
+													}
 												}
 			;
 
 idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 			|',' ID idlist1 					{
 													printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);
-													symTableEntry* ptr = lookupSym($2);
-													if(lvalueCheckSym(ptr,current_scope,yylineno)){
-										 				if( ptr != NULL && scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
-										 					std::cout  <<"ERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<std::endl;
-										 				}else{
-										 					if(ptr == NULL ) insertSym($2,ARGUMENT_VAR,NULL,current_scope,yylineno);
+													symTableEntry* ptr = lookupSym($2,current_scope);
+													
+													if(ptr == NULL){
+														if(checkCollisionSym($2)){
+															std::cout <<"ERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$2 <<std::endl;
+														}else{
+															insertSym($2,ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
-										 			}
+													}else{
+														std::cout <<"ERROR: Symbol "  <<$2 <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine <<std::endl;
+													}
 												}
 			;
 

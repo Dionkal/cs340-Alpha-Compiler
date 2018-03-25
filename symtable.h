@@ -37,3 +37,5 @@ std::string symTableTypeToString(symTableType t);
 
 /*inserts all library functions into the SymTable*/
 void insertLibFuncSym();
+
+bool checkCollisionSym(std::string key);
