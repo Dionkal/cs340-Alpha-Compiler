@@ -100,28 +100,28 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
 											symTableEntry* ptr = (symTableEntry*) $2;
 											
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno <<std::endl;
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
 											}
 										}
 			|lvalue PLUSPLUS 			{	printf("term:lvalue++ in line:%d\n",yylineno);
 											symTableEntry* ptr = (symTableEntry*) $1;
 
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno <<std::endl;
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
 											}
 										}
 			|MINUSMINUS lvalue 			{	printf("term:--lvalue in line:%d\n",yylineno);
 											symTableEntry* ptr = (symTableEntry*) $2;
 
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno <<std::endl;
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno << "\033[00m" << std::endl;
 											}
 										}
 			|lvalue MINUSMINUS 			{	printf("term:lvalue-- in line:%d\n",yylineno);
 											symTableEntry* ptr = (symTableEntry*) $1;
 											
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno <<std::endl;
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno << "\033[00m" << std::endl;
 											}
 										}
 			|primary 					{printf("term:primary in line:%d\n",yylineno);}
@@ -131,7 +131,7 @@ assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yyl
 											symTableEntry* ptr = (symTableEntry*) $1;
 											
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "ERROR:Cannot use funtion " <<ptr->name <<" as left value of assignment at line " <<yylineno <<std::endl;
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" as left value of assignment at line " <<yylineno << "\033[00m" << std::endl;
 											}
 										}
 			;
@@ -159,7 +159,7 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										}else{
 
 										 	if( scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
-										 		std::cout  <<"ERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<std::endl;
+										 		std::cout  <<"\033[01;31mERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<"\033[00m" << std::endl;
 										 		ptr = NULL;
 										 	}
 										}
@@ -170,7 +170,7 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 											
 											if(ptr==NULL){
 												if(checkCollisionSym($2)){
-													std::cout <<"ERROR: cannot name symbol at line "  <<yylineno <<" as library function "<<$2 <<std::endl;
+													std::cout <<"\033[01;31mERROR: cannot name symbol at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
 												}else{
 													symTableType type;
 										 			if(current_scope == 0){
@@ -187,7 +187,7 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
 											symTableEntry* ptr = lookupSym($2,0);
 											
-											if(ptr == NULL) std::cout << "ERROR there is no global var " << $2 <<std::endl;	
+											if(ptr == NULL) std::cout << "\033[01;31mERROR there is no global var " << $2 << "\033[00m" <<std::endl;	
 											$$= (void*) ptr;	
 										}
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
@@ -251,13 +251,13 @@ funcdef:	FUNCTION ID
 													/*TODO:take idlist argument list and pass it to insertSym*/										
 													if(ptr== NULL){
 														if(checkCollisionSym($2)){
-															std::cout <<"ERROR: cannot define function at line "  <<yylineno <<" as library function "<<$2 <<std::endl;
+															std::cout <<"\033[01;31mERROR: cannot define function at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
 														}else{
 															insertSym($2,USER_FUNC,NULL,current_scope,yylineno);
 															
 														}
 													}else{
-														printf("ERROR: Symbol %s already defined at line %d\n",$2,ptr->declLine);
+														printf("\033[01;31mERROR: Symbol %s already defined at line %d\033[00m\n",$2,ptr->declLine);
 													}
 													
 												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
@@ -278,12 +278,12 @@ idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 													
 													if(ptr == NULL){
 														if(checkCollisionSym($1)){
-															std::cout <<"ERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$1 <<std::endl;
+															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$1 << "\033[00m" << std::endl;
 														}else{
 															insertSym($1,ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
 													}else{
-														std::cout <<"ERROR: Symbol "  <<$1 <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine <<std::endl;
+														std::cout <<"\033[01;31mERROR: Symbol "  <<$1 <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
 													}
 												}
 			;
@@ -295,12 +295,12 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 													
 													if(ptr == NULL){
 														if(checkCollisionSym($2)){
-															std::cout <<"ERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$2 <<std::endl;
+															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
 														}else{
 															insertSym($2,ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
 													}else{
-														std::cout <<"ERROR: Symbol "  <<$2 <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine <<std::endl;
+														std::cout <<"\033[01;31mERROR: Symbol "  <<$2 <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
 													}
 												}
 			;
