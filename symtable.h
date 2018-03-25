@@ -19,15 +19,15 @@ symTableEntry* lookupSym(std::string key);
 
 /*/*Searches the Symbol table to find the given symbol name ONLY 
 int the given scope*/
-symTableEntry* lookupSym(std::string key, int scope);
+symTableEntry* lookupSym(std::string key,  int scope);
 
 /*Creates a new symbol and inserts its reference  to both symTables*/
-void insertSym(std::string key,symTableType type,symTableEntry* args,int scp,unsigned int line);
+void insertSym(std::string key,symTableType type,symTableEntry* args, int scp, unsigned int line);
 
 /*Sets the visibility flag of all  symbols of the given scope to FALSE*/
-void hideSym(int scope);
+void hideSym(int  scope);
 
-bool lvalueCheckSym(symTableEntry* sym, unsigned int scope, int line);
+bool lvalueCheckSym(symTableEntry* sym,  int scope, unsigned int line);
 
 /*Prints the entire symTable by scope order*/
 void printSymTable();
