@@ -1,15 +1,15 @@
 
-5
 /*this is a c style comment*/
 
-int func0(int b,int c){
-	int sum;
+function func0(b,c){
 	sum=b+c;
 	return sum;
 }
 
-int func1(){
-	int a=5,b=2,c=10,d,e=3,k=40;
+//one line comment
+
+a=function(){
+	a=5,b=2,c=10,d,e=3,k=40;
 
 	for(a=1; a<15; a++){
 		d=func0(b,c);

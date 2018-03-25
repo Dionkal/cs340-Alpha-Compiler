@@ -407,13 +407,15 @@ string typeToString(type t){
 int main (int argc, char *argv[]){
 	vector <alpha_token_t> token_vector; 
 	int k;
-	if (argc < 2 || argc > 3) {
-		printf("NO input file\n");
+	if (argc != 2) {
+		std::cout <<"Incorrect usage."<<std::endl;
+		std::cout <<"Use: ./scanner <input file> <optional output file>" <<std::endl;
     }else{
     	yyin = fopen(argv[1], "r");
+
    		scopeAccessStack.push(false);
    		insertLibFuncSym();
-   		k = yyparse();
+   		yyparse();
    		scopeAccessStack.pop();
 
     	printSymTable();

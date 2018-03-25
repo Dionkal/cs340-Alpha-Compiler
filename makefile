@@ -6,4 +6,4 @@ fl:
 bi:
 	bison --yacc --defines --output=parser.c -v syntax.y 
 clean: 
-	rm -rf lex.yy.cc scanner 
+	rm -rf lex.yy.c parser.c parser.output scanner 
