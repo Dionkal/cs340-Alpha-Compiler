@@ -6,6 +6,7 @@
 	#include "symtable.h"
 	#include <stdio.h>
 	#include <iostream>
+	#include <sstream>
 
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
@@ -53,7 +54,7 @@
 
 %%
 
-program:	stmt1						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program started\n");}
+program:	stmt1						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program accepted\n");}
 			|/*empty*/					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program did not start\n");}
 			;
 
@@ -263,7 +264,9 @@ funcdef:	FUNCTION ID
 												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
 			| FUNCTION 
 												{
-													std::string anonFunc = "_anonFunc" + std::to_string(anonymousCounter++);
+													std::string StringTemp = static_cast<std::ostringstream*>( &(std::ostringstream() << anonymousCounter) )->str();
+													std::string anonFunc = "_anonFunc" + StringTemp;
+													anonymousCounter++;
 													insertSym(anonFunc,USER_FUNC,NULL,current_scope,yylineno);
 												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
 			;		

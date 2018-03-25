@@ -1380,13 +1380,6 @@ State 67
     returnstmt  go to state 40
 
 
-State 67
-
-   74 block: '{' $@4 . '}' $@5
-
-    '}'  shift, and go to state 114
-
-
 State 68
 
    75 block: '{' . $@4 stmt1 '}' $@5
@@ -2242,23 +2235,6 @@ State 113
    69 indexed: indexedelem more .
 
     $default  reduce using rule 69 (indexed)
-
-    stmt        go to state 69
-    expr        go to state 27
-    term        go to state 28
-    assignexpr  go to state 29
-    primary     go to state 30
-    lvalue      go to state 31
-    member      go to state 32
-    call        go to state 33
-    objectdef   go to state 34
-    block       go to state 35
-    funcdef     go to state 36
-    const       go to state 37
-    ifstmt      go to state 38
-    whilestmt   go to state 39
-    forstmt     go to state 40
-    returnstmt  go to state 41
 
 
 State 114
