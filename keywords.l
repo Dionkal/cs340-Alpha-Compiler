@@ -412,7 +412,7 @@ int main (int argc, char *argv[]){
     }else{
     	yyin = fopen(argv[1], "r");
    		scopeAccessStack.push(false);
-   		insertLibFuncSym;
+   		insertLibFuncSym();
    		k = yyparse();
    		scopeAccessStack.pop();
 
@@ -435,7 +435,6 @@ symTableEntry* lookupSym(string key){
 
 		// TODO: optimize search
 		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
-			std::cout <<"In for" <<std::endl;
 			if(it->second->isVisible && it->second->scope > max_scope){
 				max_scope = it->second->scope;
 				tempVal = it->second;
@@ -532,8 +531,6 @@ string symTableTypeToString(symTableType t){
 			return "ERROR: Invalid symbol type";
 	}
 }
-
-/*TODO: insert library functions*/
 
 void insertLibFuncSym(){
 	insertSym("print",LIB_FUNC,NULL,0,0);

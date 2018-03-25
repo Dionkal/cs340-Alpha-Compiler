@@ -59,7 +59,8 @@ stmt1:		stmt1 stmt
             |stmt
 			;
 
-stmt:		expr ';' 																{printf("stmt:Expression with ';' in line:%d\n",yylineno);}
+stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",yylineno);}
+			|expr error ';'
 			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno);}
 			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno);}
 			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno);}
@@ -113,7 +114,7 @@ primary:	lvalue 						{printf("primary: lvalue in line:%d\n",yylineno);}
 lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										 
 										 symTableEntry* ptr = lookupSym($1);
-										 
+
 										 if(lvalueCheckSym(ptr,current_scope,yylineno)){
 										 	symTableType type;
 										 	if(current_scope == 0){
@@ -121,10 +122,10 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										 	}else{
 										 		type = LOCAL_VAR;
 										 	}
-										 	if( !ptr || (!scopeAccessStack.top() && ptr->symType != LOCAL_VAR && ptr->symType != ARGUMENT_VAR && (ptr->scope == current_scope || ptr->scope == 0))){
-										 		insertSym($1,type,NULL,current_scope,yylineno);
+										 	if( ptr != NULL && scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
+										 		std::cout  <<"ERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<std::endl;
 										 	}else{
-												printf("ERROR cannot access %s in scope %d\n",ptr->name, ptr->scope);
+										 		if(ptr == NULL ) insertSym($1,type,NULL,current_scope,yylineno);
 											}
 										 }
 										}
@@ -182,6 +183,7 @@ elist:		/*empty*/					{printf("elist: empty list in line:%d\n",yylineno);}
 
 elist1:		/*empty*/							{printf("elist1: empty list in line:%d\n",yylineno);}
 			|','expr elist1 					{printf("elist1: ,expr elist1 in line:%d\n",yylineno);}
+			|error expr elist1
 			;
 
 objectdef:	'[' elist ']' 						{printf("objectdef: [elist] in line:%d\n",yylineno);}
@@ -202,11 +204,12 @@ indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d
 
 block:		'{' {current_scope++;} stmt1 '}' {hideSym(current_scope--);}						{printf("block: {stmt1} in line:%d\n",yylineno);}		
              |'{''}' 							{printf("funcdefblock: {} in line:%d\n",yylineno);}
+             |error stmt1 '}'
+             |error '}'
 			;	
 
-funcdef:	FUNCTION ID '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();} 	
+funcdef:	FUNCTION ID  	
 												{
-													printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);
 													symTableEntry* ptr = lookupSym($2);
 													/*TODO:take idlist argument list and pass it to insertSym*/
 													if(ptr == NULL){
@@ -214,16 +217,15 @@ funcdef:	FUNCTION ID '('{current_scope++;} idlist ')' {current_scope--; scopeAcc
 													}else{
 														printf("ERROR: Symbol %s already defined at line %d\n",$2,yylineno);
 													}
-												}
-			| FUNCTION '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block 
+												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
+			| FUNCTION 
 												{
 													scopeAccessStack.pop();
-													printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);
 													
 													std::string anonFunc = "_anonFunc" + std::to_string(anonymousCounter++);
 													insertSym(anonFunc,USER_FUNC,NULL,current_scope,yylineno);
-												}
-			;
+												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block 
+			;		
 
 const:		NUMBER | STRING | NIL |TRUE|FALSE 	{printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d\n",yylineno);}
 			;
@@ -233,10 +235,10 @@ idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 													printf("idlist: ID idlist1 in line:%d\n",yylineno);
 													symTableEntry* ptr = lookupSym($1);
 													if(lvalueCheckSym(ptr,current_scope,yylineno)){
-										 				if( !ptr || (!scopeAccessStack.top() && ptr->symType != LOCAL_VAR && ptr->symType != ARGUMENT_VAR && (ptr->scope == current_scope || ptr->scope == 0))){
-										 					insertSym($1,ARGUMENT_VAR,NULL,current_scope,yylineno);
+										 				if( ptr != NULL && scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
+										 					std::cout  <<"ERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<std::endl;
 										 				}else{
-															printf("ERROR cannot access %s in scope %d\n",ptr->name, ptr->scope);
+										 					if(ptr == NULL ) insertSym($1,ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
 										 			}
 												}
@@ -247,10 +249,10 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 													printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);
 													symTableEntry* ptr = lookupSym($2);
 													if(lvalueCheckSym(ptr,current_scope,yylineno)){
-										 				if( !ptr || (!scopeAccessStack.top() && ptr->symType != LOCAL_VAR && ptr->symType != ARGUMENT_VAR && (ptr->scope == current_scope || ptr->scope == 0))){
-										 					insertSym($2,ARGUMENT_VAR,NULL,current_scope,yylineno);
+										 				if( ptr != NULL && scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
+										 					std::cout  <<"ERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<std::endl;
 										 				}else{
-															printf("ERROR cannot access %s in scope %d\n",ptr->name, ptr->scope);
+										 					if(ptr == NULL ) insertSym($2,ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
 										 			}
 												}
