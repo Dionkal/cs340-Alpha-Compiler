@@ -209,8 +209,8 @@ more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d\
 indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
 			;
 
-block:		'{' {current_scope++;} stmt1 '}' {hideSym(current_scope--);}						{printf("block: {stmt1} in line:%d\n",yylineno);}		
-             |'{''}' 							{printf("funcdefblock: {} in line:%d\n",yylineno);}
+block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{printf("``: {stmt1} in line:%d\n",yylineno);}		
+             |'{'{current_scope++;}'}'       {hideSym(current_scope--);} 							{printf("funcdefblock: {} in line:%d\n",yylineno);}
              |error stmt1 '}'
              |error '}'
 			;	

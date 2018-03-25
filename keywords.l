@@ -479,7 +479,7 @@ void hideSym(int scope){
 	retList = SymTableScope.equal_range(scope);
 
 		for (std::multimap<unsigned int,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
-			it->second->isVisible = FALSE;
+			it->second->isVisible = false;
 		}
 }
 
