@@ -81,7 +81,7 @@
 	extern int yylineno;
 	extern char* yytext;
 	extern FILE* yyin;
-	extern unsigned int current_scope;
+	extern int current_scope;
 	std::stack<bool> scopeAccessStack;
 	unsigned int anonymousCounter = 0;
 
@@ -517,8 +517,8 @@ static const yytype_uint16 yyrline[] =
      209,   212,   215,   218,   219,   222,   223,   224,   227,   228,
      232,   235,   236,   240,   243,   243,   243,   244,   244,   244,
      245,   246,   250,   264,   264,   249,   266,   271,   271,   265,
-     274,   274,   274,   274,   274,   277,   278,   294,   295,   311,
-     314,   315,   318,   321,   323,   324
+     274,   274,   274,   274,   274,   277,   278,   295,   296,   313,
+     316,   317,   320,   323,   325,   326
 };
 #endif
 
@@ -1820,8 +1820,8 @@ yyreduce:
   case 48:
 #line 147 "syntax.y" /* yacc.c:1646  */
     {printf("lvalue: ID in line:%d\n",yylineno);
-										 
-										 symTableEntry* ptr = lookupSym((yyvsp[0].stringValue));
+										 const char* temp = (yyvsp[0].stringValue);
+										 symTableEntry* ptr = lookupSym(std::string(temp));
 
 										if(ptr==NULL){
 										 	symTableType type;
@@ -1830,8 +1830,8 @@ yyreduce:
 										 	}else{
 										 		type = LOCAL_VAR;
 										 	}
-										 	insertSym((yyvsp[0].stringValue),type,NULL,current_scope,yylineno);
-											ptr = lookupSym((yyvsp[0].stringValue));
+										 	insertSym(std::string(temp),type,NULL,current_scope,yylineno);
+											ptr = lookupSym(std::string(temp));
 										}else{
 
 										 	if( scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
@@ -2129,91 +2129,93 @@ yyreduce:
   case 96:
 #line 278 "syntax.y" /* yacc.c:1646  */
     {
+													const char* temp = (yyvsp[-1].stringValue);
 													printf("idlist: ID idlist1 in line:%d\n",yylineno);
-													symTableEntry* ptr = lookupSym((yyvsp[-1].stringValue),current_scope);
+													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
 													
 													if(ptr == NULL){
-														if(checkCollisionSym((yyvsp[-1].stringValue))){
-															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<(yyvsp[-1].stringValue) << "\033[00m" << std::endl;
+														if(checkCollisionSym(std::string(temp))){
+															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<std::string(temp) << "\033[00m" << std::endl;
 														}else{
-															insertSym((yyvsp[-1].stringValue),ARGUMENT_VAR,NULL,current_scope,yylineno);
+															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
 													}else{
-														std::cout <<"\033[01;31mERROR: Symbol "  <<(yyvsp[-1].stringValue) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
+														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
 													}
 												}
-#line 2146 "parser.c" /* yacc.c:1646  */
+#line 2147 "parser.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 294 "syntax.y" /* yacc.c:1646  */
+#line 295 "syntax.y" /* yacc.c:1646  */
     {printf("idlist1: empty in line:%d\n",yylineno);}
-#line 2152 "parser.c" /* yacc.c:1646  */
+#line 2153 "parser.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 295 "syntax.y" /* yacc.c:1646  */
-    {
+#line 296 "syntax.y" /* yacc.c:1646  */
+    {	
+													const char* temp = (yyvsp[-1].stringValue);
 													printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);
-													symTableEntry* ptr = lookupSym((yyvsp[-1].stringValue),current_scope);
+													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
 													
 													if(ptr == NULL){
-														if(checkCollisionSym((yyvsp[-1].stringValue))){
+														if(checkCollisionSym(std::string(temp))){
 															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<(yyvsp[-1].stringValue) << "\033[00m" << std::endl;
 														}else{
-															insertSym((yyvsp[-1].stringValue),ARGUMENT_VAR,NULL,current_scope,yylineno);
+															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
 													}else{
-														std::cout <<"\033[01;31mERROR: Symbol "  <<(yyvsp[-1].stringValue) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
+														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
 													}
 												}
-#line 2171 "parser.c" /* yacc.c:1646  */
+#line 2173 "parser.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 311 "syntax.y" /* yacc.c:1646  */
+#line 313 "syntax.y" /* yacc.c:1646  */
     {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
-#line 2177 "parser.c" /* yacc.c:1646  */
+#line 2179 "parser.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 314 "syntax.y" /* yacc.c:1646  */
+#line 316 "syntax.y" /* yacc.c:1646  */
     {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: empty in line:%d\n",yylineno);}
-#line 2183 "parser.c" /* yacc.c:1646  */
+#line 2185 "parser.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 315 "syntax.y" /* yacc.c:1646  */
+#line 317 "syntax.y" /* yacc.c:1646  */
     {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: ELSE stmt in line:%d\n",yylineno);}
-#line 2189 "parser.c" /* yacc.c:1646  */
+#line 2191 "parser.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 318 "syntax.y" /* yacc.c:1646  */
+#line 320 "syntax.y" /* yacc.c:1646  */
     {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
-#line 2195 "parser.c" /* yacc.c:1646  */
+#line 2197 "parser.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 321 "syntax.y" /* yacc.c:1646  */
+#line 323 "syntax.y" /* yacc.c:1646  */
     {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("forstmt: FOR (elist;expr;elist) stmt in 								;											line:%d\n",yylineno);}
-#line 2201 "parser.c" /* yacc.c:1646  */
+#line 2203 "parser.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 323 "syntax.y" /* yacc.c:1646  */
+#line 325 "syntax.y" /* yacc.c:1646  */
     {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN; in line:%d",yylineno);}
-#line 2207 "parser.c" /* yacc.c:1646  */
+#line 2209 "parser.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 324 "syntax.y" /* yacc.c:1646  */
+#line 326 "syntax.y" /* yacc.c:1646  */
     {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN expr; in line:%d",yylineno);}
-#line 2213 "parser.c" /* yacc.c:1646  */
+#line 2215 "parser.c" /* yacc.c:1646  */
     break;
 
 
-#line 2217 "parser.c" /* yacc.c:1646  */
+#line 2219 "parser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2441,7 +2443,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 327 "syntax.y" /* yacc.c:1906  */
+#line 329 "syntax.y" /* yacc.c:1906  */
 
 
 void yyerror(const char *yaccProvideMessage){

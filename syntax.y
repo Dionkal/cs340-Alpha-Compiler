@@ -16,7 +16,7 @@
 	extern int yylineno;
 	extern char* yytext;
 	extern FILE* yyin;
-	extern unsigned int current_scope;
+	extern int current_scope;
 	std::stack<bool> scopeAccessStack;
 	unsigned int anonymousCounter = 0;
 %}
@@ -145,8 +145,8 @@ primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); print
 			;
 
 lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
-										 
-										 symTableEntry* ptr = lookupSym($1);
+										 const char* temp = $1;
+										 symTableEntry* ptr = lookupSym(std::string(temp));
 
 										if(ptr==NULL){
 										 	symTableType type;
@@ -155,8 +155,8 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										 	}else{
 										 		type = LOCAL_VAR;
 										 	}
-										 	insertSym($1,type,NULL,current_scope,yylineno);
-											ptr = lookupSym($1);
+										 	insertSym(std::string(temp),type,NULL,current_scope,yylineno);
+											ptr = lookupSym(std::string(temp));
 										}else{
 
 										 	if( scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
@@ -276,34 +276,36 @@ const:		NUMBER | STRING | NIL |TRUE|FALSE 	{k++; printf("time:%d___ ,token: %s__
 
 idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 			|ID idlist1 						{
+													const char* temp = $1;
 													printf("idlist: ID idlist1 in line:%d\n",yylineno);
-													symTableEntry* ptr = lookupSym($1,current_scope);
+													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
 													
 													if(ptr == NULL){
-														if(checkCollisionSym($1)){
-															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$1 << "\033[00m" << std::endl;
+														if(checkCollisionSym(std::string(temp))){
+															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<std::string(temp) << "\033[00m" << std::endl;
 														}else{
-															insertSym($1,ARGUMENT_VAR,NULL,current_scope,yylineno);
+															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
 													}else{
-														std::cout <<"\033[01;31mERROR: Symbol "  <<$1 <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
+														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
 													}
 												}
 			;
 
 idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
-			|',' ID idlist1 					{
+			|',' ID idlist1 					{	
+													const char* temp = $2;
 													printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);
-													symTableEntry* ptr = lookupSym($2,current_scope);
+													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
 													
 													if(ptr == NULL){
-														if(checkCollisionSym($2)){
+														if(checkCollisionSym(std::string(temp))){
 															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
 														}else{
-															insertSym($2,ARGUMENT_VAR,NULL,current_scope,yylineno);
+															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
 														}
 													}else{
-														std::cout <<"\033[01;31mERROR: Symbol "  <<$2 <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
+														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
 													}
 												}
 			;
