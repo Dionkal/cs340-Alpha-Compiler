@@ -197,7 +197,7 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 member:		lvalue '.' ID 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: lvalue.ID in line:%d\n",yylineno);}
 			|lvalue '[' expr ']' 		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: lvalue [expr] in line:%d\n",yylineno);}
 			|call '.' ID 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call.ID in line:%d\n",yylineno);}
-			call '[' expr ']' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call [expr] in line:%d\n",yylineno);}
+			|call '[' expr ']' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call [expr] in line:%d\n",yylineno);}
 			;
 
 call: 		call '(' elist ')' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: (elist) in line:%d\n",yylineno);}
@@ -328,6 +328,6 @@ returnstmt:	RETURN ';' 							{k++; printf("time:%d___ ,token: %s____>",k,yytext
 
 void yyerror(const char *yaccProvideMessage){
 	fprintf(stdout,"%s: at line %d, before token: %s\n",yaccProvideMessage,yylineno,yytext);
-	fprintf(stdout,"INPUT NOT VALID");
+	fprintf(stdout,"INPUT NOT VALID\n");
 
 }
