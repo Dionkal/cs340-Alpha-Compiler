@@ -18,13 +18,6 @@ typedef enum expr_t{
 	newtable_e,costnum_e,constbool_e,conststring_e,nil_e
 }expr_t;
 
-typedef enum scopespace_t{
-	programvar,functionlocal,formalarg
-}scopespace_t;
-
-typedef	enum symbol_t{
-	var_s,programfunc_s,libraryfunc_s
-}symbol_t;
 
 struct expr{
 	expr_t 			type;
