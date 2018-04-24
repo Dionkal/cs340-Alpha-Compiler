@@ -9,6 +9,9 @@ typedef struct symTableEntry{
 	int 			scope;			//int value representing the scope where the current symbol is declared
 	unsigned int 	declLine;		//Contains the line where the current symbol is first declared
 	bool 			isVisible;		//Flag for hidden tokens (TRUE = visible, FALSE = hidden)
+	int 			offset;
+	symbol_t		type;
+	scopespace_t	space;
 } symTableEntry;
 
 
