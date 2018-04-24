@@ -12,11 +12,19 @@ typedef enum iopcode{
 	tablesetelem_iopcode
 }iopcode;
 
-enum expr_t{
+typedef enum expr_t{
 	var_e, tableitem_e, programfunc_e, libraryfunc_e,
 	arithexpr_e,boolexpr_e,assignexpr_e,
 	newtable_e,costnum_e,constbool_e,conststring_e,nil_e
-};
+}expr_t;
+
+typedef enum scopespace_t{
+	programvar,functionlocal,formalarg
+}scopespace_t;
+
+typedef	enum symbol_t{
+	var_s,programfunc_s,libraryfunc_s
+}symbol_t;
 
 struct expr{
 	expr_t 			type;
@@ -37,16 +45,6 @@ typedef struct quad{
 	unsigned 	line;
 }quad;
 
-/*I dont know what these beauties do*/
-quad* quads=(quad*) 0;
-unsigned total=0;
-unsigned int currQuad=0;
-
-/*I dont know what these beauties do*/ //isos xreiazontai annti gia quad vector dunno
-#define EXPAND_SIZE 1024
-#define CURR_SIZE (total*sizeof(quad));
-#define NEW_SIZE (EXPAND_SIZE*sizeof(quad) + CURR_SIZE)
-
 /*Creates the quad*/
 quad* createQuad(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno);
 
@@ -59,4 +57,18 @@ void emit(expr *_arg1,expr *_arg2,expr *_res);
 /*aporia: offset tha kratame px kai gia to f().a? auto theoreitai metavliti?
 */
 
+/*insert*/
+scopespace_t currScopeSpace(void);
+
+/*insert*/
+void inCurrScopeOffset(void);
+
+/*decreases the scopeSpaceCounter var*/
+void enterScopeSpace();
+
+/*decreases the scopeSpaceCounter var, only if it is called 2 times previously*/
+void exitScopeSpace();
+
+/*insert */
+unsigned currScopeOffset(void);
 
