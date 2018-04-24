@@ -2,10 +2,13 @@
 #define YY_DECL int yylex(void)	
 #include "scanner.h"
 #include "parser.h"
+#include "symtable.h"
 #include <string.h>
 #include <iomanip>
-using namespace std;
+#include <stack>
 
+using namespace std;
+ extern std::stack<bool> scopeAccessStack;
 	
 %}
 %option yylineno
@@ -334,7 +337,8 @@ ANY				.
 %%
 //Global Hashtables
 std::multimap<string,symTableEntry*> SymTableName;
-std::multimap<unsigned int,symTableEntry*> SymTableScope;
+std::multimap< int,symTableEntry*> SymTableScope;
+
 
 // std::map<string,symTableEntry> SymTableScope; 
 int current_scope = 0;
@@ -401,14 +405,19 @@ string typeToString(type t){
 }
 
 int main (int argc, char *argv[]){
-	vector <alpha_token_t> token_vector; 
-	int k;
-	if (argc < 2 || argc > 3) {
-		printf("NO input file\n");
+	// vector <alpha_token_t> token_vector; 
+	if (argc != 2) {
+		std::cout <<"Incorrect usage."<<std::endl;
+		std::cout <<"Use: ./scanner <input file> <optional output file>" <<std::endl;
     }else{
     	yyin = fopen(argv[1], "r");
-   		k = yyparse();
-    	// printf("K is:%d\n",k);
+
+   		scopeAccessStack.push(false);
+   		insertLibFuncSym();
+		yyparse();
+   		scopeAccessStack.pop();
+
+    	printSymTable();
     	fclose(yyin);
     }
   	return 0;
@@ -417,19 +426,19 @@ int main (int argc, char *argv[]){
 
 
 symTableEntry* lookupSym(string key){
-	int target_scope = current_scope;
+	int max_scope = -1;
+	symTableEntry* tempVal = NULL;
 	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
+	
 	retList = SymTableName.equal_range(key);
 
-	while(target_scope >= 0){
 		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
-			if(it->second->isVisible && it->second->scope == target_scope){
-				return it->second;
+			if(it->second->isVisible && it->second->scope > max_scope){
+				max_scope = it->second->scope;
+				tempVal = it->second;
 			}
 		}
-		target_scope--;	
-	}
-	return NULL;
+	return tempVal;
 }
 
 
@@ -439,7 +448,7 @@ symTableEntry* lookupSym(string key, int scope){
 	retList = SymTableName.equal_range(key);
 
 		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
-			if(it->second->isVisible && it->second->scope == scope){
+			if(it->second->isVisible && it->second->scope == scope ){
 				return it->second;
 			}
 		}
@@ -447,28 +456,105 @@ symTableEntry* lookupSym(string key, int scope){
 }
 
 
-void insertSym(string key,symTableType type,string* args,int scp,unsigned int line){
+void insertSym(string key,symTableType type,symTableEntry* args,int scp,unsigned int line){
 
-	symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
-
+	/*insert new symbol*/
+	// symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
+	symTableEntry* symptr = new symTableEntry();
+	// std::cout<<"aft4er  malloc" << " key is : "<<key <<std::endl;
+	
 	symptr->name = key;
+	// std::cout<<"symptr->name: " << symptr->name<<std::endl;
+	// exit(1);
+	// std::cout<<"aft4er  key" <<std::endl;
 	symptr->symType = type;
+	// std::cout<<"aft4er  type" <<std::endl;
 	symptr->arguments = args;
+	// std::cout<<"aft4er  args" <<std::endl;
 	symptr->scope = scp;
+	// std::cout<<"aft4er  scp" <<std::endl;
 	symptr->declLine = line;
-	symptr->isVisible = TRUE;
-
+	// std::cout<<"aft4er  line" <<std::endl;
+	symptr->isVisible = true;
+	// std::cout<<"Befor insert" <<std::endl;
 	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
-	SymTableScope.insert( std::pair<unsigned int,symTableEntry*>(scp,symptr) );
+	// std::cout<<"1 insert" <<std::endl;
+	SymTableScope.insert( std::pair<int,symTableEntry*>(scp,symptr) );
+	// std::cout<<"2 insert" <<std::endl;
 }
 
 
 
 void hideSym(int scope){
-	std::pair <std::multimap<unsigned int,symTableEntry*>::iterator, std::multimap<unsigned int,symTableEntry*>::iterator> retList;
+	std::pair <std::multimap<int,symTableEntry*>::iterator, std::multimap<int,symTableEntry*>::iterator> retList;
 	retList = SymTableScope.equal_range(scope);
 
-		for (std::multimap<unsigned int,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
-			it->second->isVisible = FALSE;
+		for (std::multimap< int,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			it->second->isVisible = false;
 		}
+}
+
+bool lvalueCheckSym(symTableEntry* sym, int scope,unsigned int line){
+	if(sym == NULL) return true;
+
+	if(sym->symType == LIB_FUNC){
+		std::cout <<"ERROR: cannot name symbol at line "  <<line <<" as library function "<<sym->name <<std::endl;
+		return false;
+	}
+	return true;
+}
+
+void printSymTable(){
+	int i = 0;
+	int size = SymTableScope.size();
+
+	for(i = 0; i<size; i++){
+		std::pair <std::multimap< int,symTableEntry*>::iterator, std::multimap< int,symTableEntry*>::iterator> ret;
+    	ret = SymTableScope.equal_range(i);
+    	std::cout << "-------------" <<"	Scope #" <<i <<"	" << "-------------------" << endl;
+    	for (std::multimap< int,symTableEntry*>::iterator it=ret.first; it!=ret.second; ++it){
+      		std::cout << "\"" << it->second->name << "\"   [" <<symTableTypeToString(it->second->symType) <<"]";
+      		std::cout <<"(line " <<it->second->declLine << ")" <<"		(scope " <<it->second->scope <<")" <<endl;
+    	}
+	}
+}
+
+string symTableTypeToString(symTableType t){
+	switch(t){
+		case GLOBAL_VAR:
+			return "global variable";
+		case LOCAL_VAR:
+			return "local variable";
+		case ARGUMENT_VAR:
+			return "formal argument";
+		case USER_FUNC:
+			return "user function";
+		case LIB_FUNC:
+			return "library function";
+		default:
+			return "ERROR: Invalid symbol type";
+	}
+}
+
+void insertLibFuncSym(){
+	insertSym(std::string("print"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("input"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("objectmemberkeys"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("objecttotalmembers"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("objectcopy"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("totalarguments"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("argument"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("typeof"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("strtonum"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("sqrt"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("cos"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("sin"),LIB_FUNC,NULL,0,0);
+}
+
+
+bool checkCollisionSym(string key){
+	if(key =="print" || key == "input" || key == "objectmemberkeys" || key == "objecttotalmembers" || key == "objectcopy" || key == "totalarguments" || key == "argument" || key == "typeof" || key == "strtonum" || key == "sqrt" || key == "cos" || key == "sin"){
+		return true;
+	}
+	return false;
 }

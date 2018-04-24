@@ -1,6 +1,13 @@
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
+	#include <stack>
+	#include <string>
+	#include "symtable.h"
+	#include <stdio.h>
+	#include <iostream>
+	#include <sstream>
+
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
 	unsigned int scope=0;
@@ -9,7 +16,9 @@
 	extern int yylineno;
 	extern char* yytext;
 	extern FILE* yyin;
-
+	extern int current_scope;
+	std::stack<bool> scopeAccessStack;
+	unsigned int anonymousCounter = 0;
 %}
 
 %expect 1
@@ -18,7 +27,7 @@
 %union {
 	char* stringValue;
 	float floatValue;
-	//symbol_t entry* ptr pointer se struct tou symbol_t
+	void* symValue;
 }
 
 %token <stringValue> ID 
@@ -26,6 +35,7 @@
 %token <stringValue> STRING 
 %token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
+%type <symValue> lvalue
 //%type<ptr> expr
 
 %left '(' ')' 
@@ -44,7 +54,7 @@
 
 %%
 
-program:	stmt1						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program started\n");}
+program:	stmt1						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program accepted\n");}
 			|/*empty*/					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program did not start\n");}
 			;
 
@@ -52,16 +62,17 @@ stmt1:		stmt1 stmt
             |stmt
 			;
 
-stmt:		expr ';' 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:Expression with ';' in line:%d\n",yylineno);}
-			|ifstmt 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:ifstmt starts in line:%d\n",yylineno);}
-			|whilestmt 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:whilestmt starts in line:%d\n",yylineno);}
-			|forstmt 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:forstmt starts in line:%d\n",yylineno);}
-			|returnstmt 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:returnstmt starts in line:%d\n",yylineno);}
-			|BREAK ';' 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:Break with ';' in line:%d\n",yylineno);}
-			|CONTINUE ';'				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:Continue with ';' in line:%d\n",yylineno);}
-			|block 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:block starts in line:%d\n",yylineno);}
-			|funcdef					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:funcdef starts in line:%d\n",yylineno);}
-			|';'						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("stmt:SEMICOLON in line:%d\n",yylineno);}
+stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",yylineno);}
+			|expr error ';'
+			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno);}
+			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno);}
+			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno);}
+			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno);}
+			|BREAK ';' 																{printf("stmt:Break with ';' in line:%d\n",yylineno);}
+			|CONTINUE ';'															{printf("stmt:Continue with ';' in line:%d\n",yylineno);}
+			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno);}
+			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno);}
+			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno);}
 			;
 
 expr:		assignexpr 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:assignexpr in line:%d\n",yylineno);}
@@ -83,17 +94,47 @@ expr:		assignexpr 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); prin
 
 
 
-term: 		'('expr ')' 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:(expr) in line:%d\n",yylineno);}
-			| '-' expr %prec UMINUS		{k++; printf("time:%d___ ,token: %s____>",k,yytext); {printf("term:-expr in line:%d\n",yylineno);}}
-			| NOT expr 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:!expr in line:%d\n",yylineno);}
-			|PLUSPLUS lvalue 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:++lvalue in line:%d\n",yylineno);}
-			|lvalue PLUSPLUS 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:lvalue++ in line:%d\n",yylineno);}
-			|MINUSMINUS lvalue 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:--lvalue in line:%d\n",yylineno);}
-			|lvalue MINUSMINUS 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:lvalue-- in line:%d\n",yylineno);}
-			|primary 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("term:primary in line:%d\n",yylineno);}
+term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
+			| '-' expr %prec UMINUS		{{printf("term:-expr in line:%d\n",yylineno);}}
+			| NOT expr 					{printf("term:!expr in line:%d\n",yylineno);}
+			|PLUSPLUS lvalue 			{	printf("term:++lvalue in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $2;
+											
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
+											}
+										}
+			|lvalue PLUSPLUS 			{	printf("term:lvalue++ in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $1;
+
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
+											}
+										}
+			|MINUSMINUS lvalue 			{	printf("term:--lvalue in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $2;
+
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno << "\033[00m" << std::endl;
+											}
+										}
+			|lvalue MINUSMINUS 			{	printf("term:lvalue-- in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $1;
+											
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno << "\033[00m" << std::endl;
+											}
+										}
+			|primary 					{printf("term:primary in line:%d\n",yylineno);}
 			;
 
-assignexpr:	lvalue '=' expr 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("assignexpr:lvalue=expr in line:%d\n",yylineno);}
+assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
+											symTableEntry* ptr = (symTableEntry*) $1;
+											
+											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" as left value of assignment at line " <<yylineno << "\033[00m" << std::endl;
+											}
+										}
 			;
 
 primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: lvalue in line:%d\n",yylineno);}
@@ -103,10 +144,54 @@ primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); print
 			|const 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: const in line:%d\n",yylineno);}
 			;
 
-lvalue: 	ID 							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lvalue: ID in line:%d\n",yylineno);}
-			|LOCAL ID 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lvalue: LOCAL ID in line:%d\n",yylineno);}
-			|SCOPEOP ID 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lvalue: SCOPE ID in line:%d\n",yylineno);}
-			|member 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lvalue: member in line:%d\n",yylineno);}
+lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
+										 const char* temp = $1;
+										 symTableEntry* ptr = lookupSym(std::string(temp));
+
+										if(ptr==NULL){
+										 	symTableType type;
+										 	if(current_scope == 0){
+										 		type = GLOBAL_VAR;
+										 	}else{
+										 		type = LOCAL_VAR;
+										 	}
+										 	insertSym(std::string(temp),type,NULL,current_scope,yylineno);
+											ptr = lookupSym(std::string(temp));
+										}else{
+
+										 	if( scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
+										 		std::cout  <<"\033[01;31mERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<"\033[00m" << std::endl;
+										 		ptr = NULL;
+										 	}
+										}
+										 $$ =(void*) ptr;
+										}
+			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
+											symTableEntry* ptr = lookupSym($2,current_scope);
+											
+											if(ptr==NULL){
+												if(checkCollisionSym($2)){
+													std::cout <<"\033[01;31mERROR: cannot name symbol at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
+												}else{
+													symTableType type;
+										 			if(current_scope == 0){
+										 				type = GLOBAL_VAR;
+										 			}else{
+										 				type = LOCAL_VAR;
+										 			}
+										 			insertSym($2,type,NULL,current_scope,yylineno);
+										 			ptr = lookupSym($2);
+												}
+											}
+											$$ = (void*) ptr;
+										}
+			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
+											symTableEntry* ptr = lookupSym($2,0);
+											
+											if(ptr == NULL) std::cout << "\033[01;31mERROR there is no global var " << $2 << "\033[00m" <<std::endl;	
+											$$= (void*) ptr;	
+										}
+			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
 			;
 
 member:		lvalue '.' ID 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: lvalue.ID in line:%d\n",yylineno);}
@@ -134,8 +219,9 @@ elist:		/*empty*/					{k++; printf("time:%d___ ,token: %s____>",k,yytext); print
 			|expr elist1 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist: expr elist1 list in line:%d\n",yylineno);}
 			;
 
-elist1:		/*empty*/							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist1: empty list in line:%d\n",yylineno);}
-			|','expr elist1 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist1: ,expr elist1 in line:%d\n",yylineno);}
+elist1:		/*empty*/							{printf("elist1: empty list in line:%d\n",yylineno);}
+			|','expr elist1 					{printf("elist1: ,expr elist1 in line:%d\n",yylineno);}
+			|error expr elist1
 			;
 
 objectdef:	'[' elist ']' 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [elist] in line:%d\n",yylineno);}
@@ -154,23 +240,74 @@ more:       ',' indexedelem more 			{k++; printf("time:%d___ ,token: %s____>",k,
 indexedelem:'{' expr ':' expr '}'			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
 			;
 
-block:		'{' stmt1'}'					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("block: {stmt1} in line:%d\n",yylineno);}		
-             |'{'  '}' {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("block: {} in line:%d\n",yylineno);}
+block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{printf("``: {stmt1} in line:%d\n",yylineno);}		
+             |'{'{current_scope++;}'}'       {hideSym(current_scope--);} 							{printf("funcdefblock: {} in line:%d\n",yylineno);}
+             |error stmt1 '}'
+             |error '}'
 			;	
 
-funcdef:	FUNCTION ID '('  idlist ')'  block 	{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("funcdef: FUNCTION ID (idlist) block in line:%d\n",yylineno);}
-			| FUNCTION '(' idlist ')' block 	{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("funcdef: FUNCTION (idlist) block in line:%d\n",yylineno);}
-			;
+funcdef:	FUNCTION ID  	
+												{
+													symTableEntry* ptr = lookupSym($2,current_scope);
+													/*TODO:take idlist argument list and pass it to insertSym*/										
+													if(ptr== NULL){
+														if(checkCollisionSym($2)){
+															std::cout <<"\033[01;31mERROR: cannot define function at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
+														}else{
+															insertSym($2,USER_FUNC,NULL,current_scope,yylineno);
+															
+														}
+													}else{
+														printf("\033[01;31mERROR: Symbol %s already defined at line %d\033[00m\n",$2,ptr->declLine);
+													}
+													
+												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
+			| FUNCTION 
+												{
+													std::string StringTemp = static_cast<std::ostringstream*>( &(std::ostringstream() << anonymousCounter) )->str();
+													std::string anonFunc = "_anonFunc" + StringTemp;
+													anonymousCounter++;
+													insertSym(anonFunc,USER_FUNC,NULL,current_scope,yylineno);
+												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
+			;		
 
 const:		NUMBER | STRING | NIL |TRUE|FALSE 	{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d\n",yylineno);}
 			;
 
-idlist:		/*empty*/							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("idlist: empty in line:%d\n",yylineno);}
-			|ID idlist1 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("idlist: ID idlist1 in line:%d\n",yylineno);}
+idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
+			|ID idlist1 						{
+													const char* temp = $1;
+													printf("idlist: ID idlist1 in line:%d\n",yylineno);
+													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
+													
+													if(ptr == NULL){
+														if(checkCollisionSym(std::string(temp))){
+															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<std::string(temp) << "\033[00m" << std::endl;
+														}else{
+															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
+														}
+													}else{
+														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
+													}
+												}
 			;
 
-idlist1:	/*empty*/ 							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("idlist1: empty in line:%d\n",yylineno);}
-			|',' ID idlist1 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);}
+idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
+			|',' ID idlist1 					{	
+													const char* temp = $2;
+													printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);
+													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
+													
+													if(ptr == NULL){
+														if(checkCollisionSym(std::string(temp))){
+															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
+														}else{
+															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
+														}
+													}else{
+														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
+													}
+												}
 			;
 
 ifstmt:		IF '(' expr ')' stmt ifstmt1		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
