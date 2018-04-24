@@ -73,7 +73,7 @@ void inCurrScopeOffset(void){
 	scopespace_t spc=currScopeSpace();
 
 	switch(spc){
-		case programVarOffset	: ++programVarOffset; 		break;
+		case programvar	: ++programVarOffset; 		break;
 		case functionlocal 		: ++functionLocalOffset;	break;
 		case formalarg 			: ++formalArgOffset;		break;
 		default					: assert(0);
@@ -84,7 +84,7 @@ unsigned currScopeOffset(void){
 	scopespace_t spc=currScopeSpace();
 
 	switch(spc){
-		case programVarOffset	: return programVarOffset;
+		case programvar	: return programVarOffset;
 		case functionlocal 		: return functionLocalOffset;
 		case formalarg 			: return formalArgOffset;
 		default					: assert(0);

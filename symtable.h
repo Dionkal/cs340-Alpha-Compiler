@@ -2,6 +2,14 @@
 
 typedef enum symTableType {GLOBAL_VAR,LOCAL_VAR,ARGUMENT_VAR,USER_FUNC,LIB_FUNC} symTableType;
 
+typedef enum scopespace_t{
+	programvar,functionlocal,formalarg
+}scopespace_t;
+
+typedef	enum symbol_t{
+	var_s,programfunc_s,libraryfunc_s
+}symbol_t;
+
 typedef struct symTableEntry{
 	std::string 	name;			//Name of the symbol
 	symTableType 	symType;		//Type of the symbol see the enum SymTableType
