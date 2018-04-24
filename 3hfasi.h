@@ -1,4 +1,4 @@
-#include "scanner.h"
+#include "symtable.h"
 
 typedef enum iopcode{
 	assign_iopcode,add_iopcode,sub_iopcode,
@@ -48,14 +48,13 @@ unsigned int currQuad=0;
 #define NEW_SIZE (EXPAND_SIZE*sizeof(quad) + CURR_SIZE)
 
 /*Creates the quad*/
-quad* createQuad(expr *_arg1,expr *_arg2,expr *_res);
+quad* createQuad(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno);
 
 /*Adds the created quad to the quad vector*/
-void addQuad(quad *created);
+void addQuad(quad created);
 
 /*Adds the created quad to the quad vector*/
 void emit(expr *_arg1,expr *_arg2,expr *_res);
-
 
 /*aporia: offset tha kratame px kai gia to f().a? auto theoreitai metavliti?
 */
