@@ -337,11 +337,11 @@ ANY				.
 %%
 //Global Hashtables
 std::multimap<string,symTableEntry*> SymTableName;
-std::multimap<unsigned int,symTableEntry*> SymTableScope;
+std::multimap< int,symTableEntry*> SymTableScope;
 
 
 // std::map<string,symTableEntry> SymTableScope; 
-unsigned int current_scope = 0;
+int current_scope = 0;
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr; 
 //Global token number
@@ -405,8 +405,7 @@ string typeToString(type t){
 }
 
 int main (int argc, char *argv[]){
-	vector <alpha_token_t> token_vector; 
-	int k;
+	// vector <alpha_token_t> token_vector; 
 	if (argc != 2) {
 		std::cout <<"Incorrect usage."<<std::endl;
 		std::cout <<"Use: ./scanner <input file> <optional output file>" <<std::endl;
@@ -415,7 +414,7 @@ int main (int argc, char *argv[]){
 
    		scopeAccessStack.push(false);
    		insertLibFuncSym();
-   		yyparse();
+		yyparse();
    		scopeAccessStack.pop();
 
     	printSymTable();
@@ -427,7 +426,6 @@ int main (int argc, char *argv[]){
 
 
 symTableEntry* lookupSym(string key){
-	unsigned int target_scope = current_scope;
 	int max_scope = -1;
 	symTableEntry* tempVal = NULL;
 	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
@@ -464,29 +462,37 @@ void insertSym(string key,symTableType type,symTableEntry* args,int scp,unsigned
 	// symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
 	symTableEntry* symptr = new symTableEntry(); 
 	symptr->name = key;
+	// std::cout<<"symptr->name: " << symptr->name<<std::endl;
+	// exit(1);
+	// std::cout<<"aft4er  key" <<std::endl;
 	symptr->symType = type;
+	// std::cout<<"aft4er  type" <<std::endl;
 	symptr->arguments = args;
+	// std::cout<<"aft4er  args" <<std::endl;
 	symptr->scope = scp;
+	// std::cout<<"aft4er  scp" <<std::endl;
 	symptr->declLine = line;
+	// std::cout<<"aft4er  line" <<std::endl;
 	symptr->isVisible = true;
-
+	// std::cout<<"Befor insert" <<std::endl;
 	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
-	SymTableScope.insert( std::pair<unsigned int,symTableEntry*>(scp,symptr) );
-	
+	// std::cout<<"1 insert" <<std::endl;
+	SymTableScope.insert( std::pair<int,symTableEntry*>(scp,symptr) );
+	// std::cout<<"2 insert" <<std::endl;
 }
 
 
 
 void hideSym(int scope){
-	std::pair <std::multimap<unsigned int,symTableEntry*>::iterator, std::multimap<unsigned int,symTableEntry*>::iterator> retList;
+	std::pair <std::multimap<int,symTableEntry*>::iterator, std::multimap<int,symTableEntry*>::iterator> retList;
 	retList = SymTableScope.equal_range(scope);
 
-		for (std::multimap<unsigned int,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+		for (std::multimap< int,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
 			it->second->isVisible = false;
 		}
 }
 
-bool lvalueCheckSym(symTableEntry* sym, unsigned int scope, int line){
+bool lvalueCheckSym(symTableEntry* sym, int scope,unsigned int line){
 	if(sym == NULL) return true;
 
 	if(sym->symType == LIB_FUNC){
@@ -501,10 +507,10 @@ void printSymTable(){
 	int size = SymTableScope.size();
 
 	for(i = 0; i<size; i++){
-		std::pair <std::multimap<unsigned int,symTableEntry*>::iterator, std::multimap<unsigned int,symTableEntry*>::iterator> ret;
+		std::pair <std::multimap< int,symTableEntry*>::iterator, std::multimap< int,symTableEntry*>::iterator> ret;
     	ret = SymTableScope.equal_range(i);
     	std::cout << "-------------" <<"	Scope #" <<i <<"	" << "-------------------" << endl;
-    	for (std::multimap<unsigned int,symTableEntry*>::iterator it=ret.first; it!=ret.second; ++it){
+    	for (std::multimap< int,symTableEntry*>::iterator it=ret.first; it!=ret.second; ++it){
       		std::cout << "\"" << it->second->name << "\"   [" <<symTableTypeToString(it->second->symType) <<"]";
       		std::cout <<"(line " <<it->second->declLine << ")" <<"		(scope " <<it->second->scope <<")" <<endl;
     	}
@@ -529,18 +535,18 @@ string symTableTypeToString(symTableType t){
 }
 
 void insertLibFuncSym(){
-	insertSym("print",LIB_FUNC,NULL,0,0);
-	insertSym("input",LIB_FUNC,NULL,0,0);
-	insertSym("objectmemberkeys",LIB_FUNC,NULL,0,0);
-	insertSym("objecttotalmembers",LIB_FUNC,NULL,0,0);
-	insertSym("objectcopy",LIB_FUNC,NULL,0,0);
-	insertSym("totalarguments",LIB_FUNC,NULL,0,0);
-	insertSym("argument",LIB_FUNC,NULL,0,0);
-	insertSym("typeof",LIB_FUNC,NULL,0,0);
-	insertSym("strtonum",LIB_FUNC,NULL,0,0);
-	insertSym("sqrt",LIB_FUNC,NULL,0,0);
-	insertSym("cos",LIB_FUNC,NULL,0,0);
-	insertSym("sin",LIB_FUNC,NULL,0,0);
+	insertSym(std::string("print"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("input"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("objectmemberkeys"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("objecttotalmembers"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("objectcopy"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("totalarguments"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("argument"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("typeof"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("strtonum"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("sqrt"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("cos"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("sin"),LIB_FUNC,NULL,0,0);
 }
 
 
