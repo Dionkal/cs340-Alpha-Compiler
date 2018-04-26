@@ -110,11 +110,11 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 16 "syntax.y" /* yacc.c:1909  */
+#line 27 "syntax.y" /* yacc.c:1909  */
 
 	char* stringValue;
 	float floatValue;
-	//symbol_t entry* ptr pointer se struct tou symbol_t
+	void* symValue;
 
 #line 120 "parser.h" /* yacc.c:1909  */
 };
