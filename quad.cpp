@@ -5,12 +5,10 @@
 
 std::vector  <quad> vctr_quads; 
 
-void addQuad(quad *created){
-	vctr_quads.push_back(created);	
-}
-
-quad* createQuad(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
-	quad *newQuad= malloc(sizeof(quad));//probably wrong
+void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
+	
+	/*Create new quad*/
+	quad *newQuad = new quad();
 	
 	newQuad->op=opCode;
 	newQuad->arg1=_arg1;
@@ -19,13 +17,12 @@ quad* createQuad(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _lab
 	newQuad->label=_label;
 	newQuad->line=yylineno;
 	
-	return quad;
+	vctr_quads.push_back(newQuad);	
+
 }
 
-void emit(expr *_arg1,expr *_arg2,expr *_res){
-	addQuad(createQuad(_arg1,_arg2,_res);
-}
 
+/*Prints all the quads in the vector*/
 void printQuads(){
 		
 	for (std::vector<quad>::const_iterator i = vctr_quads.begin(); i != vctr_quads.end(); ++i){
