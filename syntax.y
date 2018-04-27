@@ -4,6 +4,7 @@
 	#include <stack>
 	#include <string>
 	#include "symtable.h"
+	#include "quad.h"
 	#include <stdio.h>
 	#include <iostream>
 	#include <sstream>
@@ -35,7 +36,7 @@
 %token <stringValue> STRING 
 %token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
-%type <symValue> lvalue
+%type <expr> lvalue
 //%type<ptr> expr
 
 %left '(' ')' 
@@ -145,51 +146,19 @@ primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); print
 			;
 
 lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
-										 const char* temp = $1;
-										 symTableEntry* ptr = lookupSym(std::string(temp));
-
-										if(ptr==NULL){
-										 	symTableType type;
-										 	if(current_scope == 0){
-										 		type = GLOBAL_VAR;
-										 	}else{
-										 		type = LOCAL_VAR;
-										 	}
-										 	insertSym(std::string(temp),type,NULL,current_scope,yylineno);
-											ptr = lookupSym(std::string(temp));
-										}else{
-
-										 	if( scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
-										 		std::cout  <<"\033[01;31mERROR cannot access " <<ptr->name <<" in scope " <<ptr->scope <<" at line " <<yylineno <<"\033[00m" << std::endl;
-										 		ptr = NULL;
-										 	}
-										}
-										 $$ =(void*) ptr;
+											actionID($1);
+											/*TODO: add and return expr struct*/
+															
 										}
 			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
-											symTableEntry* ptr = lookupSym($2,current_scope);
+											actionLocalID($2);
 											
-											if(ptr==NULL){
-												if(checkCollisionSym($2)){
-													std::cout <<"\033[01;31mERROR: cannot name symbol at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
-												}else{
-													symTableType type;
-										 			if(current_scope == 0){
-										 				type = GLOBAL_VAR;
-										 			}else{
-										 				type = LOCAL_VAR;
-										 			}
-										 			insertSym($2,type,NULL,current_scope,yylineno);
-										 			ptr = lookupSym($2);
-												}
-											}
-											$$ = (void*) ptr;
+											/*TODO: add and return expr struct*/
 										}
 			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
-											symTableEntry* ptr = lookupSym($2,0);
 											
-											if(ptr == NULL) std::cout << "\033[01;31mERROR there is no global var " << $2 << "\033[00m" <<std::endl;	
-											$$= (void*) ptr;	
+											actionGlobalID($2);
+											/*TODO: add and return expr struct*/	
 										}
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
 			;
@@ -249,7 +218,7 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
 funcdef:	FUNCTION ID  	
 												{
 													symTableEntry* ptr = lookupSym($2,current_scope);
-													/*TODO:take idlist argument list and pass it to insertSym*/										
+													/*TODO: Migrate the ID actions in seperate function*/										
 													if(ptr== NULL){
 														if(checkCollisionSym($2)){
 															std::cout <<"\033[01;31mERROR: cannot define function at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
@@ -264,6 +233,7 @@ funcdef:	FUNCTION ID
 												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
 			| FUNCTION 
 												{
+													/*TODO: Migrate the ID actions in seperate function*/
 													std::string StringTemp = static_cast<std::ostringstream*>( &(std::ostringstream() << anonymousCounter) )->str();
 													std::string anonFunc = "_anonFunc" + StringTemp;
 													anonymousCounter++;
