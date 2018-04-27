@@ -460,9 +460,7 @@ void insertSym(string key,symTableType type,symTableEntry* args,int scp,unsigned
 
 	/*insert new symbol*/
 	// symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
-	symTableEntry* symptr = new symTableEntry();
-	// std::cout<<"aft4er  malloc" << " key is : "<<key <<std::endl;
-	
+	symTableEntry* symptr = new symTableEntry(); 
 	symptr->name = key;
 	// std::cout<<"symptr->name: " << symptr->name<<std::endl;
 	// exit(1);
