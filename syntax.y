@@ -36,7 +36,7 @@
 %token <stringValue> STRING 
 %token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
-%type <expr> lvalue
+%type <expr*> lvalue
 //%type<ptr> expr
 
 %left '(' ')' 
@@ -146,19 +146,19 @@ primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); print
 			;
 
 lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
-											actionID($1);
 											/*TODO: add and return expr struct*/
+											($$)=newexpr(var_e);
+											($$)->sym=actionID($1);
 															
 										}
 			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
-											actionLocalID($2);
+											($$)=newexpr(var_e);
+											($$)->sym=actionLocalID($2);
 											
-											/*TODO: add and return expr struct*/
 										}
 			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
-											
-											actionGlobalID($2);
-											/*TODO: add and return expr struct*/	
+											($$)=newexpr(var_e);
+											($$)->sym=actionGlobalID($2);	
 										}
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
 			;
@@ -241,7 +241,26 @@ funcdef:	FUNCTION ID
 												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
 			;		
 
-const:		NUMBER | STRING | NIL |TRUE|FALSE 	{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("const: NUMBER | STRING | NIL |TRUE|FALSE in line:%d\n",yylineno);}
+const:		NUMBER 								{
+													($$)=newexpr(costnum_e);
+													($$)->numConst=($1); 
+												}
+			| STRING 							{
+													($$)=newexpr(conststring_e);
+													($$)->strConst=($1); 
+												}
+			| NIL 								{
+													($$)=newexpr(nil_e);
+												}
+			|TRUE 								{
+													($$)=newexpr(boolexpr_e);
+													($$)->boolConst=true_t; 
+
+												}
+			|FALSE 								{
+													($$)=newexpr(boolexpr_e);
+													($$)->boolConst=false_t; 
+												}
 			;
 
 idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
