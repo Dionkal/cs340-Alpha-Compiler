@@ -77,32 +77,92 @@ stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",y
 			;
 
 expr:		assignexpr 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:assignexpr in line:%d\n",yylineno);}
-			|expr '+' expr 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr + expr in line:%d\n",yylineno);}
-			|expr '-' expr 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("lexpr:expr - expr in line:%d\n",yylineno);}
-			|expr '*' expr 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr * expr in line:%d\n",yylineno);}
-			|expr '/' expr 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr / expr in line:%d\n",yylineno);}
-			|expr '%' expr 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr mod expr in line:%d\n",yylineno);}
-			|expr '>' expr 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr > expr in line:%d\n",yylineno);}
-			|expr '<' expr 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr < expr in line:%d\n",yylineno);}
-			|expr GREATEREQUAL expr 	{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr >= expr in line:%d\n",yylineno);}
-			|expr LESSEQUAL expr 		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr <= expr in line:%d\n",yylineno);}
-			|expr EQUAL expr 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);}
-			|expr NOTEQUAL expr 		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr != expr in line:%d\n",yylineno);}
-			|expr AND expr 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr AND expr in line:%d\n",yylineno);}
-			|expr OR expr 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:expr OR expr in line:%d\n",yylineno);}
+			|expr '+' expr 				{	
+											printf("expr:expr + expr in line:%d\n",yylineno);
+											emit(add_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+
+										}
+			|expr '-' expr 				{
+											printf("lexpr:expr - expr in line:%d\n",yylineno);											
+											emit(sub_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr '*' expr 				{
+											printf("expr:expr * expr in line:%d\n",yylineno);											
+											emit(mul_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr '/' expr 				{
+											printf("expr:expr / expr in line:%d\n",yylineno);										
+											emit(div_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr '%' expr 				{
+											printf("expr:expr mod expr in line:%d\n",yylineno);										
+											emit(mod_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr '>' expr 				{	
+											printf("expr:expr > expr in line:%d\n",yylineno);										
+											emit(if_greater_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr '<' expr 				{	
+											printf("expr:expr < expr in line:%d\n",yylineno);										
+											emit(if_less_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr GREATEREQUAL expr 	{	
+											printf("expr:expr >= expr in line:%d\n",yylineno);										
+											emit(if_greatereq_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr LESSEQUAL expr 		{	
+											printf("expr:expr <= expr in line:%d\n",yylineno);										
+											emit(if_lesseq_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr EQUAL expr 			{	
+											printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);										
+											emit(if_eq_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr NOTEQUAL expr 		{
+											printf("expr:expr != expr in line:%d\n",yylineno);										
+											emit(if_noteq_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);										
+											emit(and_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
+			|expr OR expr 				{	printf("expr:expr OR expr in line:%d\n",yylineno);										
+											emit(or_iopcode,($1),($3),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
 			|term						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:term in line:%d\n",yylineno);}
 			;
 
 
 
 term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
-			| '-' expr %prec UMINUS		{{printf("term:-expr in line:%d\n",yylineno);}}
-			| NOT expr 					{printf("term:!expr in line:%d\n",yylineno);}
+			| '-' expr %prec UMINUS		{	
+											printf("term:-expr in line:%d\n",yylineno);									
+											emit(uminus_iopcode,($1),($2),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+
+										}
+			| NOT expr 					{
+											printf("term:!expr in line:%d\n",yylineno);					
+											emit(not_iopcode,($1),($2),($$),0,yylineno);
+											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+										}
 			|PLUSPLUS lvalue 			{	printf("term:++lvalue in line:%d\n",yylineno);
 											symTableEntry* ptr = (symTableEntry*) $2;
 											
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
+												std::cout << "\033[01;31mERROR:Cannot use function " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
 											}
 										}
 			|lvalue PLUSPLUS 			{	printf("term:lvalue++ in line:%d\n",yylineno);
@@ -130,8 +190,7 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
 			;
 
 assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
-											symTableEntry* ptr = (symTableEntry*) $1;
-											
+											symTableEntry* ptr = (symTableEntry*) $1;										
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" as left value of assignment at line " <<yylineno << "\033[00m" << std::endl;
 											}
@@ -163,7 +222,7 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
 			;
 
-member:		lvalue '.' ID 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: lvalue.ID in line:%d\n",yylineno);}
+member:		lvalue '.' ID 				{printf("member: lvalue.ID in line:%d\n",yylineno);}
 			|lvalue '[' expr ']' 		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: lvalue [expr] in line:%d\n",yylineno);}
 			|call '.' ID 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call.ID in line:%d\n",yylineno);}
 			|call '[' expr ']' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call [expr] in line:%d\n",yylineno);}
