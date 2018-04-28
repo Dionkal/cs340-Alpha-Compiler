@@ -2,6 +2,14 @@
 
 typedef enum symTableType {GLOBAL_VAR,LOCAL_VAR,ARGUMENT_VAR,USER_FUNC,LIB_FUNC} symTableType;
 
+typedef enum scopespace_t{
+	programvar,functionlocal,formalarg
+}scopespace_t;
+
+typedef	enum symbol_t{
+	var_s,programfunc_s,libraryfunc_s
+}symbol_t;
+
 typedef struct symTableEntry{
 	std::string 	name;			//Name of the symbol
 	symTableType 	symType;		//Type of the symbol see the enum SymTableType
@@ -9,6 +17,9 @@ typedef struct symTableEntry{
 	int 			scope;			//int value representing the scope where the current symbol is declared
 	unsigned int 	declLine;		//Contains the line where the current symbol is first declared
 	bool 			isVisible;		//Flag for hidden tokens (TRUE = visible, FALSE = hidden)
+	int 			offset;
+	symbol_t		type;
+	scopespace_t	space;
 } symTableEntry;
 
 
