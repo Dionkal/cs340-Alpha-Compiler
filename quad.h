@@ -1,5 +1,11 @@
 #include "scanner.h"
 
+/*creates a new expr*/
+expr *newexpr(expr_t e);
+
+typedef enum bool_t{
+	false_t,true_t
+}bool_t;
 
 /*Enumerator that contains all the available instructions of alpha*/
 typedef enum iopcode{
@@ -51,7 +57,7 @@ typedef struct expr{
 	expr* 			index;
 	double 			numConst;
 	char* 			strConst;
-	unsigned char	boolConst;
+	bool_t			boolConst;
 	expr* 			next;
 }expr;
 

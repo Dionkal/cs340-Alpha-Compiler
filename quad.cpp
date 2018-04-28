@@ -35,3 +35,11 @@ void printQuads(){
 		std::cout <<"_____________"<< "\n"<< "\n";
 	}
 }
+
+expr *newexpr(expr_t e){
+	expr *ptr=new expr();
+
+	ptr->type=e;
+
+	return e;
+}
