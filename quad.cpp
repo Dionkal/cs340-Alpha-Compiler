@@ -30,6 +30,10 @@ std::string iopcodeToString(iopcode op){
 	switch(op){
 		case assign_iopcode: 	return "ASSIGN_OPCODE";
 		case add_iopcode: 		return "ADD_IOPCODE";
+		case sub_iopcode:		return "SUB_IOPCODE"; 
+		case mul_iopcode:		return "MUL_IOPCODE";
+		case div_iopcode:		return "DIV_IOPCODE";
+		case mod_iopcode:		return "MOD_IOPCODE";
 		default: 				return "INVALID IOPCODE";
 	}
 }

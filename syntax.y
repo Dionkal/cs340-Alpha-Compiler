@@ -43,17 +43,17 @@
 
 //%type<ptr> expr
 
-%left '(' ')' 
-%left '[' ']'
-%left '.' DOUBLEDOT
-%right NOT PLUSPLUS MINUSMINUS UMINUS 
-%left '*' '/' '%'
-%left '+' '-'
-%nonassoc '>' GREATEREQUAL '<' LESSEQUAL
-%nonassoc EQUAL NOTEQUAL
-%left AND
-%left OR
 %right '='
+%left OR
+%left AND
+%nonassoc EQUAL NOTEQUAL
+%nonassoc '>' GREATEREQUAL '<' LESSEQUAL
+%left '+' '-'
+%left '*' '/' '%'
+%right NOT PLUSPLUS MINUSMINUS UMINUS 
+%left '.' DOUBLEDOT
+%left '[' ']'
+%left '(' ')' 
 
 
 
@@ -95,22 +95,35 @@ expr:		assignexpr 					{
 										}
 			|expr '-' expr 				{
 											printf("lexpr:expr - expr in line:%d\n",yylineno);											
-											// emit(sub_iopcode,($1),($3),($$),0,yylineno);
+											expr* result_e = newexpr(arithexpr_e);
+											result_e->sym = newtemp();
+											emit(sub_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
+											($$) = (void*) result_e;
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+
 										}
 			|expr '*' expr 				{
 											printf("expr:expr * expr in line:%d\n",yylineno);											
-											// emit(mul_iopcode,($1),($3),($$),0,yylineno);
+											expr* result_e = newexpr(arithexpr_e);
+											result_e->sym = newtemp();
+											emit(mul_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
+											($$) = (void*) result_e;
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr '/' expr 				{
 											printf("expr:expr / expr in line:%d\n",yylineno);										
-											// emit(div_iopcode,($1),($3),($$),0,yylineno);
+											expr* result_e = newexpr(arithexpr_e);
+											result_e->sym = newtemp();
+											emit(div_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
+											($$) = (void*) result_e;
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr '%' expr 				{
 											printf("expr:expr mod expr in line:%d\n",yylineno);										
-											// emit(mod_iopcode,($1),($3),($$),0,yylineno);
+											expr* result_e = newexpr(arithexpr_e);
+											result_e->sym = newtemp();
+											emit(mod_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
+											($$) = (void*) result_e;
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr '>' expr 				{	
@@ -159,7 +172,9 @@ expr:		assignexpr 					{
 
 
 
-term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
+term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
+											($$) = ($2);
+										}
 			| '-' expr %prec UMINUS		{	
 											printf("term:-expr in line:%d\n",yylineno);									
 											// emit(uminus_iopcode,($1),($2),($$),0,yylineno);

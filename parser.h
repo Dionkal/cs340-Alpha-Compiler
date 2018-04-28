@@ -71,8 +71,8 @@ extern int yydebug;
     WHILE = 281,
     FOR = 282,
     RETURN = 283,
-    DOUBLEDOT = 284,
-    UMINUS = 285
+    UMINUS = 284,
+    DOUBLEDOT = 285
   };
 #endif
 /* Tokens.  */
@@ -102,8 +102,8 @@ extern int yydebug;
 #define WHILE 281
 #define FOR 282
 #define RETURN 283
-#define DOUBLEDOT 284
-#define UMINUS 285
+#define UMINUS 284
+#define DOUBLEDOT 285
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
