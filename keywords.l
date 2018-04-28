@@ -2,7 +2,7 @@
 #define YY_DECL int yylex(void)	
 #include "scanner.h"
 #include "parser.h"
-#include "symtable.h"
+#include "quad.h"
 #include <string.h>
 #include <iomanip>
 #include <stack>
@@ -419,6 +419,8 @@ int main (int argc, char *argv[]){
 
     	printSymTable();
     	fclose(yyin);
+    	printf("==================Print Quads===============\n");
+    	printQuads();
     }
   	return 0;
 }

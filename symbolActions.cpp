@@ -1,20 +1,21 @@
+#include "symtable.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stack>
-#include <string>
-#include "symtable.h"
+#include <iostream>
 
 extern int yylineno;
 extern char* yytext;
 extern FILE* yyin;
 extern int current_scope;
 extern std::stack<bool> scopeAccessStack;
-extern unsigned int anonymousCounter = 0;
+extern unsigned int anonymousCounter; /*for anonymus functions*/
+
+static unsigned int tempVariableCounter = 0; 
 
 
 
-
-symTableEntry* actionID(string id){
+symTableEntry* actionID(std::string id){
  	symTableEntry* ptr = lookupSym(id);
 
 	if(ptr==NULL){
@@ -40,7 +41,7 @@ symTableEntry* actionID(string id){
 
 
 
-symTableEntry* actionLocalID(string id){
+symTableEntry* actionLocalID(std::string id){
 	symTableEntry* ptr = lookupSym(id,current_scope);
 											
 	if(ptr==NULL){
@@ -65,10 +66,31 @@ symTableEntry* actionLocalID(string id){
 }
 
 
-symTableEntry* actionGlobalID(string id){
+symTableEntry* actionGlobalID(std::string id){
 	symTableEntry* ptr = lookupSym(id,0);
 											
-	if(ptr == NULL) std::cout << "\033[01;31mERROR there is no global var " << $2 << "\033[00m" <<std::endl;
+	if(ptr == NULL) std::cout << "\033[01;31mERROR there is no global var " << id << "\033[00m" <<std::endl;
 
 	return ptr;
 }
+
+
+/*Returns the name of the next hidden variable */
+std::string newtempname(){ return "_t" + std::to_string(tempVariableCounter++); }
+
+/*Returns the entry of the symTable that corresponds to the current variable, if no variable with that
+name exists then it creates a new one and inserts it into the symTable*/
+symTableEntry* newtemp(){
+	std::string name = newtempname(); 
+	
+	symTableEntry* sym =lookupSym(name,current_scope);
+	if(sym == NULL){
+		insertSym(name,LOCAL_VAR,NULL,current_scope, yylineno);
+		sym =lookupSym(name,current_scope);
+	}
+	return sym;
+}
+
+
+/*Resets the hidden variable counter to zero*/
+void resettemp(){tempVariableCounter = 0; }

@@ -50,3 +50,15 @@ std::string symTableTypeToString(symTableType t);
 void insertLibFuncSym();
 
 bool checkCollisionSym(std::string key);
+
+symTableEntry* actionID(std::string id);
+
+symTableEntry* actionLocalID(std::string id);
+
+symTableEntry* actionGlobalID(std::string id);
+
+std::string newtempname();
+
+symTableEntry* newtemp();
+
+void resettemp();
