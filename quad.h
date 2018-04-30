@@ -1,7 +1,5 @@
-#include "scanner.h"
-
-/*creates a new expr*/
-expr *newexpr(expr_t e);
+// z#include "scanner.h"
+#include "symtable.h"
 
 typedef enum bool_t{
 	false_t,true_t
@@ -69,12 +67,12 @@ typedef struct quad{
 	unsigned	label;
 	unsigned 	line;
 }quad;
-
-/*Index of the last recognised quad*/
-unsigned int currQuad;
-
+c
 /*Creates a new quad and initializes it with the arguments. Then it stores it in the vector*/
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno);
 
 /*Prints all the recognized quads from the vector*/
 void printQuads();
+
+/*creates a new expr*/
+expr *newexpr(expr_t e);

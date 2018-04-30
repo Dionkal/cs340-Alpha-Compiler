@@ -3,9 +3,7 @@
 	#include <stdio.h>
 	#include <stack>
 	#include <string>
-	#include "symtable.h"
 	#include "quad.h"
-	#include <stdio.h>
 	#include <iostream>
 	#include <sstream>
 
@@ -18,6 +16,7 @@
 	extern char* yytext;
 	extern FILE* yyin;
 	extern int current_scope;
+	extern unsigned int scopeSpaceCounter;
 	std::stack<bool> scopeAccessStack;
 	unsigned int anonymousCounter = 0;
 %}
@@ -28,7 +27,7 @@
 %union {
 	char* stringValue;
 	float floatValue;
-	void* symValue;
+	void* exprPtr;
 }
 
 %token <stringValue> ID 
@@ -36,20 +35,26 @@
 %token <stringValue> STRING 
 %token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
-%type <expr*> lvalue
+%type <exprPtr> lvalue
+%type <exprPtr> const
+%type <exprPtr> primary
+%type <exprPtr> term
+%type <exprPtr> expr
+%type <exprPtr> assignexpr
+
 //%type<ptr> expr
 
-%left '(' ')' 
-%left '[' ']'
-%left '.' DOUBLEDOT
-%right NOT PLUSPLUS MINUSMINUS UMINUS 
-%left '*' '/' '%'
-%left '+' '-'
-%nonassoc '>' GREATEREQUAL '<' LESSEQUAL
-%nonassoc EQUAL NOTEQUAL
-%left AND
-%left OR
 %right '='
+%left OR
+%left AND
+%nonassoc EQUAL NOTEQUAL
+%nonassoc '>' GREATEREQUAL '<' LESSEQUAL
+%left '+' '-'
+%left '*' '/' '%'
+%right NOT PLUSPLUS MINUSMINUS UMINUS 
+%left '.' DOUBLEDOT
+%left '[' ']'
+%left '(' ')' 
 
 
 
@@ -76,86 +81,110 @@ stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",y
 			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno);}
 			;
 
-expr:		assignexpr 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:assignexpr in line:%d\n",yylineno);}
+expr:		assignexpr 					{ 
+											printf("expr:	` in line:%d\n",yylineno);
+											($$) = ($1);
+										}
 			|expr '+' expr 				{	
 											printf("expr:expr + expr in line:%d\n",yylineno);
-											emit(add_iopcode,($1),($3),($$),0,yylineno);
+											expr* result_e = newexpr(arithexpr_e);
+											result_e->sym = newtemp();
+											emit(add_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
+											($$) = (void*) result_e;
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 
 										}
 			|expr '-' expr 				{
 											printf("lexpr:expr - expr in line:%d\n",yylineno);											
-											emit(sub_iopcode,($1),($3),($$),0,yylineno);
+											expr* result_e = newexpr(arithexpr_e);
+											result_e->sym = newtemp();
+											emit(sub_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
+											($$) = (void*) result_e;
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+
 										}
 			|expr '*' expr 				{
 											printf("expr:expr * expr in line:%d\n",yylineno);											
-											emit(mul_iopcode,($1),($3),($$),0,yylineno);
+											expr* result_e = newexpr(arithexpr_e);
+											result_e->sym = newtemp();
+											emit(mul_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
+											($$) = (void*) result_e;
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr '/' expr 				{
 											printf("expr:expr / expr in line:%d\n",yylineno);										
-											emit(div_iopcode,($1),($3),($$),0,yylineno);
+											expr* result_e = newexpr(arithexpr_e);
+											result_e->sym = newtemp();
+											emit(div_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
+											($$) = (void*) result_e;
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr '%' expr 				{
 											printf("expr:expr mod expr in line:%d\n",yylineno);										
-											emit(mod_iopcode,($1),($3),($$),0,yylineno);
+											expr* result_e = newexpr(arithexpr_e);
+											result_e->sym = newtemp();
+											emit(mod_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
+											($$) = (void*) result_e;
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr '>' expr 				{	
 											printf("expr:expr > expr in line:%d\n",yylineno);										
-											emit(if_greater_iopcode,($1),($3),($$),0,yylineno);
+											// emit(if_greater_iopcode,($1),($3),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr '<' expr 				{	
 											printf("expr:expr < expr in line:%d\n",yylineno);										
-											emit(if_less_iopcode,($1),($3),($$),0,yylineno);
+											// emit(if_less_iopcode,($1),($3),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr GREATEREQUAL expr 	{	
 											printf("expr:expr >= expr in line:%d\n",yylineno);										
-											emit(if_greatereq_iopcode,($1),($3),($$),0,yylineno);
+											// emit(if_greatereq_iopcode,($1),($3),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr LESSEQUAL expr 		{	
 											printf("expr:expr <= expr in line:%d\n",yylineno);										
-											emit(if_lesseq_iopcode,($1),($3),($$),0,yylineno);
+											// emit(if_lesseq_iopcode,($1),($3),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr EQUAL expr 			{	
 											printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);										
-											emit(if_eq_iopcode,($1),($3),($$),0,yylineno);
+											// emit(if_eq_iopcode,($1),($3),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr NOTEQUAL expr 		{
 											printf("expr:expr != expr in line:%d\n",yylineno);										
-											emit(if_noteq_iopcode,($1),($3),($$),0,yylineno);
+											// emit(if_noteq_iopcode,($1),($3),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);										
-											emit(and_iopcode,($1),($3),($$),0,yylineno);
+											// emit(and_iopcode,($1),($3),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|expr OR expr 				{	printf("expr:expr OR expr in line:%d\n",yylineno);										
-											emit(or_iopcode,($1),($3),($$),0,yylineno);
+											// emit(or_iopcode,($1),($3),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
-			|term						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("expr:term in line:%d\n",yylineno);}
+			|term						{ 
+											printf("expr:term in line:%d\n",yylineno);
+											($$) = ($1);
+										}
 			;
 
 
 
-term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
+term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
+											($$) = ($2);
+										}
 			| '-' expr %prec UMINUS		{	
 											printf("term:-expr in line:%d\n",yylineno);									
-											emit(uminus_iopcode,($1),($2),($$),0,yylineno);
+											// emit(uminus_iopcode,($1),($2),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 
 										}
 			| NOT expr 					{
 											printf("term:!expr in line:%d\n",yylineno);					
-											emit(not_iopcode,($1),($2),($$),0,yylineno);
+											// emit(not_iopcode,($1),($2),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}
 			|PLUSPLUS lvalue 			{	printf("term:++lvalue in line:%d\n",yylineno);
@@ -186,14 +215,22 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);}
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno << "\033[00m" << std::endl;
 											}
 										}
-			|primary 					{printf("term:primary in line:%d\n",yylineno);}
+			|primary 					{
+											printf("term:primary in line:%d\n",yylineno);
+											($$) = ($1);
+
+										}
 			;
 
 assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
-											symTableEntry* ptr = (symTableEntry*) $1;										
+											emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
+											
+											($$) = ($1);
+											/*TODO: fix check  lvalue is not a function */
+											/*symTableEntry* ptr = (symTableEntry*) $1;										
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" as left value of assignment at line " <<yylineno << "\033[00m" << std::endl;
-											}
+											}*/
 										}
 			;
 
@@ -201,23 +238,29 @@ primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); print
 			|call 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: call in line:%d\n",yylineno);}
 			|objectdef 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
 			|'(' funcdef ')'            {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: (funcdef) in line:%d\n",yylineno);}
-			|const 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: const in line:%d\n",yylineno);}
+			|const 						{ 
+											 printf("primary: const in line:%d\n",yylineno);
+											 ($$) = ($1);
+										}
 			;
 
 lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 											/*TODO: add and return expr struct*/
-											($$)=newexpr(var_e);
-											($$)->sym=actionID($1);
+											expr* temp_expr = newexpr(var_e);
+											temp_expr->sym=actionID($1);  
+											($$)= temp_expr;
 															
 										}
 			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
-											($$)=newexpr(var_e);
-											($$)->sym=actionLocalID($2);
+											expr* temp_expr = newexpr(var_e);
+											temp_expr->sym = actionLocalID($2);
+											($$) = temp_expr;
 											
 										}
 			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
-											($$)=newexpr(var_e);
-											($$)->sym=actionGlobalID($2);	
+											expr* temp_expr = newexpr(var_e);
+											temp_expr->sym = actionGlobalID($2);	
+											($$) = temp_expr;
 										}
 			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
 			;
@@ -276,49 +319,40 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
 
 funcdef:	FUNCTION ID  	
 												{
-													symTableEntry* ptr = lookupSym($2,current_scope);
-													/*TODO: Migrate the ID actions in seperate function*/										
-													if(ptr== NULL){
-														if(checkCollisionSym($2)){
-															std::cout <<"\033[01;31mERROR: cannot define function at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
-														}else{
-															insertSym($2,USER_FUNC,NULL,current_scope,yylineno);
-															
-														}
-													}else{
-														printf("\033[01;31mERROR: Symbol %s already defined at line %d\033[00m\n",$2,ptr->declLine);
-													}
+													actionFuncdefID($2);
 													
-												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
+												} '('{current_scope++; scopeSpaceCounter++;} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop();  scopeSpaceCounter-= 2;}
 			| FUNCTION 
 												{
-													/*TODO: Migrate the ID actions in seperate function*/
-													std::string StringTemp = static_cast<std::ostringstream*>( &(std::ostringstream() << anonymousCounter) )->str();
-													std::string anonFunc = "_anonFunc" + StringTemp;
-													anonymousCounter++;
-													insertSym(anonFunc,USER_FUNC,NULL,current_scope,yylineno);
-												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
+													actionFuncdefAnon();
+													
+												} '('{current_scope++; scopeSpaceCounter++;} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop(); scopeSpaceCounter-= 2;}
 			;		
 
 const:		NUMBER 								{
-													($$)=newexpr(costnum_e);
-													($$)->numConst=($1); 
+													expr* temp_expr = newexpr(costnum_e);
+													temp_expr->numConst=($1);  
+													($$) = temp_expr;
 												}
 			| STRING 							{
-													($$)=newexpr(conststring_e);
-													($$)->strConst=($1); 
+													expr* temp_expr = newexpr(conststring_e);
+													temp_expr->strConst=($1);
+													($$) = temp_expr;
 												}
 			| NIL 								{
-													($$)=newexpr(nil_e);
+
+													($$)= (void*) newexpr(nil_e);
 												}
 			|TRUE 								{
-													($$)=newexpr(boolexpr_e);
-													($$)->boolConst=true_t; 
+													expr* temp_expr =newexpr(boolexpr_e);
+													temp_expr->boolConst=true_t;
+													($$)=temp_expr;
 
 												}
 			|FALSE 								{
-													($$)=newexpr(boolexpr_e);
-													($$)->boolConst=false_t; 
+													expr* temp_expr = newexpr(boolexpr_e);
+													temp_expr->boolConst=false_t;
+													($$) = temp_expr; 
 												}
 			;
 

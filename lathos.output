@@ -1,6 +1,0 @@
-time:1___ ,token: int____>lvalue: ID in line:1
-time:2___ ,token: a____>primary: lvalue in line:1
-time:3___ ,token: a____>term:primary in line:1
-time:4___ ,token: a____>expr:term in line:1
-syntax error: at line 1, before token: a
-INPUT NOT VALID

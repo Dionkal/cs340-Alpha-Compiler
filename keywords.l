@@ -2,7 +2,7 @@
 #define YY_DECL int yylex(void)	
 #include "scanner.h"
 #include "parser.h"
-#include "symtable.h"
+#include "quad.h"
 #include <string.h>
 #include <iomanip>
 #include <stack>
@@ -419,6 +419,8 @@ int main (int argc, char *argv[]){
 
     	printSymTable();
     	fclose(yyin);
+    	printf("==================Print Quads===============\n");
+    	printQuads();
     }
   	return 0;
 }
@@ -456,29 +458,17 @@ symTableEntry* lookupSym(string key, int scope){
 }
 
 
-void insertSym(string key,symTableType type,symTableEntry* args,int scp,unsigned int line){
+void insertSym(string key,symTableType type,int scp,unsigned int line){
 
 	/*insert new symbol*/
-	// symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
 	symTableEntry* symptr = new symTableEntry(); 
 	symptr->name = key;
-	// std::cout<<"symptr->name: " << symptr->name<<std::endl;
-	// exit(1);
-	// std::cout<<"aft4er  key" <<std::endl;
 	symptr->symType = type;
-	// std::cout<<"aft4er  type" <<std::endl;
-	symptr->arguments = args;
-	// std::cout<<"aft4er  args" <<std::endl;
-	symptr->scope = scp;
-	// std::cout<<"aft4er  scp" <<std::endl;
+	symptr->scope = scp;	
 	symptr->declLine = line;
-	// std::cout<<"aft4er  line" <<std::endl;
 	symptr->isVisible = true;
-	// std::cout<<"Befor insert" <<std::endl;
 	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
-	// std::cout<<"1 insert" <<std::endl;
 	SymTableScope.insert( std::pair<int,symTableEntry*>(scp,symptr) );
-	// std::cout<<"2 insert" <<std::endl;
 }
 
 
