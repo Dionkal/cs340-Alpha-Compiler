@@ -16,6 +16,7 @@
 	extern char* yytext;
 	extern FILE* yyin;
 	extern int current_scope;
+	extern unsigned int scopeSpaceCounter;
 	std::stack<bool> scopeAccessStack;
 	unsigned int anonymousCounter = 0;
 %}
@@ -318,28 +319,14 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
 
 funcdef:	FUNCTION ID  	
 												{
-													symTableEntry* ptr = lookupSym($2,current_scope);
-													/*TODO: Migrate the ID actions in seperate function*/										
-													if(ptr== NULL){
-														if(checkCollisionSym($2)){
-															std::cout <<"\033[01;31mERROR: cannot define function at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
-														}else{
-															insertSym($2,USER_FUNC,NULL,current_scope,yylineno);
-															
-														}
-													}else{
-														printf("\033[01;31mERROR: Symbol %s already defined at line %d\033[00m\n",$2,ptr->declLine);
-													}
+													actionFuncdefID($2);
 													
-												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
+												} '('{current_scope++; scopeSpaceCounter++;} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop();  scopeSpaceCounter-= 2;}
 			| FUNCTION 
 												{
-													/*TODO: Migrate the ID actions in seperate function*/
-													std::string StringTemp = static_cast<std::ostringstream*>( &(std::ostringstream() << anonymousCounter) )->str();
-													std::string anonFunc = "_anonFunc" + StringTemp;
-													anonymousCounter++;
-													insertSym(anonFunc,USER_FUNC,NULL,current_scope,yylineno);
-												} '('{current_scope++;} idlist ')' {current_scope--; scopeAccessStack.push(true);} block {scopeAccessStack.pop();}
+													actionFuncdefAnon();
+													
+												} '('{current_scope++; scopeSpaceCounter++;} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop(); scopeSpaceCounter-= 2;}
 			;		
 
 const:		NUMBER 								{

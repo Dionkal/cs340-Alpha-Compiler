@@ -67,7 +67,7 @@ typedef struct quad{
 	unsigned	label;
 	unsigned 	line;
 }quad;
-
+c
 /*Creates a new quad and initializes it with the arguments. Then it stores it in the vector*/
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno);
 

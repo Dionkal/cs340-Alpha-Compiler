@@ -61,3 +61,6 @@ std::string newtempname();
 symTableEntry* newtemp();
 
 void resettemp();
+
+/*Returns the corresponding scopespace type*/
+scopespace_t current_scopescape();
