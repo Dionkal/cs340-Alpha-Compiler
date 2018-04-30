@@ -27,7 +27,8 @@ symTableEntry* actionID(std::string id){
 			type = LOCAL_VAR;
 		}
 		
-		insertSym(id,type,NULL,current_scope,yylineno);
+		insertSym(id,type,current_scope,yylineno);
+		
 		ptr = lookupSym(id);
 	}else{
 
@@ -57,7 +58,7 @@ symTableEntry* actionLocalID(std::string id){
 				type = LOCAL_VAR;
 			}
 			
-			insertSym(id,type,NULL,current_scope,yylineno);
+			insertSym(id,type,current_scope,yylineno);
 				ptr = lookupSym(id);
 		}
 	}
@@ -85,7 +86,7 @@ symTableEntry* newtemp(){
 	
 	symTableEntry* sym =lookupSym(name,current_scope);
 	if(sym == NULL){
-		insertSym(name,LOCAL_VAR,NULL,current_scope, yylineno);
+		insertSym(name,LOCAL_VAR,current_scope, yylineno);
 		sym =lookupSym(name,current_scope);
 	}
 	return sym;
