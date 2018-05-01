@@ -66,17 +66,17 @@ stmt1:		stmt1 stmt
             |stmt
 			;
 
-stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",yylineno);}
+stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",yylineno); resettemp();}
 			|expr error ';'
-			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno);}
-			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno);}
-			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno);}
-			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno);}
-			|BREAK ';' 																{printf("stmt:Break with ';' in line:%d\n",yylineno);}
-			|CONTINUE ';'															{printf("stmt:Continue with ';' in line:%d\n",yylineno);}
-			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno);}
-			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno);}
-			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno);}
+			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno); resettemp();}
+			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno); resettemp();}
+			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno); resettemp();}
+			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno); resettemp();}
+			|BREAK ';' 																{printf("stmt:Break with ';' in line:%d\n",yylineno); resettemp();}
+			|CONTINUE ';'															{printf("stmt:Continue with ';' in line:%d\n",yylineno); resettemp();}
+			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno); resettemp();}
+			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno); resettemp();}
+			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno); resettemp();}
 			;
 
 expr:		assignexpr 					{ 
