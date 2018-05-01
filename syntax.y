@@ -4,12 +4,12 @@
 	#include <stack>
 	#include <string>
 	#include "quad.h"
+	#include "symbolUtilities.h"
 	#include <iostream>
 	#include <sstream>
 
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
-	unsigned int scope=0;
 	int k=0;
 
 	extern int yylineno;
@@ -245,7 +245,6 @@ primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); print
 			;
 
 lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
-											/*TODO: add and return expr struct*/
 											expr* temp_expr = newexpr(var_e);
 											temp_expr->sym=actionID($1);  
 											($$)= temp_expr;
@@ -321,12 +320,12 @@ funcdef:	FUNCTION ID
 												{
 													actionFuncdefID($2);
 													
-												} '('{current_scope++; scopeSpaceCounter++;} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop();  scopeSpaceCounter-= 2;}
+												} '('{current_scope++; scopeSpaceCounter++; newOffset();} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop();  scopeSpaceCounter-= 2; deleteOffset();}
 			| FUNCTION 
 												{
 													actionFuncdefAnon();
 													
-												} '('{current_scope++; scopeSpaceCounter++;} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop(); scopeSpaceCounter-= 2;}
+												} '('{current_scope++; scopeSpaceCounter++; newOffset();} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++; } block {scopeAccessStack.pop(); scopeSpaceCounter-= 2; deleteOffset();}
 			;		
 
 const:		NUMBER 								{
@@ -366,7 +365,7 @@ idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 														if(checkCollisionSym(std::string(temp))){
 															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<std::string(temp) << "\033[00m" << std::endl;
 														}else{
-															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
+															insertSym(std::string(temp),ARGUMENT_VAR,current_scope,yylineno);
 														}
 													}else{
 														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
@@ -384,7 +383,7 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 														if(checkCollisionSym(std::string(temp))){
 															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
 														}else{
-															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
+															insertSym(std::string(temp),ARGUMENT_VAR,current_scope,yylineno);
 														}
 													}else{
 														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;

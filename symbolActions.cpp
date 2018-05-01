@@ -12,8 +12,7 @@ extern int current_scope;
 extern std::stack<bool> scopeAccessStack;
 extern unsigned int anonymousCounter; /*for anonymus functions*/
 
-static unsigned int tempVariableCounter = 0; 
-unsigned int scopeSpaceCounter = 1;
+
 
 
 symTableEntry* actionID(std::string id){
@@ -101,37 +100,5 @@ symTableEntry* actionFuncdefAnon(){
 	std::string anonFunc = "_anonFunc" + StringTemp;
 	anonymousCounter++;
 	insertSym(anonFunc,USER_FUNC,current_scope,yylineno);
-	return lookupSym(id, current_scope);
-}
-
-
-/*Returns the name of the next hidden variable */
-std::string newtempname(){ return "_t" + std::to_string(tempVariableCounter++); }
-
-/*Returns the entry of the symTable that corresponds to the current variable, if no variable with that
-name exists then it creates a new one and inserts it into the symTable*/
-symTableEntry* newtemp(){
-	std::string name = newtempname(); 
-	
-	symTableEntry* sym =lookupSym(name,current_scope);
-	if(sym == NULL){
-		insertSym(name,LOCAL_VAR,current_scope, yylineno);
-		sym =lookupSym(name,current_scope);
-	}
-	return sym;
-}
-
-
-/*Resets the hidden variable counter to zero*/
-void resettemp(){tempVariableCounter = 0; }
-
-/*Returns the corresponding scopespace type*/
-scopespace_t current_scopescape(){
-	if(scopeSpaceCounter == 1 ) return programvar; /*we haven't been inside a function*/
-
-	if( (scopeSpaceCounter % 2) == 0){
-		return formalarg; /*We are in formal arglist*/
-	}else{
-		return functionlocal; /*Inside function's body*/
-	}
+	return lookupSym(anonFunc, current_scope);
 }
