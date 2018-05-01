@@ -317,6 +317,19 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
              |error '}'
 			;	
 
+funcname:	ID
+			|/*empty*/
+			;
+
+funcprefix:	FUNCTION funcname
+			;
+
+funcargs:	elist /*esto not sure*/
+
+funcbody:	block /*not sure as well*/
+
+funcdef:	funcprefix funargs funcbody
+
 funcdef:	FUNCTION ID  	
 												{
 													actionFuncdefID($2);
