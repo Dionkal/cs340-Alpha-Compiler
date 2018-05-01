@@ -56,8 +56,6 @@
 %left '[' ']'
 %left '(' ')' 
 
-
-
 %%
 
 program:	stmt1						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program accepted\n");}
@@ -223,14 +221,18 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 			;
 
 assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
-											emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
+											if( $1 != NULL &&( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<((expr*)$3)->sym->name 
+														  <<" as left value of assignment at line " <<yylineno 
+														  << "\033[00m" << std::endl;		
+											}else{
+												emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
+												expr* result_e = newexpr(var_e);
+												result_e->sym = newtemp();
+												emit(assign_iopcode,(expr*) $1,NULL, result_e,0,yylineno);
+												($$) = (void*) result_e;
+											}
 											
-											($$) = ($1);
-											/*TODO: fix check  lvalue is not a function */
-											/*symTableEntry* ptr = (symTableEntry*) $1;										
-											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" as left value of assignment at line " <<yylineno << "\033[00m" << std::endl;
-											}*/
 										}
 			;
 
