@@ -3,6 +3,7 @@
 #include "scanner.h"
 #include "parser.h"
 #include "quad.h"
+#include "symbolUtilities.h"
 #include <string.h>
 #include <iomanip>
 #include <stack>
@@ -413,6 +414,7 @@ int main (int argc, char *argv[]){
     	yyin = fopen(argv[1], "r");
 
    		scopeAccessStack.push(false);
+   		newOffset();
    		insertLibFuncSym();
 		yyparse();
    		scopeAccessStack.pop();
@@ -458,29 +460,20 @@ symTableEntry* lookupSym(string key, int scope){
 }
 
 
-void insertSym(string key,symTableType type,symTableEntry* args,int scp,unsigned int line){
+void insertSym(string key,symTableType type,int scp,unsigned int line){
 
 	/*insert new symbol*/
-	// symTableEntry* symptr = (symTableEntry*) malloc(sizeof(symTableEntry));
 	symTableEntry* symptr = new symTableEntry(); 
 	symptr->name = key;
-	// std::cout<<"symptr->name: " << symptr->name<<std::endl;
-	// exit(1);
-	// std::cout<<"aft4er  key" <<std::endl;
 	symptr->symType = type;
-	// std::cout<<"aft4er  type" <<std::endl;
-	symptr->arguments = args;
-	// std::cout<<"aft4er  args" <<std::endl;
-	symptr->scope = scp;
-	// std::cout<<"aft4er  scp" <<std::endl;
+	symptr->scope = scp;	
 	symptr->declLine = line;
-	// std::cout<<"aft4er  line" <<std::endl;
 	symptr->isVisible = true;
-	// std::cout<<"Befor insert" <<std::endl;
+	symptr->offset = currScopeOffset();
+	symptr->space = current_scopescape();
+	incrementScopeOffset(); //increase offset
 	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
-	// std::cout<<"1 insert" <<std::endl;
 	SymTableScope.insert( std::pair<int,symTableEntry*>(scp,symptr) );
-	// std::cout<<"2 insert" <<std::endl;
 }
 
 
@@ -537,18 +530,18 @@ string symTableTypeToString(symTableType t){
 }
 
 void insertLibFuncSym(){
-	insertSym(std::string("print"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("input"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("objectmemberkeys"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("objecttotalmembers"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("objectcopy"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("totalarguments"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("argument"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("typeof"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("strtonum"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("sqrt"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("cos"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("sin"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("print"),LIB_FUNC,0,0);
+	insertSym(std::string("input"),LIB_FUNC,0,0);
+	insertSym(std::string("objectmemberkeys"),LIB_FUNC,0,0);
+	insertSym(std::string("objecttotalmembers"),LIB_FUNC,0,0);
+	insertSym(std::string("objectcopy"),LIB_FUNC,0,0);
+	insertSym(std::string("totalarguments"),LIB_FUNC,0,0);
+	insertSym(std::string("argument"),LIB_FUNC,0,0);
+	insertSym(std::string("typeof"),LIB_FUNC,0,0);
+	insertSym(std::string("strtonum"),LIB_FUNC,0,0);
+	insertSym(std::string("sqrt"),LIB_FUNC,0,0);
+	insertSym(std::string("cos"),LIB_FUNC,0,0);
+	insertSym(std::string("sin"),LIB_FUNC,0,0);
 }
 
 

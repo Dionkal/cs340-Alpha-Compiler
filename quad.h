@@ -1,5 +1,7 @@
-// z#include "scanner.h"
-#include "symtable.h"
+#ifndef SYMTABLE_LIB
+	#define SYMTABLE_LIB
+	#include "symtable.h"
+#endif
 
 typedef enum bool_t{
 	false_t,true_t

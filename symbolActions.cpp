@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stack>
 #include <iostream>
+#include <sstream>
 
 extern int yylineno;
 extern char* yytext;
@@ -11,7 +12,6 @@ extern int current_scope;
 extern std::stack<bool> scopeAccessStack;
 extern unsigned int anonymousCounter; /*for anonymus functions*/
 
-static unsigned int tempVariableCounter = 0; 
 
 
 
@@ -27,8 +27,9 @@ symTableEntry* actionID(std::string id){
 			type = LOCAL_VAR;
 		}
 		
-		insertSym(id,type,NULL,current_scope,yylineno);
-		ptr = lookupSym(id);
+		insertSym(id,type,current_scope,yylineno);
+		
+		ptr = lookupSym(id,current_scope);
 	}else{
 
 		if( scopeAccessStack.top() && (ptr->symType == LOCAL_VAR || ptr->symType == ARGUMENT_VAR) && (ptr->scope != current_scope && ptr->scope != 0)){
@@ -57,8 +58,8 @@ symTableEntry* actionLocalID(std::string id){
 				type = LOCAL_VAR;
 			}
 			
-			insertSym(id,type,NULL,current_scope,yylineno);
-				ptr = lookupSym(id);
+			insertSym(id,type,current_scope,yylineno);
+			ptr = lookupSym(id,current_scope);
 		}
 	}
 
@@ -74,23 +75,30 @@ symTableEntry* actionGlobalID(std::string id){
 	return ptr;
 }
 
-
-/*Returns the name of the next hidden variable */
-std::string newtempname(){ return "_t" + std::to_string(tempVariableCounter++); }
-
-/*Returns the entry of the symTable that corresponds to the current variable, if no variable with that
-name exists then it creates a new one and inserts it into the symTable*/
-symTableEntry* newtemp(){
-	std::string name = newtempname(); 
-	
-	symTableEntry* sym =lookupSym(name,current_scope);
-	if(sym == NULL){
-		insertSym(name,LOCAL_VAR,NULL,current_scope, yylineno);
-		sym =lookupSym(name,current_scope);
-	}
-	return sym;
+symTableEntry* actionFuncdefID(std::string id) {
+  symTableEntry* ptr = lookupSym(id, current_scope);
+  
+  if (ptr == NULL) {
+    if (checkCollisionSym(id)) {
+      std::cout << "\033[01;31mERROR: cannot define function at line "
+                << yylineno << " as library function " << id << "\033[00m"
+                << std::endl;
+    } else {
+    	insertSym(id, USER_FUNC, current_scope, yylineno);
+     	ptr = lookupSym(id,current_scope);
+    }
+  } else {
+  	std::cout << "\033[01;31mERROR: Symbol" << id 
+  			  << " already defined at line" << ptr->declLine 
+  			  << "\033[00m" <<std::endl;
+  }
+  return ptr;
 }
 
-
-/*Resets the hidden variable counter to zero*/
-void resettemp(){tempVariableCounter = 0; }
+symTableEntry* actionFuncdefAnon(){
+	std::string StringTemp = static_cast<std::ostringstream*>( &(std::ostringstream() << anonymousCounter) )->str();
+	std::string anonFunc = "_anonFunc" + StringTemp;
+	anonymousCounter++;
+	insertSym(anonFunc,USER_FUNC,current_scope,yylineno);
+	return lookupSym(anonFunc, current_scope);
+}
