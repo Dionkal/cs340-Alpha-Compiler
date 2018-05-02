@@ -1,5 +1,7 @@
-// z#include "scanner.h"
-#include "symtable.h"
+#ifndef SYMTABLE_LIB
+	#define SYMTABLE_LIB
+	#include "symtable.h"
+#endif
 
 typedef enum bool_t{
 	false_t,true_t
@@ -67,7 +69,7 @@ typedef struct quad{
 	unsigned	label;
 	unsigned 	line;
 }quad;
-c
+
 /*Creates a new quad and initializes it with the arguments. Then it stores it in the vector*/
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno);
 
@@ -76,3 +78,5 @@ void printQuads();
 
 /*creates a new expr*/
 expr *newexpr(expr_t e);
+
+unsigned nextquadLabel(void);

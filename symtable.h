@@ -56,11 +56,6 @@ symTableEntry* actionLocalID(std::string id);
 
 symTableEntry* actionGlobalID(std::string id);
 
-std::string newtempname();
+symTableEntry* actionFuncdefID(std::string id);
 
-symTableEntry* newtemp();
-
-void resettemp();
-
-/*Returns the corresponding scopespace type*/
-scopespace_t current_scopescape();
+symTableEntry* actionFuncdefAnon();

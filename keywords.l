@@ -3,6 +3,7 @@
 #include "scanner.h"
 #include "parser.h"
 #include "quad.h"
+#include "symbolUtilities.h"
 #include <string.h>
 #include <iomanip>
 #include <stack>
@@ -413,6 +414,7 @@ int main (int argc, char *argv[]){
     	yyin = fopen(argv[1], "r");
 
    		scopeAccessStack.push(false);
+   		newOffset();
    		insertLibFuncSym();
 		yyparse();
    		scopeAccessStack.pop();
@@ -467,6 +469,9 @@ void insertSym(string key,symTableType type,int scp,unsigned int line){
 	symptr->scope = scp;	
 	symptr->declLine = line;
 	symptr->isVisible = true;
+	symptr->offset = currScopeOffset();
+	symptr->space = current_scopescape();
+	incrementScopeOffset(); //increase offset
 	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
 	SymTableScope.insert( std::pair<int,symTableEntry*>(scp,symptr) );
 }
@@ -525,18 +530,18 @@ string symTableTypeToString(symTableType t){
 }
 
 void insertLibFuncSym(){
-	insertSym(std::string("print"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("input"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("objectmemberkeys"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("objecttotalmembers"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("objectcopy"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("totalarguments"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("argument"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("typeof"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("strtonum"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("sqrt"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("cos"),LIB_FUNC,NULL,0,0);
-	insertSym(std::string("sin"),LIB_FUNC,NULL,0,0);
+	insertSym(std::string("print"),LIB_FUNC,0,0);
+	insertSym(std::string("input"),LIB_FUNC,0,0);
+	insertSym(std::string("objectmemberkeys"),LIB_FUNC,0,0);
+	insertSym(std::string("objecttotalmembers"),LIB_FUNC,0,0);
+	insertSym(std::string("objectcopy"),LIB_FUNC,0,0);
+	insertSym(std::string("totalarguments"),LIB_FUNC,0,0);
+	insertSym(std::string("argument"),LIB_FUNC,0,0);
+	insertSym(std::string("typeof"),LIB_FUNC,0,0);
+	insertSym(std::string("strtonum"),LIB_FUNC,0,0);
+	insertSym(std::string("sqrt"),LIB_FUNC,0,0);
+	insertSym(std::string("cos"),LIB_FUNC,0,0);
+	insertSym(std::string("sin"),LIB_FUNC,0,0);
 }
 
 

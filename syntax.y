@@ -4,12 +4,12 @@
 	#include <stack>
 	#include <string>
 	#include "quad.h"
+	#include "symbolUtilities.h"
 	#include <iostream>
 	#include <sstream>
 
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
-	unsigned int scope=0;
 	int k=0;
 
 	extern int yylineno;
@@ -28,6 +28,7 @@
 	char* stringValue;
 	float floatValue;
 	void* exprPtr;
+	void* sym;
 }
 
 %token <stringValue> ID 
@@ -41,8 +42,11 @@
 %type <exprPtr> term
 %type <exprPtr> expr
 %type <exprPtr> assignexpr
+%type <sym>		funcname
+%type <exprPtr> funcprefix
+%type <exprPtr> funcdef
 
-//%type<ptr> expr
+
 
 %right '='
 %left OR
@@ -56,8 +60,6 @@
 %left '[' ']'
 %left '(' ')' 
 
-
-
 %%
 
 program:	stmt1						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program accepted\n");}
@@ -68,17 +70,17 @@ stmt1:		stmt1 stmt
             |stmt
 			;
 
-stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",yylineno);}
+stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",yylineno); resettemp();}
 			|expr error ';'
-			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno);}
-			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno);}
-			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno);}
-			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno);}
-			|BREAK ';' 																{printf("stmt:Break with ';' in line:%d\n",yylineno);}
-			|CONTINUE ';'															{printf("stmt:Continue with ';' in line:%d\n",yylineno);}
-			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno);}
-			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno);}
-			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno);}
+			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno); resettemp();}
+			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno); resettemp();}
+			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno); resettemp();}
+			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno); resettemp();}
+			|BREAK ';' 																{printf("stmt:Break with ';' in line:%d\n",yylineno); resettemp();}
+			|CONTINUE ';'															{printf("stmt:Continue with ';' in line:%d\n",yylineno); resettemp();}
+			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno); resettemp();}
+			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno); resettemp();}
+			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno); resettemp();}
 			;
 
 expr:		assignexpr 					{ 
@@ -223,14 +225,18 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 			;
 
 assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
-											emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
+											if( $1 != NULL &&( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<((expr*)$3)->sym->name 
+														  <<" as left value of assignment at line " <<yylineno 
+														  << "\033[00m" << std::endl;		
+											}else{
+												emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
+												expr* result_e = newexpr(var_e);
+												result_e->sym = newtemp();
+												emit(assign_iopcode,(expr*) $1,NULL, result_e,0,yylineno);
+												($$) = (void*) result_e;
+											}
 											
-											($$) = ($1);
-											/*TODO: fix check  lvalue is not a function */
-											/*symTableEntry* ptr = (symTableEntry*) $1;										
-											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" as left value of assignment at line " <<yylineno << "\033[00m" << std::endl;
-											}*/
 										}
 			;
 
@@ -245,7 +251,6 @@ primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); print
 			;
 
 lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
-											/*TODO: add and return expr struct*/
 											expr* temp_expr = newexpr(var_e);
 											temp_expr->sym=actionID($1);  
 											($$)= temp_expr;
@@ -317,30 +322,57 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
              |error '}'
 			;	
 
-funcname:	ID
-			|/*empty*/
+funcdef:	funcprefix funcargs funcbody 		{
+													std::cout<<"funcdef___\n";
+													scopeSpaceCounter--; 
+													scopeAccessStack.pop();
+													getFunctionOffset(2);			
+													deleteOffset();	
+													($$)=($1);				
+													emit(funcend_iopcode,NULL,NULL,(expr *)($1),0,yylineno);	
+												}
 			;
 
-funcprefix:	FUNCTION funcname
+
+
+funcname: 	ID 									{
+													std::cout<<"funcname___\n";
+													($$)=(void *)actionFuncdefID($1);
+												}
+			|/*empty*/							{
+													std::cout<<"anonymus func___\n";
+													($$)=(void *)actionFuncdefAnon();
+												}
 			;
 
-funcargs:	elist /*esto not sure*/
+funcprefix:	FUNCTION funcname					{
+													std::cout<<"func prefix___\n";
+													unsigned label=nextquadLabel();
+													/*TODO:check function address*/
+													expr* result_e=newexpr(programfunc_e);
+													result_e->sym=(symTableEntry *)($2);
+													emit(funcstart_iopcode,NULL,NULL,result_e,label,yylineno);
+													scopeSpaceCounter++; //this means enterScopeSpace
+													newOffset();
+													current_scope++; 
+													($$)=(void *)result_e;
+												}
+			;
 
-funcbody:	block /*not sure as well*/
+funcargs:	'(' idlist ')'						{
+													std::cout<<"funcargs___\n";
+													scopeSpaceCounter++;
+													//to reset ginetai apo prin stin newOffset
+													current_scope--; 
+													scopeAccessStack.push(true); 
+												}
+			;
 
-funcdef:	funcprefix funargs funcbody
-
-funcdef:	FUNCTION ID  	
-												{
-													actionFuncdefID($2);
-													
-												} '('{current_scope++; scopeSpaceCounter++;} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop();  scopeSpaceCounter-= 2;}
-			| FUNCTION 
-												{
-													actionFuncdefAnon();
-													
-												} '('{current_scope++; scopeSpaceCounter++;} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop(); scopeSpaceCounter-= 2;}
-			;		
+funcbody:	block								{
+													std::cout<<"funcbody___\n";
+													scopeSpaceCounter--; 
+												}
+			;
 
 const:		NUMBER 								{
 													expr* temp_expr = newexpr(costnum_e);
@@ -372,6 +404,7 @@ const:		NUMBER 								{
 idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 			|ID idlist1 						{
 													const char* temp = $1;
+													//TODO create expr list
 													printf("idlist: ID idlist1 in line:%d\n",yylineno);
 													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
 													
@@ -379,11 +412,12 @@ idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 														if(checkCollisionSym(std::string(temp))){
 															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<std::string(temp) << "\033[00m" << std::endl;
 														}else{
-															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
+															insertSym(std::string(temp),ARGUMENT_VAR,current_scope,yylineno);
 														}
 													}else{
 														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
 													}
+
 												}
 			;
 
@@ -397,7 +431,7 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 														if(checkCollisionSym(std::string(temp))){
 															std::cout <<"\033[01;31mERROR: cannot define formal argumnet at line "  <<yylineno <<" as library function "<<$2 << "\033[00m" << std::endl;
 														}else{
-															insertSym(std::string(temp),ARGUMENT_VAR,NULL,current_scope,yylineno);
+															insertSym(std::string(temp),ARGUMENT_VAR,current_scope,yylineno);
 														}
 													}else{
 														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
