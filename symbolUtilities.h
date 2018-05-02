@@ -29,3 +29,8 @@ unsigned int currScopeOffset();
 
 /*Increments the corresponding offset depending on the current scope*/
 void incrementScopeOffset();
+
+/*Get the offset of the current function depending
+on user input, odds for function local offset
+even for function formal offset*/
+unsigned getFunctionOffset(unsigned mode);

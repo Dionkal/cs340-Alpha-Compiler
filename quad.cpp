@@ -7,9 +7,6 @@
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
 
-/*Index of the last recognised quad*/
-unsigned int currQuad;
-
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
 	
 	/*Create new quad*/
@@ -34,6 +31,8 @@ std::string iopcodeToString(iopcode op){
 		case mul_iopcode:		return "MUL_IOPCODE";
 		case div_iopcode:		return "DIV_IOPCODE";
 		case mod_iopcode:		return "MOD_IOPCODE";
+		case funcstart_iopcode: return "FUNCSTART_IOPCODE";
+		case funcend_iopcode: 	return "FUNCEND_IOPCODE";
 		default: 				return "INVALID IOPCODE";
 	}
 }
@@ -101,4 +100,9 @@ expr *newexpr(expr_t e){
 	ptr->type=e;
 
 	return ptr;
+}
+
+
+unsigned nextquadLabel(void){
+	return vctr_quads.size();
 }

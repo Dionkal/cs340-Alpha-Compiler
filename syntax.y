@@ -28,6 +28,7 @@
 	char* stringValue;
 	float floatValue;
 	void* exprPtr;
+	void* sym;
 }
 
 %token <stringValue> ID 
@@ -41,8 +42,11 @@
 %type <exprPtr> term
 %type <exprPtr> expr
 %type <exprPtr> assignexpr
+%type <sym>		funcname
+%type <exprPtr> funcprefix
+%type <exprPtr> funcdef
 
-//%type<ptr> expr
+
 
 %right '='
 %left OR
@@ -318,17 +322,57 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
              |error '}'
 			;	
 
-funcdef:	FUNCTION ID  	
-												{
-													actionFuncdefID($2);
-													
-												} '('{current_scope++; scopeSpaceCounter++; newOffset();} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop();  scopeSpaceCounter-= 2; deleteOffset();}
-			| FUNCTION 
-												{
-													actionFuncdefAnon();
-													
-												} '('{current_scope++; scopeSpaceCounter++; newOffset();} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++; } block {scopeAccessStack.pop(); scopeSpaceCounter-= 2; deleteOffset();}
-			;		
+funcdef:	funcprefix funcargs funcbody 		{
+													std::cout<<"funcdef___\n";
+													scopeSpaceCounter--; 
+													scopeAccessStack.pop();
+													getFunctionOffset(2);			
+													deleteOffset();	
+													($$)=($1);				
+													emit(funcend_iopcode,NULL,NULL,(expr *)($1),0,yylineno);	
+												}
+			;
+
+
+
+funcname: 	ID 									{
+													std::cout<<"funcname___\n";
+													($$)=(void *)actionFuncdefID($1);
+												}
+			|/*empty*/							{
+													std::cout<<"anonymus func___\n";
+													($$)=(void *)actionFuncdefAnon();
+												}
+			;
+
+funcprefix:	FUNCTION funcname					{
+													std::cout<<"func prefix___\n";
+													unsigned label=nextquadLabel();
+													/*TODO:check function address*/
+													expr* result_e=newexpr(programfunc_e);
+													result_e->sym=(symTableEntry *)($2);
+													emit(funcstart_iopcode,NULL,NULL,result_e,label,yylineno);
+													scopeSpaceCounter++; //this means enterScopeSpace
+													newOffset();
+													current_scope++; 
+													($$)=(void *)result_e;
+												}
+			;
+
+funcargs:	'(' idlist ')'						{
+													std::cout<<"funcargs___\n";
+													scopeSpaceCounter++;
+													//to reset ginetai apo prin stin newOffset
+													current_scope--; 
+													scopeAccessStack.push(true); 
+												}
+			;
+
+funcbody:	block								{
+													std::cout<<"funcbody___\n";
+													scopeSpaceCounter--; 
+												}
+			;
 
 const:		NUMBER 								{
 													expr* temp_expr = newexpr(costnum_e);
@@ -360,6 +404,7 @@ const:		NUMBER 								{
 idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 			|ID idlist1 						{
 													const char* temp = $1;
+													//TODO create expr list
 													printf("idlist: ID idlist1 in line:%d\n",yylineno);
 													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
 													
@@ -372,6 +417,7 @@ idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 													}else{
 														std::cout <<"\033[01;31mERROR: Symbol "  <<std::string(temp) <<" at line " <<yylineno <<" already defined at line " <<ptr->declLine << "\033[00m" << std::endl;
 													}
+
 												}
 			;
 
