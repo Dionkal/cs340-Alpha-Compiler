@@ -89,45 +89,28 @@ expr:		assignexpr 					{
 										}
 			|expr '+' expr 				{	
 											printf("expr:expr + expr in line:%d\n",yylineno);
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(add_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
-
+											
+											$$ = (void*) emit_arithexpr(add_iopcode,(expr*)$1,(expr*) $3,yylineno);
 										}
 			|expr '-' expr 				{
-											printf("lexpr:expr - expr in line:%d\n",yylineno);											
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(sub_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											printf("lexpr:expr - expr in line:%d\n",yylineno);
 
+											$$ = (void*) emit_arithexpr(sub_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '*' expr 				{
-											printf("expr:expr * expr in line:%d\n",yylineno);											
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(mul_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											printf("expr:expr * expr in line:%d\n",yylineno);
+
+											$$ = (void*) emit_arithexpr(mul_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '/' expr 				{
 											printf("expr:expr / expr in line:%d\n",yylineno);										
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(div_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											
+											$$ = (void*) emit_arithexpr(div_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '%' expr 				{
 											printf("expr:expr mod expr in line:%d\n",yylineno);										
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(mod_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											
+											$$ = (void*) emit_arithexpr(mod_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '>' expr 				{	
 											printf("expr:expr > expr in line:%d\n",yylineno);										

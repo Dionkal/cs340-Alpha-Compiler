@@ -469,9 +469,14 @@ void insertSym(string key,symTableType type,int scp,unsigned int line){
 	symptr->scope = scp;	
 	symptr->declLine = line;
 	symptr->isVisible = true;
-	symptr->offset = currScopeOffset();
-	symptr->space = current_scopescape();
-	incrementScopeOffset(); //increase offset
+	
+	/*Offset operations, only for variables*/
+	if(type == GLOBAL_VAR || type == LOCAL_VAR || type == ARGUMENT_VAR){
+		symptr->offset = currScopeOffset();
+		symptr->space = current_scopescape();
+		incrementScopeOffset(); //increase offset
+	}
+	
 	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
 	SymTableScope.insert( std::pair<int,symTableEntry*>(scp,symptr) );
 }

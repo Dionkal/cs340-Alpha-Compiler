@@ -1,4 +1,5 @@
 #include "quad.h"
+#include "symbolUtilities.h"
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
@@ -23,7 +24,25 @@ void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int 
 
 }
 
+expr* emit_arithexpr(iopcode opCode,expr *_arg1,expr *_arg2,int yylineno){
+	
+	if(isValidArithexpr(_arg1) && isValidArithexpr(_arg2)){											
+		expr* result_e = newexpr(arithexpr_e);
+		result_e->sym = newtemp();
+		emit(opCode,_arg1, _arg2,result_e,0,yylineno);
+		return result_e;
+	}else{
+		std::cout <<"ERROR: invalid arithexpr";
+		printExpr(_arg1);
+		std::cout <<std::endl;
+		printExpr(_arg1);
+		std::cout <<std::endl;
+		return NULL;
+	}
+}
+
 std::string iopcodeToString(iopcode op){
+	/*TODO: add cases for more opcodes*/
 	switch(op){
 		case assign_iopcode: 	return "ASSIGN_OPCODE";
 		case add_iopcode: 		return "ADD_IOPCODE";
@@ -55,9 +74,18 @@ std::string expr_tToString(expr_t e){
 	}
 }
 
+void printSymbol(symTableEntry* sym){
+	std::cout <<"\t\t\t" <<"name: " << sym->name <<std::endl;
+	if(sym->symType != USER_FUNC && sym->symType != LIB_FUNC) std::cout <<"\t\t\t" <<"offset: " <<sym->offset <<std::endl;
+	/*WIP: print more members*/
+}
+
+
+/*Prints the given expression*/
 void printExpr(expr* e){
 	std::cout <<"\t\tType: " << expr_tToString(e->type) <<std::endl; 
-	if (e->sym)std::cout <<"\t\tSymbol: " << "name: " <<e->sym->name  <<" offset: " <<e->sym->offset <<std::endl;
+	if (e->sym) {std::cout <<"\t\tSymbol: " <<std::endl; printSymbol(e->sym);}
+
 	/*TODO print index*/
 	if (e->numConst)std::cout <<"\t\tnumConst: " << e->numConst <<std::endl;
 	if (e->strConst)std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
@@ -105,4 +133,17 @@ expr *newexpr(expr_t e){
 
 unsigned nextquadLabel(void){
 	return vctr_quads.size();
+}
+
+
+/*Checks if the given expression is a valid arithmetic one
+ returns: true for valid / false for invalid*/
+bool isValidArithexpr(expr* e){
+	if(e->type == programfunc_e || e->type == libraryfunc_e || e->type == boolexpr_e 
+		|| e->type == newtable_e || e->type == constbool_e 
+		|| e->type == conststring_e || e->type == nil_e)
+	{
+		return false;
+	} 
+	return true;
 }

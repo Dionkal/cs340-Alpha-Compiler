@@ -1,5 +1,6 @@
-#include <string>
-
+#ifndef SYMTABLE_LIB
+	#define SYMTABLE_LIB
+	#include <string>
 typedef enum symTableType {GLOBAL_VAR,LOCAL_VAR,ARGUMENT_VAR,USER_FUNC,LIB_FUNC} symTableType;
 
 typedef enum scopespace_t{
@@ -59,3 +60,5 @@ symTableEntry* actionGlobalID(std::string id);
 symTableEntry* actionFuncdefID(std::string id);
 
 symTableEntry* actionFuncdefAnon();
+
+#endif
