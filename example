@@ -1,2 +1,10 @@
+global =3;
+
 function tsalimakia(x){	
+	a = 5;
+	b = 6;
+	function foo(y){
+		z = 2;
+
+	}
 }
