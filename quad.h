@@ -32,7 +32,7 @@ typedef enum iopcode{
 	tablecreate_iopcode,
 	tablegetelem_iopcode,
 	tablesetelem_iopcode
-}iopcode;
+iopcode;
 
 /*Enumerator that defines all the differnet types of expressions*/
 typedef enum expr_t{
@@ -80,3 +80,5 @@ void printQuads();
 expr *newexpr(expr_t e);
 
 unsigned nextquadLabel(void);
+
+expr *member_item(expr *,std::string);
