@@ -57,7 +57,7 @@ std::string expr_tToString(expr_t e){
 
 void printExpr(expr* e){
 	std::cout <<"\t\tType: " << expr_tToString(e->type) <<std::endl; 
-	if (e->sym)std::cout <<"\t\tSymbol: " << e->sym->name <<std::endl;
+	if (e->sym)std::cout <<"\t\tSymbol: " << "name: " <<e->sym->name  <<" offset: " <<e->sym->offset <<std::endl;
 	/*TODO print index*/
 	if (e->numConst)std::cout <<"\t\tnumConst: " << e->numConst <<std::endl;
 	if (e->strConst)std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
