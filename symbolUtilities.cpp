@@ -1,6 +1,8 @@
 #include "symbolUtilities.h"
 #include <stack>
 #include <iostream>
+#include <string>
+#include <sstream>
 
 extern int yylineno;
 extern int current_scope;
@@ -13,7 +15,10 @@ std::stack<offset> offsetStack;
 
 /*Returns the name of the next hidden variable */
 std::string newtempname(){ 
-	return "_t" + std::to_string(tempVariableCounter++); }
+	std::ostringstream oss;
+	oss << tempVariableCounter++;
+	return "_t" + oss.str(); 
+}
 
 /*Returns the entry of the symTable that corresponds to the current variable, if no variable with that
 name exists then it creates a new one and inserts it into the symTable*/

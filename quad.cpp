@@ -31,6 +31,8 @@ std::string iopcodeToString(iopcode op){
 		case mul_iopcode:		return "MUL_IOPCODE";
 		case div_iopcode:		return "DIV_IOPCODE";
 		case mod_iopcode:		return "MOD_IOPCODE";
+		case funcstart_iopcode: return "FUNCSTART_IOPCODE";
+		case funcend_iopcode: 	return "FUNCEND_IOPCODE";
 		default: 				return "INVALID IOPCODE";
 	}
 }

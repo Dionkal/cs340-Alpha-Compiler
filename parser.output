@@ -118,16 +118,16 @@ Grammar
    79      | error stmt1 '}'
    80      | error '}'
 
-   81 funcname: ID
-   82         | %empty
+   81 funcdef: funcprefix funcargs funcbody
 
-   83 funcprefix: FUNCTION funcname
+   82 funcname: ID
+   83         | %empty
 
-   84 funcargs: '(' idlist ')'
+   84 funcprefix: FUNCTION funcname
 
-   85 funcbody: block
+   85 funcargs: '(' idlist ')'
 
-   86 funcdef: funcprefix funcargs funcbody
+   86 funcbody: block
 
    87 const: NUMBER
    88      | STRING
@@ -158,8 +158,8 @@ Terminals, with rules where they appear
 
 $end (0) 0
 '%' (37) 23
-'(' (40) 33 45 55 57 60 61 84 96 99 100
-')' (41) 33 45 55 57 60 61 84 96 99 100
+'(' (40) 33 45 55 57 60 61 85 96 99 100
+')' (41) 33 45 55 57 60 61 85 96 99 100
 '*' (42) 21
 '+' (43) 19
 ',' (44) 65 70 95
@@ -176,7 +176,7 @@ $end (0) 0
 '{' (123) 72 75 78
 '}' (125) 72 75 78 79 80
 error (256) 6 66 79 80
-ID (258) 47 48 49 51 53 61 81 93 95
+ID (258) 47 48 49 51 53 61 82 93 95
 NUMBER (259) 87
 STRING (260) 88
 BREAK (261) 11
@@ -193,7 +193,7 @@ MINUSMINUS (271) 38 39
 LOCAL (272) 48
 SCOPEOP (273) 49
 DOUPLEDOT (274) 61
-FUNCTION (275) 83
+FUNCTION (275) 84
 NIL (276) 89
 TRUE (277) 90
 FALSE (278) 91
@@ -255,7 +255,7 @@ more (69)
 indexedelem (70)
     on left: 72, on right: 69 70
 block (71)
-    on left: 75 78 79 80, on right: 15 85
+    on left: 75 78 79 80, on right: 15 86
 $@3 (72)
     on left: 73, on right: 75
 $@4 (73)
@@ -264,20 +264,20 @@ $@5 (74)
     on left: 76, on right: 78
 $@6 (75)
     on left: 77, on right: 78
-funcname (76)
-    on left: 81 82, on right: 83
-funcprefix (77)
-    on left: 83, on right: 86
-funcargs (78)
-    on left: 84, on right: 86
-funcbody (79)
-    on left: 85, on right: 86
-funcdef (80)
-    on left: 86, on right: 16 45 57
+funcdef (76)
+    on left: 81, on right: 16 45 57
+funcname (77)
+    on left: 82 83, on right: 84
+funcprefix (78)
+    on left: 84, on right: 81
+funcargs (79)
+    on left: 85, on right: 81
+funcbody (80)
+    on left: 86, on right: 81
 const (81)
     on left: 87 88 89 90 91, on right: 46
 idlist (82)
-    on left: 92 93, on right: 84
+    on left: 92 93, on right: 85
 idlist1 (83)
     on left: 94 95, on right: 93 95
 ifstmt (84)
@@ -334,8 +334,8 @@ State 0
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39
@@ -452,11 +452,11 @@ State 10
 
 State 11
 
-   83 funcprefix: FUNCTION . funcname
+   84 funcprefix: FUNCTION . funcname
 
     ID  shift, and go to state 51
 
-    $default  reduce using rule 82 (funcname)
+    $default  reduce using rule 83 (funcname)
 
     funcname  go to state 52
 
@@ -632,8 +632,8 @@ State 21
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
     funcdef     go to state 65
+    funcprefix  go to state 36
     const       go to state 37
 
 
@@ -692,8 +692,8 @@ State 24
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39
@@ -829,18 +829,18 @@ State 34
 
 State 35
 
-   86 funcdef: funcprefix . funcargs funcbody
+   16 stmt: funcdef .
 
-    '('  shift, and go to state 99
-
-    funcargs  go to state 100
+    $default  reduce using rule 16 (stmt)
 
 
 State 36
 
-   16 stmt: funcdef .
+   81 funcdef: funcprefix . funcargs funcbody
 
-    $default  reduce using rule 16 (stmt)
+    '('  shift, and go to state 99
+
+    funcargs  go to state 100
 
 
 State 37
@@ -918,8 +918,8 @@ State 45
 
     FUNCTION  shift, and go to state 11
 
-    funcprefix  go to state 35
     funcdef     go to state 101
+    funcprefix  go to state 36
 
 
 State 46
@@ -987,16 +987,16 @@ State 50
 
 State 51
 
-   81 funcname: ID .
+   82 funcname: ID .
 
-    $default  reduce using rule 81 (funcname)
+    $default  reduce using rule 82 (funcname)
 
 
 State 52
 
-   83 funcprefix: FUNCTION funcname .
+   84 funcprefix: FUNCTION funcname .
 
-    $default  reduce using rule 83 (funcprefix)
+    $default  reduce using rule 84 (funcprefix)
 
 
 State 53
@@ -1344,8 +1344,8 @@ State 68
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39
@@ -1992,7 +1992,7 @@ State 98
 
 State 99
 
-   84 funcargs: '(' . idlist ')'
+   85 funcargs: '(' . idlist ')'
 
     ID  shift, and go to state 143
 
@@ -2003,7 +2003,7 @@ State 99
 
 State 100
 
-   86 funcdef: funcprefix funcargs . funcbody
+   81 funcdef: funcprefix funcargs . funcbody
 
     error  shift, and go to state 68
     '{'    shift, and go to state 69
@@ -2294,8 +2294,8 @@ State 117
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39
@@ -2343,8 +2343,8 @@ State 118
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39
@@ -2884,23 +2884,23 @@ State 143
 
 State 144
 
-   84 funcargs: '(' idlist . ')'
+   85 funcargs: '(' idlist . ')'
 
     ')'  shift, and go to state 166
 
 
 State 145
 
-   85 funcbody: block .
+   86 funcbody: block .
 
-    $default  reduce using rule 85 (funcbody)
+    $default  reduce using rule 86 (funcbody)
 
 
 State 146
 
-   86 funcdef: funcprefix funcargs funcbody .
+   81 funcdef: funcprefix funcargs funcbody .
 
-    $default  reduce using rule 86 (funcdef)
+    $default  reduce using rule 81 (funcdef)
 
 
 State 147
@@ -2949,8 +2949,8 @@ State 148
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39
@@ -2997,8 +2997,8 @@ State 149
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39
@@ -3238,8 +3238,8 @@ State 157
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39
@@ -3333,9 +3333,9 @@ State 165
 
 State 166
 
-   84 funcargs: '(' idlist ')' .
+   85 funcargs: '(' idlist ')' .
 
-    $default  reduce using rule 84 (funcargs)
+    $default  reduce using rule 85 (funcargs)
 
 
 State 167
@@ -3524,8 +3524,8 @@ State 179
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39
@@ -3661,8 +3661,8 @@ State 189
     member      go to state 32
     call        go to state 33
     objectdef   go to state 34
-    funcprefix  go to state 35
-    funcdef     go to state 36
+    funcdef     go to state 35
+    funcprefix  go to state 36
     const       go to state 37
     ifstmt      go to state 38
     whilestmt   go to state 39

@@ -46,7 +46,7 @@
 %type <exprPtr> funcprefix
 %type <exprPtr> funcdef
 
-//%type<ptr> expr
+
 
 %right '='
 %left OR
@@ -322,17 +322,31 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
              |error '}'
 			;	
 
-funcname: 	ID 									{
+funcdef:	funcprefix funcargs funcbody 		{
+													std::cout<<"funcdef___\n";
+													scopeSpaceCounter--; 
+													scopeAccessStack.pop();
+													getFunctionOffset(2);			
+													deleteOffset();	
+													($$)=($1);				
+													emit(funcend_iopcode,NULL,NULL,(expr *)($1),0,yylineno);	
+												}
+			;
 
+
+
+funcname: 	ID 									{
+													std::cout<<"funcname___\n";
 													($$)=(void *)actionFuncdefID($1);
 												}
 			|/*empty*/							{
+													std::cout<<"anonymus func___\n";
 													($$)=(void *)actionFuncdefAnon();
 												}
 			;
 
 funcprefix:	FUNCTION funcname					{
-													
+													std::cout<<"func prefix___\n";
 													unsigned label=nextquadLabel();
 													/*TODO:check function address*/
 													expr* result_e=newexpr(programfunc_e);
@@ -346,6 +360,7 @@ funcprefix:	FUNCTION funcname					{
 			;
 
 funcargs:	'(' idlist ')'						{
+													std::cout<<"funcargs___\n";
 													scopeSpaceCounter++;
 													//to reset ginetai apo prin stin newOffset
 													current_scope--; 
@@ -354,33 +369,10 @@ funcargs:	'(' idlist ')'						{
 			;
 
 funcbody:	block								{
-													
-													scopeAccessStack.pop();
+													std::cout<<"funcbody___\n";
 													scopeSpaceCounter--; 
 												}
 			;
-
-funcdef:	funcprefix funcargs funcbody 		{
-													scopeSpaceCounter--; 
-													getFunctionOffset(2);			
-													deleteOffset();	
-													($$)=($1);				
-													emit(funcend_iopcode,NULL,NULL,(expr *)($1),0,yylineno);	
-												}
-			;
-
-
-/*funcdef:	FUNCTION ID  	
-												{
-													actionFuncdefID($2);
-													
-												} '('{current_scope++; scopeSpaceCounter++; newOffset();} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++;} block {scopeAccessStack.pop();  scopeSpaceCounter-= 2; deleteOffset();}
-			| FUNCTION 
-												{
-													actionFuncdefAnon();
-													
-												} '('{current_scope++; scopeSpaceCounter++; newOffset();} idlist ')' {current_scope--; scopeAccessStack.push(true); scopeSpaceCounter++; } block {scopeAccessStack.pop(); scopeSpaceCounter-= 2; deleteOffset();}
-			;		*/
 
 const:		NUMBER 								{
 													expr* temp_expr = newexpr(costnum_e);
