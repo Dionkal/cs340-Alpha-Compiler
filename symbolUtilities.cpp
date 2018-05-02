@@ -12,7 +12,8 @@ unsigned int programVarOffset = 0;
 std::stack<offset> offsetStack;
 
 /*Returns the name of the next hidden variable */
-std::string newtempname(){ return "_t" + std::to_string(tempVariableCounter++); }
+std::string newtempname(){ 
+	return "_t" + std::to_string(tempVariableCounter++); }
 
 /*Returns the entry of the symTable that corresponds to the current variable, if no variable with that
 name exists then it creates a new one and inserts it into the symTable*/
@@ -85,4 +86,13 @@ void incrementScopeOffset(){
 		default: 
 			std::cout << "ERROR: In incrementScopeOffset, unknown scopespace" <<std::endl;
 	}	
+}
+
+unsigned getFunctionOffset(unsigned mode){
+	if(mode % 2 ==0){
+		return offsetStack.top().functionLocalOffset;	
+	}else{
+		return offsetStack.top().formalArgOffset;
+	}
+		
 }

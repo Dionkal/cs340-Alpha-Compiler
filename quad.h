@@ -78,3 +78,5 @@ void printQuads();
 
 /*creates a new expr*/
 expr *newexpr(expr_t e);
+
+unsigned nextquadLabel(void);
