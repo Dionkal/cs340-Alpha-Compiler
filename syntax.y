@@ -223,13 +223,13 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 			;
 
 assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
-											expr *lvt=($1),*exprt=($3),*result;
+											expr *lvt= (void*) ($1),*exprt= (void*) ($3),*result;
 											if( $1 != NULL &&( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<((expr*)$3)->sym->name 
 														  <<" as left value of assignment at line " <<yylineno 
 														  << "\033[00m" << std::endl;		
 											}else{
-												if(lvt->type=tableitem_e){
+												if(lvt->type==tableitem_e){
 													emit(tablesetelem_iopcode,lvt,lvt->index,exprt,0,yylineno);													
 													result=emit_iftableitem(lvt);
 													result->type=assignexpr_e;//needs firther understandin

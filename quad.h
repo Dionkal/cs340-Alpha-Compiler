@@ -32,7 +32,7 @@ typedef enum iopcode{
 	tablecreate_iopcode,
 	tablegetelem_iopcode,
 	tablesetelem_iopcode
-iopcode;
+}iopcode;
 
 /*Enumerator that defines all the differnet types of expressions*/
 typedef enum expr_t{
