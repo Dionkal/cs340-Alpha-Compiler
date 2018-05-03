@@ -7,6 +7,8 @@
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
 
+
+
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
 	
 	/*Create new quad*/
