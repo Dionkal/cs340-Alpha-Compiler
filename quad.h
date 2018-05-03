@@ -88,6 +88,8 @@ expr *newexpr(expr_t e);
 
 unsigned nextquadLabel(void);
 
+expr *member_item(expr *,std::string);
+
 /*Checks if the given expression is a valid arithmetic one
  returns: true for valid / false for invalid*/
 bool isValidArithexpr(expr* e);

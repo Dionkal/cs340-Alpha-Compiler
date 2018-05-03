@@ -45,7 +45,7 @@
 %type <sym>		funcname
 %type <exprPtr> funcprefix
 %type <exprPtr> funcdef
-
+%type <exprPtr> member
 
 
 %right '='
@@ -202,28 +202,38 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 										}
 			|primary 					{
 											printf("term:primary in line:%d\n",yylineno);
-											($$) = ($1);
-
 										}
 			;
 
-assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
+assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
+											expr *lvt= (void*) ($1),*exprt= (void*) ($3),*result;
 											if( $1 != NULL &&( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<((expr*)$3)->sym->name 
 														  <<" as left value of assignment at line " <<yylineno 
 														  << "\033[00m" << std::endl;		
 											}else{
-												expr* result_e = newexpr(var_e);
-												result_e->sym = newtemp();
-												emit(assign_iopcode,(expr*) $3,NULL,(expr*) $1,0,yylineno);
-												emit(assign_iopcode,(expr*) $1,NULL, result_e,0,yylineno);
-												($$) = (void*) result_e;
+												if(lvt->type==tableitem_e){
+													emit(tablesetelem_iopcode,lvt,lvt->index,exprt,0,yylineno);													
+													result=emit_iftableitem(lvt);
+													result->type=assignexpr_e;//needs firther understandin
+													($$)=(void *)result;
+												}else{
+													emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
+													expr* result_e = newexpr(var_e);
+													result_e->sym = newtemp();
+													emit(assign_iopcode,(expr*) $1,NULL, result_e,0,yylineno);
+													($$) = (void*) result_e;
+												}
 											}
 											
 										}
 			;
 
-primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: lvalue in line:%d\n",yylineno);}
+primary:	lvalue 						{
+											printf("primary: lvalue in line:%d\n",yylineno);
+											($$) = emit_iftableitem($1);
+
+										}
 			|call 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: call in line:%d\n",yylineno);}
 			|objectdef 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
 			|'(' funcdef ')'            {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: (funcdef) in line:%d\n",yylineno);}
@@ -250,13 +260,30 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 											temp_expr->sym = actionGlobalID($2);	
 											($$) = temp_expr;
 										}
-			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
+			|member 					{
+											printf("lvalue: member in line:%d\n",yylineno);
+
+										}
 			;
 
-member:		lvalue '.' ID 				{printf("member: lvalue.ID in line:%d\n",yylineno);}
-			|lvalue '[' expr ']' 		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: lvalue [expr] in line:%d\n",yylineno);}
-			|call '.' ID 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call.ID in line:%d\n",yylineno);}
-			|call '[' expr ']' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call [expr] in line:%d\n",yylineno);}
+member:		lvalue '.' ID 				{	expr *temp;
+											symTableEntry *sym;//gia to id.name
+											temp=member_item(($1),sym->name);//id.name kai kala
+											($$)=(void *)temp;
+											//printf("member: lvalue.ID in line:%d\n",yylineno);
+
+										}
+			|lvalue '[' expr ']' 		{ //printf("member: lvalue [expr] in line:%d\n",yylineno);
+											expr *lvtemp=($1),*tbltemp=($$);									
+											lvtemp=emit_iftableitem(lvtemp);
+											tbltemp=newexpr(tableitem_e);
+											tbltemp->sym=(void *)lvtemp->sym;
+											tbltemp->index=(void *)($3);
+											($$)=(void *)tbltemp;//hmm
+
+										}
+			|call '.' ID 				{printf("member: call.ID in line:%d\n",yylineno);}
+			|call '[' expr ']' 			{printf("member: call [expr] in line:%d\n",yylineno);}
 			;
 
 call: 		call '(' elist ')' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: (elist) in line:%d\n",yylineno);}
