@@ -336,21 +336,26 @@ methodcall:	DOUPLEDOT ID '(' elist ')'  {
 elist:		/*empty*/					{
 											printf("elist: empty list in line:%d\n",yylineno);
 										}
-			|expr elist1 				{
+			|expr elist1 				{	expr *list;
 											printf("elist: expr elist1 list in line:%d\n",yylineno);
-											($$)=($1);
+											list=($1);
+											list->next=($2);
+											($$)=(void *)list;
 										}
 			;
 
 elist1:		/*empty*/							{
 													printf("elist1: empty list in line:%d\n",yylineno);
+													($$)=NULL;
 												}
-			|','expr elist1 					{
+			|','expr elist1 					{	
+													expr *list;
 													printf("elist1: ,expr elist1 in line:%d\n",yylineno);
-													elist_vctr_add(($2));
-													($$)=($2);
+													list=($2);
+													list->next=($3);
+													($$)=(void *)list;
 												}
-			|error expr elist1					{
+			|error expr elist1					{	//i dont know here
 													($$)=($2);
 												}
 			;
