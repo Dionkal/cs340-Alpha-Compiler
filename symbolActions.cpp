@@ -135,3 +135,14 @@ expr *emit_iftableitem(expr *e){
 		return result;
 	}
 }
+
+expr *make_call(expr *lvalue,expr* elist){
+	expr *func=emit_iftableitem(lvalue);
+
+	//diatreksi autis tis listas:exei to elist
+	for(std::vector<expr *>::iterator it = vctr_elist.begin() ; it != vctr_elist.end(); ++it){
+		emit(param_iopcode,NULL,NULL,it,0,yylineno);
+		//needs filling
+	}
+	
+}

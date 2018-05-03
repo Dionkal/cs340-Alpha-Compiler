@@ -89,3 +89,5 @@ expr *newexpr(expr_t e);
 unsigned nextquadLabel(void);
 
 expr *member_item(expr *,std::string);
+
+void elist_vctr_add(expr *e);

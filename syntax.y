@@ -50,6 +50,8 @@
 %type <calls>	methodcall
 %type <calls>   normcall
 %type <calls>   callsuffix
+%type <exprPtr> elist
+%type <exprPtr> elist1
 
 
 %right '='
@@ -255,9 +257,11 @@ primary:	lvalue 						{
 											($$) = emit_iftableitem($1);
 
 										}
-			|call 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: call in line:%d\n",yylineno);}
+			|call 						{
+											printf("primary: call in line:%d\n",yylineno);
+										}
 			|objectdef 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
-			|'(' funcdef ')'            {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: (funcdef) in line:%d\n",yylineno);}
+			|'(' funcdef ')'            {printf("primary: (funcdef) in line:%d\n",yylineno);}
 			|const 						{ 
 											 printf("primary: const in line:%d\n",yylineno);
 											 ($$) = ($1);
@@ -319,23 +323,36 @@ callsuffix:	normcall					{k++; printf("time:%d___ ,token: %s____>",k,yytext); pr
 normcall:   '(' elist ')'				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);}
 			;
 
-methodcall:	DOUPLEDOT ID '(' elist ')'  {
-											//printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
+methodcall:	DOUPLEDOT ID '(' elist ')'  {	
 											calls *methodtemp;
-											methodtemp->elist=($4);
+											printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
+											mthodtemp->elist=($4);
 											methodtemp->method=true_t;
 											methodtemp->name=($2);
 											($$)=(void *)methodtemp;
 										}
 			;
 
-elist:		/*empty*/					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist: empty list in line:%d\n",yylineno);}
-			|expr elist1 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist: expr elist1 list in line:%d\n",yylineno);}
+elist:		/*empty*/					{
+											printf("elist: empty list in line:%d\n",yylineno);
+										}
+			|expr elist1 				{
+											printf("elist: expr elist1 list in line:%d\n",yylineno);
+											($$)=($1);
+										}
 			;
 
-elist1:		/*empty*/							{printf("elist1: empty list in line:%d\n",yylineno);}
-			|','expr elist1 					{printf("elist1: ,expr elist1 in line:%d\n",yylineno);}
-			|error expr elist1
+elist1:		/*empty*/							{
+													printf("elist1: empty list in line:%d\n",yylineno);
+												}
+			|','expr elist1 					{
+													printf("elist1: ,expr elist1 in line:%d\n",yylineno);
+													elist_vctr_add(($2));
+													($$)=($2);
+												}
+			|error expr elist1					{
+													($$)=($2);
+												}
 			;
 
 objectdef:	'[' elist ']' 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [elist] in line:%d\n",yylineno);}

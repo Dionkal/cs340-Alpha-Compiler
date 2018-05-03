@@ -7,6 +7,13 @@
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
 
+/*vector for elist elements*/
+std::vector <expr *> vctr_elist;
+
+void elist_vctr_add(expr *e){
+	vctr_elist.push_back(e);
+}
+
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
 	
 	/*Create new quad*/

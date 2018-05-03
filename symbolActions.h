@@ -17,3 +17,6 @@ expr *member_item(expr * e,std::string id);
 expr *newxpr_constrstring(std::string s);
 
 expr *emit_iftableitem(expr *e);
+
+//ioanna
+expr *make_call(expr *lvalue,expr* elist);
