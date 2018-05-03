@@ -1,12 +1,1 @@
-global =3 + x;
-
-function tsalimakia(x){	
-	a = 5 + ::global;
-	b = 6 - local global;
-	function foo(y){
-		z1 = temp1 / 2;
-		z2 = temp2 * 3;
-		z3 = temp3 % 4;
-		z4 = z1*(z2 -z3);
-	}
-}
+t["b"] = 5;

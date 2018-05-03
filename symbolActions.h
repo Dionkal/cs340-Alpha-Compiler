@@ -1,3 +1,7 @@
+#ifndef SYMBOL_ACTIONS_LIB
+#define SYMBOL_ACTIONS_LIB
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stack>
@@ -11,9 +15,4 @@ symTableEntry* actionLocalID(std::string id);
 
 symTableEntry* actionGlobalID(std::string id);
 
-//eriona ioanna
-expr *member_item(expr * e,std::string id);
-
-expr *newxpr_constrstring(std::string s);
-
-expr *emit_iftableitem(expr *e);
+#endif

@@ -102,36 +102,3 @@ symTableEntry* actionFuncdefAnon(){
 	insertSym(anonFunc,USER_FUNC,current_scope,yylineno);
 	return lookupSym(anonFunc, current_scope);
 }
-
-//eriona ioanna
-
-expr *member_item(expr *e,std::string id){
-	expr *item;
-	e=emit_iftableitem(e);
-	item=newepxr(tableitem_e);
-	item->sym=e->sym;
-	item->index=newexpr_conststring(id);
-
-	return item;
-}
-
-expr *newxpr_constrstring(std::string s){
-	expr *e=newepxr(conststring_e);
-	e->strConst=strdup(s);//TODO: replace strdup with c++ func
-	return e;
-}
-
-expr *emit_iftableitem(expr *e){
-	expr *result;
-
-	if(e->type!=tableitem_e){
-		return e;
-	}
-	else{
-		result=newepxr(var_e);//needs understanidn before valsamakis
-		result->sym=newtemp();
-		emit(tablegetelem_iopcode,e,e->index,result,0,yylineno);//label=0 fort he time being
-		//e->index needs underastnid:: is it q.a?
-		return result;
-	}
-}

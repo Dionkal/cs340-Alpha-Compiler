@@ -7,6 +7,7 @@
 	#include "symbolUtilities.h"
 	#include <iostream>
 	#include <sstream>
+	#include <assert.h>
 
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
@@ -202,18 +203,22 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 										}
 			|primary 					{
 											printf("term:primary in line:%d\n",yylineno);
+											$$ = $1;
 										}
 			;
 
 assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
-											expr *lvt= (void*) ($1),*exprt= (void*) ($3),*result;
-											if( $1 != NULL &&( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
+											assert($1); /*check for null ptr*/ 
+
+											if( (((expr*)$1)->sym != NULL) && ( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<((expr*)$3)->sym->name 
 														  <<" as left value of assignment at line " <<yylineno 
 														  << "\033[00m" << std::endl;		
 											}else{
+												expr *lvt= (expr*) ($1),*exprt= (expr*) ($3),*result;
+
 												if(lvt->type==tableitem_e){
-													emit(tablesetelem_iopcode,lvt,lvt->index,exprt,0,yylineno);													
+													emit(tablesetelem_iopcode,lvt->index,exprt,lvt,0,yylineno);													
 													result=emit_iftableitem(lvt);
 													result->type=assignexpr_e;//needs firther understandin
 													($$)=(void *)result;
@@ -231,7 +236,8 @@ assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",y
 
 primary:	lvalue 						{
 											printf("primary: lvalue in line:%d\n",yylineno);
-											($$) = emit_iftableitem($1);
+											($$) =  emit_iftableitem((expr*) $1);
+											printExpr((expr*) $$);
 
 										}
 			|call 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: call in line:%d\n",yylineno);}
@@ -262,25 +268,19 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										}
 			|member 					{
 											printf("lvalue: member in line:%d\n",yylineno);
-
+											$$ = $1;
 										}
 			;
 
-member:		lvalue '.' ID 				{	expr *temp;
-											symTableEntry *sym;//gia to id.name
-											temp=member_item(($1),sym->name);//id.name kai kala
-											($$)=(void *)temp;
+member:		lvalue '.' ID 				{	
 											//printf("member: lvalue.ID in line:%d\n",yylineno);
-
+											$$ = member_item((expr*) $1, $3);
 										}
 			|lvalue '[' expr ']' 		{ //printf("member: lvalue [expr] in line:%d\n",yylineno);
-											expr *lvtemp=($1),*tbltemp=($$);									
-											lvtemp=emit_iftableitem(lvtemp);
-											tbltemp=newexpr(tableitem_e);
-											tbltemp->sym=(void *)lvtemp->sym;
-											tbltemp->index=(void *)($3);
-											($$)=(void *)tbltemp;//hmm
-
+											$1 = emit_iftableitem((expr*) $1);
+											$$ = newexpr(tableitem_e);
+											((expr*)$$)->sym = ((expr*)$1)->sym;
+											((expr*)$$)->index = (expr*) $3;
 										}
 			|call '.' ID 				{printf("member: call.ID in line:%d\n",yylineno);}
 			|call '[' expr ']' 			{printf("member: call [expr] in line:%d\n",yylineno);}
