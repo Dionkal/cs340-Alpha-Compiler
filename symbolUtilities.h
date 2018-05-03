@@ -1,7 +1,7 @@
-#ifndef SYMTABLE_LIB
-	#define SYMTABLE_LIB
+#ifndef SYMTABLE_UTILITIES_LIB	
+	#define SYMTABLE_UTILITIES_LIB
+	#include <string>
 	#include "symtable.h"
-#endif
 
 std::string newtempname();
 
@@ -34,3 +34,5 @@ void incrementScopeOffset();
 on user input, odds for function local offset
 even for function formal offset*/
 unsigned getFunctionOffset(unsigned mode);
+
+#endif

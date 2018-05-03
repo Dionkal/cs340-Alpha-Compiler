@@ -1,7 +1,6 @@
-#ifndef SYMTABLE_LIB
-	#define SYMTABLE_LIB
+#ifndef QUAD_LIB	
+	#define QUAD_LIB
 	#include "symtable.h"
-#endif
 
 typedef enum bool_t{
 	false_t,true_t
@@ -37,9 +36,9 @@ typedef enum iopcode{
 /*Enumerator that defines all the differnet types of expressions*/
 typedef enum expr_t{
 	var_e, 
-	tableitem_e,
-	programfunc_e,
-	libraryfunc_e,
+	tableitem_e,		
+	programfunc_e,		
+	libraryfunc_e,		
 	arithexpr_e,
 	boolexpr_e,
 	assignexpr_e,
@@ -73,6 +72,14 @@ typedef struct quad{
 /*Creates a new quad and initializes it with the arguments. Then it stores it in the vector*/
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno);
 
+/*Creates a new quad for arithmetic expressions*/
+expr* emit_arithexpr(iopcode opCode,expr *_arg1,expr *_arg2,int yylineno);
+
+void printSymbol(symTableEntry* sym);
+
+/*Prints the given expression*/
+void printExpr(expr* e);
+
 /*Prints all the recognized quads from the vector*/
 void printQuads();
 
@@ -80,3 +87,9 @@ void printQuads();
 expr *newexpr(expr_t e);
 
 unsigned nextquadLabel(void);
+
+/*Checks if the given expression is a valid arithmetic one
+ returns: true for valid / false for invalid*/
+bool isValidArithexpr(expr* e);
+
+#endif

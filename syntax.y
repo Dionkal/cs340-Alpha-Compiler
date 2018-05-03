@@ -89,45 +89,28 @@ expr:		assignexpr 					{
 										}
 			|expr '+' expr 				{	
 											printf("expr:expr + expr in line:%d\n",yylineno);
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(add_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
-
+											
+											$$ = (void*) emit_arithexpr(add_iopcode,(expr*)$1,(expr*) $3,yylineno);
 										}
 			|expr '-' expr 				{
-											printf("lexpr:expr - expr in line:%d\n",yylineno);											
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(sub_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											printf("lexpr:expr - expr in line:%d\n",yylineno);
 
+											$$ = (void*) emit_arithexpr(sub_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '*' expr 				{
-											printf("expr:expr * expr in line:%d\n",yylineno);											
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(mul_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											printf("expr:expr * expr in line:%d\n",yylineno);
+
+											$$ = (void*) emit_arithexpr(mul_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '/' expr 				{
 											printf("expr:expr / expr in line:%d\n",yylineno);										
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(div_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											
+											$$ = (void*) emit_arithexpr(div_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '%' expr 				{
 											printf("expr:expr mod expr in line:%d\n",yylineno);										
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(mod_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											
+											$$ = (void*) emit_arithexpr(mod_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '>' expr 				{	
 											printf("expr:expr > expr in line:%d\n",yylineno);										
@@ -230,9 +213,9 @@ assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yyl
 														  <<" as left value of assignment at line " <<yylineno 
 														  << "\033[00m" << std::endl;		
 											}else{
-												emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
 												expr* result_e = newexpr(var_e);
 												result_e->sym = newtemp();
+												emit(assign_iopcode,(expr*) $3,NULL,(expr*) $1,0,yylineno);
 												emit(assign_iopcode,(expr*) $1,NULL, result_e,0,yylineno);
 												($$) = (void*) result_e;
 											}
@@ -330,6 +313,7 @@ funcdef:	funcprefix funcargs funcbody 		{
 													deleteOffset();	
 													($$)=($1);				
 													emit(funcend_iopcode,NULL,NULL,(expr *)($1),0,yylineno);	
+													/*TODO: backpatch the incomplete jump quad before*/									
 												}
 			;
 
@@ -347,11 +331,11 @@ funcname: 	ID 									{
 
 funcprefix:	FUNCTION funcname					{
 													std::cout<<"func prefix___\n";
-													unsigned label=nextquadLabel();
 													/*TODO:check function address*/
+													/*TODO: emit an icomplete jump quad to the the next quad of the funcend*/
 													expr* result_e=newexpr(programfunc_e);
 													result_e->sym=(symTableEntry *)($2);
-													emit(funcstart_iopcode,NULL,NULL,result_e,label,yylineno);
+													emit(funcstart_iopcode,NULL,NULL,result_e,0,yylineno);
 													scopeSpaceCounter++; //this means enterScopeSpace
 													newOffset();
 													current_scope++; 
