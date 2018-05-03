@@ -335,8 +335,10 @@ methodcall:	DOUPLEDOT ID '(' elist ')'  {
 
 elist:		/*empty*/					{
 											printf("elist: empty list in line:%d\n",yylineno);
+											($$)=NULL;
 										}
 			|expr elist1 				{	expr *list;
+											//malloc
 											printf("elist: expr elist1 list in line:%d\n",yylineno);
 											list=($1);
 											list->next=($2);

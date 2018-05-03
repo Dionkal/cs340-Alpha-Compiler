@@ -135,14 +135,23 @@ expr *emit_iftableitem(expr *e){
 		return result;
 	}
 }
-
+//den ksero an prepei na apothikeuontai oles oi listes kapou alla s auti tin sinartisi den mas noiazei
 expr *make_call(expr *lvalue,expr* elist){
-	expr *func=emit_iftableitem(lvalue);
+
+	expr *func,*lnext,result;
+	func=emit_iftableitem(lvalue);
+	lnext=elist->next;
 
 	//diatreksi autis tis listas:exei to elist
-	for(std::vector<expr *>::iterator it = vctr_elist.begin() ; it != vctr_elist.end(); ++it){
-		emit(param_iopcode,NULL,NULL,it,0,yylineno);
-		//needs filling
+	while(lnext!=NULL){
+		emit(param_iopcode,NULL,NULL,lnext,0,yylineno);
+		lnext=lnext->next;
 	}
-	
+	emit(call_iopcode,NULL,NULL,func,0,yylineno);
+
+	result=newepxr(var_e);
+	result->sym=newtemp();
+	emit(getretval_iopcode,NULL,NULL,result);
+
+	return result;	
 }
