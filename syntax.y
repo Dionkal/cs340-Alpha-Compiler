@@ -213,9 +213,9 @@ assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yyl
 														  <<" as left value of assignment at line " <<yylineno 
 														  << "\033[00m" << std::endl;		
 											}else{
-												emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
 												expr* result_e = newexpr(var_e);
 												result_e->sym = newtemp();
+												emit(assign_iopcode,(expr*) $3,NULL,(expr*) $1,0,yylineno);
 												emit(assign_iopcode,(expr*) $1,NULL, result_e,0,yylineno);
 												($$) = (void*) result_e;
 											}
@@ -313,6 +313,7 @@ funcdef:	funcprefix funcargs funcbody 		{
 													deleteOffset();	
 													($$)=($1);				
 													emit(funcend_iopcode,NULL,NULL,(expr *)($1),0,yylineno);	
+													/*TODO: backpatch the incomplete jump quad before*/									
 												}
 			;
 
@@ -330,11 +331,11 @@ funcname: 	ID 									{
 
 funcprefix:	FUNCTION funcname					{
 													std::cout<<"func prefix___\n";
-													unsigned label=nextquadLabel();
 													/*TODO:check function address*/
+													/*TODO: emit an icomplete jump quad to the the next quad of the funcend*/
 													expr* result_e=newexpr(programfunc_e);
 													result_e->sym=(symTableEntry *)($2);
-													emit(funcstart_iopcode,NULL,NULL,result_e,label,yylineno);
+													emit(funcstart_iopcode,NULL,NULL,result_e,0,yylineno);
 													scopeSpaceCounter++; //this means enterScopeSpace
 													newOffset();
 													current_scope++; 

@@ -97,7 +97,7 @@ void printExpr(expr* e){
 
 /*Prints all the quads in the vector*/
 void printQuads(){
-	int count = 0;		
+	int count = 1;		
 	for (std::vector<quad>::const_iterator i = vctr_quads.begin(); i != vctr_quads.end(); ++i){
 		std::cout <<"#" <<"Quad " <<count++ <<": " <<std::endl;
 		std::cout <<"\tiopcode: " << iopcodeToString(i->op) << "\n";
