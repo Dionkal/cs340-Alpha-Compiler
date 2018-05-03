@@ -29,6 +29,7 @@
 	float floatValue;
 	void* exprPtr;
 	void* sym;
+	void* calls;
 }
 
 %token <stringValue> ID 
@@ -46,6 +47,9 @@
 %type <exprPtr> funcprefix
 %type <exprPtr> funcdef
 %type <exprPtr> member
+%type <calls>	methodcall
+%type <calls>   normcall
+%type <calls>   callsuffix
 
 
 %right '='
@@ -315,7 +319,14 @@ callsuffix:	normcall					{k++; printf("time:%d___ ,token: %s____>",k,yytext); pr
 normcall:   '(' elist ')'				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);}
 			;
 
-methodcall:	DOUPLEDOT ID '(' elist ')'  {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);}
+methodcall:	DOUPLEDOT ID '(' elist ')'  {
+											//printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
+											calls *methodtemp;
+											methodtemp->elist=($4);
+											methodtemp->method=true_t;
+											methodtemp->name=($2);
+											($$)=(void *)methodtemp;
+										}
 			;
 
 elist:		/*empty*/					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist: empty list in line:%d\n",yylineno);}
