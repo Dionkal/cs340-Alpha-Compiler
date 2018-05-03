@@ -110,7 +110,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 27 "syntax.y" /* yacc.c:1909  */
+#line 28 "syntax.y" /* yacc.c:1909  */
 
 	char* stringValue;
 	float floatValue;

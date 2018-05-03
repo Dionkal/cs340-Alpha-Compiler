@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+extern int yylineno;
+
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
 
@@ -44,19 +46,21 @@ expr* emit_arithexpr(iopcode opCode,expr *_arg1,expr *_arg2,int yylineno){
 std::string iopcodeToString(iopcode op){
 	/*TODO: add cases for more opcodes*/
 	switch(op){
-		case assign_iopcode: 	return "ASSIGN_OPCODE";
-		case add_iopcode: 		return "ADD_IOPCODE";
-		case sub_iopcode:		return "SUB_IOPCODE"; 
-		case mul_iopcode:		return "MUL_IOPCODE";
-		case div_iopcode:		return "DIV_IOPCODE";
-		case mod_iopcode:		return "MOD_IOPCODE";
-		case funcstart_iopcode: return "FUNCSTART_IOPCODE";
-		case funcend_iopcode: 	return "FUNCEND_IOPCODE";
-		default: 				return "INVALID IOPCODE";
+		case assign_iopcode: 			return "ASSIGN_OPCODE";
+		case add_iopcode: 				return "ADD_IOPCODE";
+		case sub_iopcode:				return "SUB_IOPCODE"; 
+		case mul_iopcode:				return "MUL_IOPCODE";
+		case div_iopcode:				return "DIV_IOPCODE";
+		case mod_iopcode:				return "MOD_IOPCODE";
+		case funcstart_iopcode: 		return "FUNCSTART_IOPCODE";
+		case funcend_iopcode: 			return "FUNCEND_IOPCODE";
+		case tablegetelem_iopcode:		return "TABLEGETELEM_IOPCODE";
+		case tablesetelem_iopcode:		return "TABLESETELEM_IOPCODE";
+		default: 						return "INVALID IOPCODE";
 	}
 }
 
-std::string expr_tToString(expr_t e){
+std::string expr_ToString(expr_t e){
 	switch(e){
 		case var_e: 			return "var_e";
 		case tableitem_e: 		return "tableitem_e";
@@ -83,12 +87,12 @@ void printSymbol(symTableEntry* sym){
 
 /*Prints the given expression*/
 void printExpr(expr* e){
-	std::cout <<"\t\tType: " << expr_tToString(e->type) <<std::endl; 
+	std::cout <<"\t\tType: " << expr_ToString(e->type) <<std::endl; 
 	if (e->sym) {std::cout <<"\t\tSymbol: " <<std::endl; printSymbol(e->sym);}
 
 	/*TODO print index*/
 	if (e->numConst)std::cout <<"\t\tnumConst: " << e->numConst <<std::endl;
-	if (e->strConst)std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
+	if (!e->strConst.empty())std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
 	if (e->boolConst)std::cout <<"\t\tboolConst: " << e->boolConst <<std::endl;
 	/*TODO: print next*/
 
@@ -146,4 +150,35 @@ bool isValidArithexpr(expr* e){
 		return false;
 	} 
 	return true;
+}
+
+
+
+expr *member_item(expr *e,std::string id){
+	expr *item;
+	e = emit_iftableitem(e);
+	item = newexpr(tableitem_e);
+	item->sym = e->sym;
+	item->index = newxpr_conststring(id);
+
+	return item;
+}
+
+expr *newxpr_conststring(std::string s){
+	expr *e = newexpr(conststring_e);
+	e->strConst = s;
+	return e;
+}
+
+expr* emit_iftableitem(expr *e){
+
+	if(e->type!=tableitem_e){
+		return e;
+	}
+	else{
+		expr* result = newexpr(var_e);
+		result->sym = newtemp();
+		emit(tablegetelem_iopcode,e,e->index,result,0,yylineno);
+		return result;
+	}
 }

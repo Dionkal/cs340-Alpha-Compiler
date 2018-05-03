@@ -269,7 +269,8 @@ ANY				.
 				if(input== '\"'){
 					if(isLegal){
 					// addToken(STRING_TYPE, string("STRING_TYPE"), output, stringLine);
-						yylval.stringValue = strdup(yytext);
+						yylval.stringValue = (char*)(output.c_str());
+
 						return STRING;
 					}					 
 					break;		

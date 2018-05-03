@@ -7,6 +7,7 @@
 	#include "symbolUtilities.h"
 	#include <iostream>
 	#include <sstream>
+	#include <assert.h>
 
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
@@ -45,7 +46,7 @@
 %type <sym>		funcname
 %type <exprPtr> funcprefix
 %type <exprPtr> funcdef
-
+%type <exprPtr> member
 
 
 %right '='
@@ -202,28 +203,43 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 										}
 			|primary 					{
 											printf("term:primary in line:%d\n",yylineno);
-											($$) = ($1);
-
+											$$ = $1;
 										}
 			;
 
-assignexpr:	lvalue '=' expr 			{printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
-											if( $1 != NULL &&( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
+assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
+											assert($1); /*check for null ptr*/ 
+
+											if( (((expr*)$1)->sym != NULL) && ( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<((expr*)$3)->sym->name 
 														  <<" as left value of assignment at line " <<yylineno 
 														  << "\033[00m" << std::endl;		
 											}else{
-												expr* result_e = newexpr(var_e);
-												result_e->sym = newtemp();
-												emit(assign_iopcode,(expr*) $3,NULL,(expr*) $1,0,yylineno);
-												emit(assign_iopcode,(expr*) $1,NULL, result_e,0,yylineno);
-												($$) = (void*) result_e;
+												expr *lvt= (expr*) ($1),*exprt= (expr*) ($3),*result;
+
+												if(lvt->type==tableitem_e){
+													emit(tablesetelem_iopcode,lvt->index,exprt,lvt,0,yylineno);													
+													result=emit_iftableitem(lvt);
+													result->type=assignexpr_e;//needs firther understandin
+													($$)=(void *)result;
+												}else{
+													emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
+													expr* result_e = newexpr(var_e);
+													result_e->sym = newtemp();
+													emit(assign_iopcode,(expr*) $1,NULL, result_e,0,yylineno);
+													($$) = (void*) result_e;
+												}
 											}
 											
 										}
 			;
 
-primary:	lvalue 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: lvalue in line:%d\n",yylineno);}
+primary:	lvalue 						{
+											printf("primary: lvalue in line:%d\n",yylineno);
+											($$) =  emit_iftableitem((expr*) $1);
+											printExpr((expr*) $$);
+
+										}
 			|call 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: call in line:%d\n",yylineno);}
 			|objectdef 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
 			|'(' funcdef ')'            {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: (funcdef) in line:%d\n",yylineno);}
@@ -250,13 +266,24 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 											temp_expr->sym = actionGlobalID($2);	
 											($$) = temp_expr;
 										}
-			|member 					{printf("lvalue: member in line:%d\n",yylineno);}
+			|member 					{
+											printf("lvalue: member in line:%d\n",yylineno);
+											$$ = $1;
+										}
 			;
 
-member:		lvalue '.' ID 				{printf("member: lvalue.ID in line:%d\n",yylineno);}
-			|lvalue '[' expr ']' 		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: lvalue [expr] in line:%d\n",yylineno);}
-			|call '.' ID 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call.ID in line:%d\n",yylineno);}
-			|call '[' expr ']' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("member: call [expr] in line:%d\n",yylineno);}
+member:		lvalue '.' ID 				{	
+											//printf("member: lvalue.ID in line:%d\n",yylineno);
+											$$ = member_item((expr*) $1, $3);
+										}
+			|lvalue '[' expr ']' 		{ //printf("member: lvalue [expr] in line:%d\n",yylineno);
+											$1 = emit_iftableitem((expr*) $1);
+											$$ = newexpr(tableitem_e);
+											((expr*)$$)->sym = ((expr*)$1)->sym;
+											((expr*)$$)->index = (expr*) $3;
+										}
+			|call '.' ID 				{printf("member: call.ID in line:%d\n",yylineno);}
+			|call '[' expr ']' 			{printf("member: call [expr] in line:%d\n",yylineno);}
 			;
 
 call: 		call '(' elist ')' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: (elist) in line:%d\n",yylineno);}
