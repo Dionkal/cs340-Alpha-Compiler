@@ -2,6 +2,7 @@
 #include "symbolUtilities.h"
 #include <vector>
 #include <iostream>
+#include <stack>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -9,6 +10,8 @@ extern int yylineno;
 
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
+
+
 
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
 	
@@ -56,6 +59,10 @@ std::string iopcodeToString(iopcode op){
 		case funcend_iopcode: 			return "FUNCEND_IOPCODE";
 		case tablegetelem_iopcode:		return "TABLEGETELEM_IOPCODE";
 		case tablesetelem_iopcode:		return "TABLESETELEM_IOPCODE";
+		case tablecreate_iopcode:		return "TABLECREATE_IOPCODE";
+		case call_iopcode:				return "CALL_IOPCODE";
+		case param_iopcode:				return "PARAM_IOPCODE";
+		case getretval_iopcode:			return "GETRETVAL_IOPCODE";
 		default: 						return "INVALID IOPCODE";
 	}
 }
@@ -70,7 +77,7 @@ std::string expr_ToString(expr_t e){
 		case boolexpr_e:		return "boolexpr_e";
 		case assignexpr_e:		return "assignexpr_e";
 		case newtable_e:		return "newtable_e";
-		case costnum_e:			return "costnum_e";
+		case constnum_e:		return "costnum_e";
 		case constbool_e:		return "constbool_e";
 		case conststring_e:		return "conststring_e";
 		case nil_e:				return "nil_e";
@@ -181,4 +188,40 @@ expr* emit_iftableitem(expr *e){
 		emit(tablegetelem_iopcode,e,e->index,result,0,yylineno);
 		return result;
 	}
+}
+
+expr *make_call(expr *lvalue,expr* elist){
+  std::stack <expr *> callsElist;
+  expr *func,*lnext,*result;
+  func=emit_iftableitem(lvalue);
+ 
+  lnext=elist;
+
+  //diatreksi autis tis listas:exei to elist 
+  while(lnext!=NULL){
+    callsElist.push(lnext);
+    lnext=lnext->next;
+  }
+  while(!callsElist.empty()){
+  	emit(param_iopcode,NULL,NULL,callsElist.top(),0,yylineno);
+  	callsElist.pop();
+  }
+ 
+  emit(call_iopcode,NULL,NULL,func,0,yylineno);
+ 
+  result=newexpr(var_e);
+  result->sym=newtemp();
+  emit(getretval_iopcode,NULL,NULL,result,0,yylineno);
+ 
+ 
+  return result; 
+}
+
+
+/*Creates a new expression with constnum_e type 
+and fills the numConst field with the given value*/
+expr* newexpr_constnum(double i){
+	expr* e = newexpr(constnum_e);
+	e->numConst = i;
+	return e; 
 }
