@@ -52,6 +52,7 @@
 %type <calls>   callsuffix
 %type <exprPtr> elist
 %type <exprPtr> elist1
+%type <calls>   call
 
 
 %right '='
@@ -229,15 +230,16 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 			;
 
 assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
-											expr *lvt= (void*) ($1),*exprt= (void*) ($3),*result;
+											/*expr *lvt= ($1),*result,*exprt=($3);*/
 											if( $1 != NULL &&( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<((expr*)$3)->sym->name 
 														  <<" as left value of assignment at line " <<yylineno 
 														  << "\033[00m" << std::endl;		
 											}else{
-												if(lvt->type==tableitem_e){
-													emit(tablesetelem_iopcode,lvt,lvt->index,exprt,0,yylineno);													
-													result=emit_iftableitem(lvt);
+												expr *result;
+												if((void *)($1)->type==tableitem_e){
+													emit(tablesetelem_iopcode,($1),($1)->index,($3),0,yylineno);													
+													result=emit_iftableitem(($1));
 													result->type=assignexpr_e;//needs firther understandin
 													($$)=(void *)result;
 												}else{
@@ -311,9 +313,24 @@ member:		lvalue '.' ID 				{	expr *temp;
 			|call '[' expr ']' 			{printf("member: call [expr] in line:%d\n",yylineno);}
 			;
 
-call: 		call '(' elist ')' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: (elist) in line:%d\n",yylineno);}
-			|lvalue callsuffix			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: lvalue callsuffix in line:%d\n",yylineno);}
-			|'(' funcdef ')' '(' elist ')' {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: (func) (elist) in line:%d\n",yylineno);}
+call: 		call '(' elist ')' 			{
+											//calls *ctmp=($1);
+											printf("call: (elist) in line:%d\n",yylineno);
+											ctmp=make_call(($1),($3));
+											($$)=ctmp;
+										}
+			|lvalue callsuffix			{
+											printf("call: lvalue callsuffix in line:%d\n",yylineno);
+
+										}
+			|'(' funcdef ')' '(' elist ')' {	
+												expr *func;
+												printf("call: (func) (elist) in line:%d\n",yylineno);
+												func=newexpr(programfunc_e);
+												func->sym=($2);
+												($$)=make_call(func,($5));
+
+											}
 			;
 
 callsuffix:	normcall					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);}
