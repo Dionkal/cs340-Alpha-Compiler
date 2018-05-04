@@ -1,7 +1,7 @@
-#include "scanner.h"
-
-/*creates a new expr*/
-expr *newexpr(expr_t e);
+#ifndef QUAD_LIB	
+	#define QUAD_LIB
+	#include "symtable.h"
+	#include <string>
 
 typedef enum bool_t{
 	false_t,true_t
@@ -37,14 +37,14 @@ typedef enum iopcode{
 /*Enumerator that defines all the differnet types of expressions*/
 typedef enum expr_t{
 	var_e, 
-	tableitem_e,
-	programfunc_e,
-	libraryfunc_e,
+	tableitem_e,		
+	programfunc_e,		
+	libraryfunc_e,		
 	arithexpr_e,
 	boolexpr_e,
 	assignexpr_e,
 	newtable_e,
-	costnum_e,
+	constnum_e,
 	constbool_e,
 	conststring_e,
 	nil_e
@@ -56,7 +56,7 @@ typedef struct expr{
 	symTableEntry* 	sym;
 	expr* 			index;
 	double 			numConst;
-	char* 			strConst;
+	std::string 	strConst;
 	bool_t			boolConst;
 	expr* 			next;
 }expr;
@@ -70,11 +70,61 @@ typedef struct quad{
 	unsigned 	line;
 }quad;
 
-/*Index of the last recognised quad*/
-unsigned int currQuad;
+typedef struct calls{
+	expr* 		elist;//not sure about this type but i guess its expr cos it says 'E'list
+	bool_t		method;
+	std::string	name;
+
+}calls;
 
 /*Creates a new quad and initializes it with the arguments. Then it stores it in the vector*/
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno);
 
+/*Creates a new quad for arithmetic expressions*/
+expr* emit_arithexpr(iopcode opCode,expr *_arg1,expr *_arg2,int yylineno);
+
+/*Creats a new quad for tableitems*/
+expr *emit_iftableitem(expr *e);
+
+void printSymbol(symTableEntry* sym);
+
+/*Prints the given expression*/
+void printExpr(expr* e);
+
 /*Prints all the recognized quads from the vector*/
 void printQuads();
+
+/*creates a new expr*/
+expr *newexpr(expr_t e);
+
+unsigned nextquadLabel(void);
+
+expr *member_item(expr *,std::string);
+
+/*Checks if the given expression is a valid arithmetic one
+ returns: true for valid / false for invalid*/
+bool isValidArithexpr(expr* e);
+
+expr *member_item(expr * e,std::string id);
+
+expr *newxpr_conststring(std::string s);
+
+
+
+void elist_vctr_add(expr *e);
+
+
+
+//eriona ioanna
+expr *member_item(expr * e,std::string id);
+
+expr *newxpr_constrstring(std::string s);
+
+expr *emit_iftableitem(expr *e);
+
+//ioanna
+expr *make_call(expr *lvalue,expr* elist);
+
+expr* newexpr_constnum(double i);
+
+#endif
