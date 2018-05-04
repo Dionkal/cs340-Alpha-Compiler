@@ -54,6 +54,8 @@
 %type <exprPtr> elist
 %type <exprPtr> elist1
 %type <exprPtr> call
+%type <exprPtr> objectdef
+
 
 %right '='
 %left OR
@@ -379,7 +381,19 @@ elist1:		/*empty*/							{
 												}
 			;
 
-objectdef:	'[' elist ']' 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [elist] in line:%d\n",yylineno);}
+objectdef:	'[' elist ']' 						{ printf("objectdef: [elist] in line:%d\n",yylineno);
+													expr* temp_expr = newexpr(newtable_e);
+													temp_expr->sym = newtemp();
+													emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
+
+													int count = 0;
+													expr * expr_list = (expr*) $2;
+													while(expr_list){
+														emit(tablesetelem_iopcode,temp_expr,newexpr_constnum(count++),expr_list,0, yylineno);
+														expr_list= expr_list->next;
+													}
+													$$ = temp_expr;
+												}
 			|'[' indexed ']'					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [indexed] in line:%d\n",yylineno);}
 			;
 
@@ -455,7 +469,7 @@ funcbody:	block								{
 			;
 
 const:		NUMBER 								{
-													expr* temp_expr = newexpr(costnum_e);
+													expr* temp_expr = newexpr(constnum_e);
 													temp_expr->numConst=($1);  
 													($$) = temp_expr;
 												}

@@ -44,7 +44,7 @@ typedef enum expr_t{
 	boolexpr_e,
 	assignexpr_e,
 	newtable_e,
-	costnum_e,
+	constnum_e,
 	constbool_e,
 	conststring_e,
 	nil_e
@@ -124,5 +124,7 @@ expr *emit_iftableitem(expr *e);
 
 //ioanna
 expr *make_call(expr *lvalue,expr* elist);
+
+expr* newexpr_constnum(double i);
 
 #endif
