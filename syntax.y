@@ -171,29 +171,79 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 											($$) = ($2);
 										}
 			| '-' expr %prec UMINUS		{	
-											printf("term:-expr in line:%d\n",yylineno);									
-											// emit(uminus_iopcode,($1),($2),($$),0,yylineno);
+											printf("term:-expr in line:%d\n",yylineno);	
+
+											if(checkuminus(expr))
+											{
+											($$)= newexpr(arithexpr_e);
+											($$)->sym = newtemp();
+											emit(uminus_iopcode,($1),($2),($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											}
+											
+											else	printf("term:-expr in line has ilegal expression type:%d\n",yylineno);							
+											 
 
 										}
 			| NOT expr 					{
-											printf("term:!expr in line:%d\n",yylineno);					
-											// emit(not_iopcode,($1),($2),($$),0,yylineno);
+											printf("term:!expr in line:%d\n",yylineno);	
+
+											($$)= newexpr(boolexpr_e);
+											($$)->sym = newtemp();
+											 emit(not_iopcode,($1),($2),($$),0,yylineno);
+										
+
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
-										}
+										}										
 			|PLUSPLUS lvalue 			{	printf("term:++lvalue in line:%d\n",yylineno);
 											symTableEntry* ptr = (symTableEntry*) $2;
 											
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
 												std::cout << "\033[01;31mERROR:Cannot use function " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
 											}
+
+
+											//xreiazetai else edw???
+											if(($2)->type == tableitem_e){
+												($$) = emit_iftableitem($2);
+												emit(add_iopcode,($$), newexpr_constnum(1), ($$), 0, yylineno);
+												emit(tablesetelem_iopcode, ($2), ($2)->index, ($$), 0, yylineno);
+											}
+											else{
+												emit(add_iopcode,($2), newexpr_constnum(1), ($2), 0, yylineno);
+												($$) = newexpr(arithexpr_e);
+												($$)->sym = newtemp();
+												emit(assign_iopcode, ($2), NULL, ($$), 0, yylineno);
+											}
 										}
-			|lvalue PLUSPLUS 			{	printf("term:lvalue++ in line:%d\n",yylineno);
+			|lvalue PLUSPLUS 			{
+											expr* value;
+											printf("term:lvalue++ in line:%d\n",yylineno);
+
 											symTableEntry* ptr = (symTableEntry*) $1;
 
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
 											}
+
+											//na valw else edw ston elegxo????
+
+											($$) = newexpr(var_e);
+											($$)->sym = newtemp();
+
+											if(($1)->type == tableitem_e){
+											value=emit_iftableitem($1);
+											emit(assign_iopcode,value,NULL,($$),0, yylineno);
+											emit(add_iopcode,value,newexpr_constnum(1),value,0,yylineno);
+											emit(tablesetelem_iopcode,($1),($1)->index,value,0,yylineno);
+											}
+
+											else{
+											emit(assign_iopcode,($1),NULL,($$),0, yylineno);
+											emit(add_iopcode,($1),newexpr_constnum(1),($1),0,yylineno);
+											}
+
+
 										}
 			|MINUSMINUS lvalue 			{	printf("term:--lvalue in line:%d\n",yylineno);
 											symTableEntry* ptr = (symTableEntry*) $2;

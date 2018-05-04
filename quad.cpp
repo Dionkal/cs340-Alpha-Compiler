@@ -225,3 +225,24 @@ expr* newexpr_constnum(double i){
 	e->numConst = i;
 	return e; 
 }
+
+
+
+//eriona
+/*
+	Since we know at compile time a unary minus conflict, we can spot it.
+	Returns 1 for legal expressions to uminus, and 0 to ilegal ones.
+*/
+int checkuminus(expr *e){
+	if( e->type == constbool_e   ||
+		e->type == conststring_e ||
+		e->type == nil_e		 ||
+		e->type == newtable_e	 ||
+		e->type == programfunc_e ||
+		e->type == libraryfunc_e ||
+		e->type == boolexpr_e 
+	  ) return 0; //error case
+
+
+	else return 1; //legal case 
+}
