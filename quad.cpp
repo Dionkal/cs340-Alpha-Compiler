@@ -1,8 +1,11 @@
 #include "quad.h"
+#include "symbolUtilities.h"
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+
+extern int yylineno;
 
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
@@ -25,21 +28,41 @@ void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int 
 
 }
 
-std::string iopcodeToString(iopcode op){
-	switch(op){
-		case assign_iopcode: 	return "ASSIGN_OPCODE";
-		case add_iopcode: 		return "ADD_IOPCODE";
-		case sub_iopcode:		return "SUB_IOPCODE"; 
-		case mul_iopcode:		return "MUL_IOPCODE";
-		case div_iopcode:		return "DIV_IOPCODE";
-		case mod_iopcode:		return "MOD_IOPCODE";
-		case funcstart_iopcode: return "FUNCSTART_IOPCODE";
-		case funcend_iopcode: 	return "FUNCEND_IOPCODE";
-		default: 				return "INVALID IOPCODE";
+expr* emit_arithexpr(iopcode opCode,expr *_arg1,expr *_arg2,int yylineno){
+	
+	if(isValidArithexpr(_arg1) && isValidArithexpr(_arg2)){											
+		expr* result_e = newexpr(arithexpr_e);
+		result_e->sym = newtemp();
+		emit(opCode,_arg1, _arg2,result_e,0,yylineno);
+		return result_e;
+	}else{
+		std::cout <<"ERROR: invalid arithexpr";
+		printExpr(_arg1);
+		std::cout <<std::endl;
+		printExpr(_arg1);
+		std::cout <<std::endl;
+		return NULL;
 	}
 }
 
-std::string expr_tToString(expr_t e){
+std::string iopcodeToString(iopcode op){
+	/*TODO: add cases for more opcodes*/
+	switch(op){
+		case assign_iopcode: 			return "ASSIGN_OPCODE";
+		case add_iopcode: 				return "ADD_IOPCODE";
+		case sub_iopcode:				return "SUB_IOPCODE"; 
+		case mul_iopcode:				return "MUL_IOPCODE";
+		case div_iopcode:				return "DIV_IOPCODE";
+		case mod_iopcode:				return "MOD_IOPCODE";
+		case funcstart_iopcode: 		return "FUNCSTART_IOPCODE";
+		case funcend_iopcode: 			return "FUNCEND_IOPCODE";
+		case tablegetelem_iopcode:		return "TABLEGETELEM_IOPCODE";
+		case tablesetelem_iopcode:		return "TABLESETELEM_IOPCODE";
+		default: 						return "INVALID IOPCODE";
+	}
+}
+
+std::string expr_ToString(expr_t e){
 	switch(e){
 		case var_e: 			return "var_e";
 		case tableitem_e: 		return "tableitem_e";
@@ -57,12 +80,21 @@ std::string expr_tToString(expr_t e){
 	}
 }
 
+void printSymbol(symTableEntry* sym){
+	std::cout <<"\t\t\t" <<"name: " << sym->name <<std::endl;
+	if(sym->symType != USER_FUNC && sym->symType != LIB_FUNC) std::cout <<"\t\t\t" <<"offset: " <<sym->offset <<std::endl;
+	/*WIP: print more members*/
+}
+
+
+/*Prints the given expression*/
 void printExpr(expr* e){
-	std::cout <<"\t\tType: " << expr_tToString(e->type) <<std::endl; 
-	if (e->sym)std::cout <<"\t\tSymbol: " << "name: " <<e->sym->name  <<" offset: " <<e->sym->offset <<std::endl;
+	std::cout <<"\t\tType: " << expr_ToString(e->type) <<std::endl; 
+	if (e->sym) {std::cout <<"\t\tSymbol: " <<std::endl; printSymbol(e->sym);}
+
 	/*TODO print index*/
 	if (e->numConst)std::cout <<"\t\tnumConst: " << e->numConst <<std::endl;
-	if (e->strConst)std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
+	if (!e->strConst.empty())std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
 	if (e->boolConst)std::cout <<"\t\tboolConst: " << e->boolConst <<std::endl;
 	/*TODO: print next*/
 
@@ -71,7 +103,7 @@ void printExpr(expr* e){
 
 /*Prints all the quads in the vector*/
 void printQuads(){
-	int count = 0;		
+	int count = 1;		
 	for (std::vector<quad>::const_iterator i = vctr_quads.begin(); i != vctr_quads.end(); ++i){
 		std::cout <<"#" <<"Quad " <<count++ <<": " <<std::endl;
 		std::cout <<"\tiopcode: " << iopcodeToString(i->op) << "\n";
@@ -110,55 +142,46 @@ unsigned nextquadLabel(void){
 }
 
 
-//eriona ioanna
+/*Checks if the given expression is a valid arithmetic one
+ returns: true for valid / false for invalid*/
+bool isValidArithexpr(expr* e){
+	if(e->type == programfunc_e || e->type == libraryfunc_e || e->type == boolexpr_e 
+		|| e->type == newtable_e || e->type == constbool_e 
+		|| e->type == conststring_e || e->type == nil_e)
+	{
+		return false;
+	} 
+	return true;
+}
+
+
 
 expr *member_item(expr *e,std::string id){
 	expr *item;
-	e=emit_iftableitem(e);
-	item=newepxr(tableitem_e);
-	item->sym=e->sym;
-	item->index=newexpr_conststring(id);
+	e = emit_iftableitem(e);
+	item = newexpr(tableitem_e);
+	item->sym = e->sym;
+	item->index = newxpr_conststring(id);
 
 	return item;
 }
 
-expr *newxpr_constrstring(std::string s){
-	expr *e=newepxr(conststring_e);
-	e->strConst=strdup(s);//TODO: replace strdup with c++ func
+expr *newxpr_conststring(std::string s){
+	expr *e = newexpr(conststring_e);
+	e->strConst = s;
 	return e;
 }
 
-expr *emit_iftableitem(expr *e){
-	expr *result;
+expr* emit_iftableitem(expr *e){
 
 	if(e->type!=tableitem_e){
 		return e;
 	}
 	else{
-		result=newepxr(var_e);//needs understanidn before valsamakis
-		result->sym=newtemp();
-		emit(tablegetelem_iopcode,e,e->index,result,0,yylineno);//label=0 fort he time being
-		//e->index needs underastnid:: is it q.a?
+		expr* result = newexpr(var_e);
+		result->sym = newtemp();
+		emit(tablegetelem_iopcode,e,e->index,result,0,yylineno);
 		return result;
 	}
 }
-//den ksero an prepei na apothikeuontai oles oi listes kapou alla s auti tin sinartisi den mas noiazei
 expr *make_call(expr *lvalue,expr* elist){
-
-	expr *func,*lnext,result;
-	func=emit_iftableitem(lvalue);
-	lnext=elist->next;
-
-	//diatreksi autis tis listas:exei to elist
-	while(lnext!=NULL){
-		emit(param_iopcode,NULL,NULL,lnext,0,yylineno);
-		lnext=lnext->next;
-	}
-	emit(call_iopcode,NULL,NULL,func,0,yylineno);
-
-	result=newepxr(var_e);
-	result->sym=newtemp();
-	emit(getretval_iopcode,NULL,NULL,result);
-
-	return result;	
-}

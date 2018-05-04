@@ -269,7 +269,8 @@ ANY				.
 				if(input== '\"'){
 					if(isLegal){
 					// addToken(STRING_TYPE, string("STRING_TYPE"), output, stringLine);
-						yylval.stringValue = strdup(yytext);
+						yylval.stringValue = (char*)(output.c_str());
+
 						return STRING;
 					}					 
 					break;		
@@ -469,9 +470,14 @@ void insertSym(string key,symTableType type,int scp,unsigned int line){
 	symptr->scope = scp;	
 	symptr->declLine = line;
 	symptr->isVisible = true;
-	symptr->offset = currScopeOffset();
-	symptr->space = current_scopescape();
-	incrementScopeOffset(); //increase offset
+	
+	/*Offset operations, only for variables*/
+	if(type == GLOBAL_VAR || type == LOCAL_VAR || type == ARGUMENT_VAR){
+		symptr->offset = currScopeOffset();
+		symptr->space = current_scopescape();
+		incrementScopeOffset(); //increase offset
+	}
+	
 	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
 	SymTableScope.insert( std::pair<int,symTableEntry*>(scp,symptr) );
 }

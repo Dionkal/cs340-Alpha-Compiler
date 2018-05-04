@@ -7,6 +7,7 @@
 	#include "symbolUtilities.h"
 	#include <iostream>
 	#include <sstream>
+	#include <assert.h>
 
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
@@ -96,45 +97,28 @@ expr:		assignexpr 					{
 										}
 			|expr '+' expr 				{	
 											printf("expr:expr + expr in line:%d\n",yylineno);
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(add_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
-
+											
+											$$ = (void*) emit_arithexpr(add_iopcode,(expr*)$1,(expr*) $3,yylineno);
 										}
 			|expr '-' expr 				{
-											printf("lexpr:expr - expr in line:%d\n",yylineno);											
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(sub_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											printf("lexpr:expr - expr in line:%d\n",yylineno);
 
+											$$ = (void*) emit_arithexpr(sub_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '*' expr 				{
-											printf("expr:expr * expr in line:%d\n",yylineno);											
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(mul_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											printf("expr:expr * expr in line:%d\n",yylineno);
+
+											$$ = (void*) emit_arithexpr(mul_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '/' expr 				{
 											printf("expr:expr / expr in line:%d\n",yylineno);										
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(div_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											
+											$$ = (void*) emit_arithexpr(div_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '%' expr 				{
 											printf("expr:expr mod expr in line:%d\n",yylineno);										
-											expr* result_e = newexpr(arithexpr_e);
-											result_e->sym = newtemp();
-											emit(mod_iopcode,(expr*)$1,(expr*) $3,result_e,0,yylineno);
-											($$) = (void*) result_e;
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											
+											$$ = (void*) emit_arithexpr(mod_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '>' expr 				{	
 											printf("expr:expr > expr in line:%d\n",yylineno);										
@@ -226,20 +210,23 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 										}
 			|primary 					{
 											printf("term:primary in line:%d\n",yylineno);
+											$$ = $1;
 										}
 			;
 
 assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
-											/*expr *lvt= ($1),*result,*exprt=($3);*/
-											if( $1 != NULL &&( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
+											assert($1); /*check for null ptr*/ 
+
+											if( (((expr*)$1)->sym != NULL) && ( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<((expr*)$3)->sym->name 
 														  <<" as left value of assignment at line " <<yylineno 
 														  << "\033[00m" << std::endl;		
 											}else{
-												expr *result;
-												if((void *)($1)->type==tableitem_e){
-													emit(tablesetelem_iopcode,($1),($1)->index,($3),0,yylineno);													
-													result=emit_iftableitem(($1));
+												expr *lvt= (expr*) ($1),*exprt= (expr*) ($3),*result;
+
+												if(lvt->type==tableitem_e){
+													emit(tablesetelem_iopcode,lvt->index,exprt,lvt,0,yylineno);													
+													result=emit_iftableitem(lvt);
 													result->type=assignexpr_e;//needs firther understandin
 													($$)=(void *)result;
 												}else{
@@ -256,7 +243,8 @@ assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",y
 
 primary:	lvalue 						{
 											printf("primary: lvalue in line:%d\n",yylineno);
-											($$) = emit_iftableitem($1);
+											($$) =  emit_iftableitem((expr*) $1);
+											printExpr((expr*) $$);
 
 										}
 			|call 						{
@@ -289,25 +277,19 @@ lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
 										}
 			|member 					{
 											printf("lvalue: member in line:%d\n",yylineno);
-
+											$$ = $1;
 										}
 			;
 
-member:		lvalue '.' ID 				{	expr *temp;
-											symTableEntry *sym;//gia to id.name
-											temp=member_item(($1),sym->name);//id.name kai kala
-											($$)=(void *)temp;
+member:		lvalue '.' ID 				{	
 											//printf("member: lvalue.ID in line:%d\n",yylineno);
-
+											$$ = member_item((expr*) $1, $3);
 										}
 			|lvalue '[' expr ']' 		{ //printf("member: lvalue [expr] in line:%d\n",yylineno);
-											expr *lvtemp=($1),*tbltemp=($$);									
-											lvtemp=emit_iftableitem(lvtemp);
-											tbltemp=newexpr(tableitem_e);
-											tbltemp->sym=(void *)lvtemp->sym;
-											tbltemp->index=(void *)($3);
-											($$)=(void *)tbltemp;//hmm
-
+											$1 = emit_iftableitem((expr*) $1);
+											$$ = newexpr(tableitem_e);
+											((expr*)$$)->sym = ((expr*)$1)->sym;
+											((expr*)$$)->index = (expr*) $3;
 										}
 			|call '.' ID 				{printf("member: call.ID in line:%d\n",yylineno);}
 			|call '[' expr ']' 			{printf("member: call [expr] in line:%d\n",yylineno);}
@@ -409,6 +391,7 @@ funcdef:	funcprefix funcargs funcbody 		{
 													deleteOffset();	
 													($$)=($1);				
 													emit(funcend_iopcode,NULL,NULL,(expr *)($1),0,yylineno);	
+													/*TODO: backpatch the incomplete jump quad before*/									
 												}
 			;
 
@@ -426,11 +409,11 @@ funcname: 	ID 									{
 
 funcprefix:	FUNCTION funcname					{
 													std::cout<<"func prefix___\n";
-													unsigned label=nextquadLabel();
 													/*TODO:check function address*/
+													/*TODO: emit an icomplete jump quad to the the next quad of the funcend*/
 													expr* result_e=newexpr(programfunc_e);
 													result_e->sym=(symTableEntry *)($2);
-													emit(funcstart_iopcode,NULL,NULL,result_e,label,yylineno);
+													emit(funcstart_iopcode,NULL,NULL,result_e,0,yylineno);
 													scopeSpaceCounter++; //this means enterScopeSpace
 													newOffset();
 													current_scope++; 
