@@ -109,7 +109,7 @@ expr *member_item(expr * e,std::string id);
 
 expr *newxpr_conststring(std::string s);
 
-#endif
+
 
 void elist_vctr_add(expr *e);
 
@@ -124,3 +124,5 @@ expr *emit_iftableitem(expr *e);
 
 //ioanna
 expr *make_call(expr *lvalue,expr* elist);
+
+#endif

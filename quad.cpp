@@ -2,6 +2,7 @@
 #include "symbolUtilities.h"
 #include <vector>
 #include <iostream>
+#include <stack>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -184,4 +185,30 @@ expr* emit_iftableitem(expr *e){
 		return result;
 	}
 }
+
 expr *make_call(expr *lvalue,expr* elist){
+  std::stack <expr *> callsElist;
+  expr *func,*lnext,*result;
+  func=emit_iftableitem(lvalue);
+ 
+  lnext=elist->next;
+
+  //diatreksi autis tis listas:exei to elist 
+  while(lnext!=NULL){
+    callsElist.push(lnext);
+    lnext=lnext->next;
+  }
+  while(!callsElist.empty()){
+  	emit(param_iopcode,NULL,NULL,callsElist.top(),0,yylineno);
+  	callsElist.pop();
+  }
+ 
+  emit(call_iopcode,NULL,NULL,func,0,yylineno);
+ 
+  result=newexpr(var_e);
+  result->sym=newtemp();
+  emit(getretval_iopcode,NULL,NULL,result,0,yylineno);
+ 
+ 
+  return result; 
+}

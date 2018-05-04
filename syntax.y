@@ -53,7 +53,7 @@
 %type <calls>   callsuffix
 %type <exprPtr> elist
 %type <exprPtr> elist1
-%type <calls>   call
+%type <exprPtr> call
 
 
 %right '='
@@ -296,9 +296,9 @@ member:		lvalue '.' ID 				{
 			;
 
 call: 		call '(' elist ')' 			{
-											//calls *ctmp=($1);
+											expr *ctmp= (expr *)($1);
 											printf("call: (elist) in line:%d\n",yylineno);
-											ctmp=make_call(($1),($3));
+											ctmp=make_call((expr*) ($1),(expr*) ($3));
 											($$)=ctmp;
 										}
 			|lvalue callsuffix			{
@@ -309,8 +309,8 @@ call: 		call '(' elist ')' 			{
 												expr *func;
 												printf("call: (func) (elist) in line:%d\n",yylineno);
 												func=newexpr(programfunc_e);
-												func->sym=($2);
-												($$)=make_call(func,($5));
+												func->sym=( ((expr*)$2)->sym );
+												($$)=make_call(func,(expr*) ($5));
 
 											}
 			;
@@ -323,12 +323,12 @@ normcall:   '(' elist ')'				{k++; printf("time:%d___ ,token: %s____>",k,yytext)
 			;
 
 methodcall:	DOUPLEDOT ID '(' elist ')'  {	
-											calls *methodtemp;
+											calls *methodtemp = new calls();
 											printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
-											mthodtemp->elist=($4);
+											methodtemp->elist=(expr *)($4);
 											methodtemp->method=true_t;
 											methodtemp->name=($2);
-											($$)=(void *)methodtemp;
+											($$)=methodtemp;
 										}
 			;
 
@@ -339,9 +339,9 @@ elist:		/*empty*/					{
 			|expr elist1 				{	expr *list;
 											//malloc
 											printf("elist: expr elist1 list in line:%d\n",yylineno);
-											list=($1);
-											list->next=($2);
-											($$)=(void *)list;
+											list=(expr *)($1);
+											list->next=(expr *)($2);
+											($$)=list;
 										}
 			;
 
@@ -352,12 +352,11 @@ elist1:		/*empty*/							{
 			|','expr elist1 					{	
 													expr *list;
 													printf("elist1: ,expr elist1 in line:%d\n",yylineno);
-													list=($2);
-													list->next=($3);
-													($$)=(void *)list;
+													list=(expr *)($2);
+													list->next=(expr *)($3);
+													($$)=list;
 												}
 			|error expr elist1					{	//i dont know here
-													($$)=($2);
 												}
 			;
 
