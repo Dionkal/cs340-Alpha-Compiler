@@ -70,6 +70,13 @@ typedef struct quad{
 	unsigned 	line;
 }quad;
 
+typedef struct calls{
+	expr* 		elist;//not sure about this type but i guess its expr cos it says 'E'list
+	bool_t		method;
+	std::string	name;
+
+}calls;
+
 /*Creates a new quad and initializes it with the arguments. Then it stores it in the vector*/
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno);
 
@@ -101,5 +108,21 @@ bool isValidArithexpr(expr* e);
 expr *member_item(expr * e,std::string id);
 
 expr *newxpr_conststring(std::string s);
+
+
+
+void elist_vctr_add(expr *e);
+
+
+
+//eriona ioanna
+expr *member_item(expr * e,std::string id);
+
+expr *newxpr_constrstring(std::string s);
+
+expr *emit_iftableitem(expr *e);
+
+//ioanna
+expr *make_call(expr *lvalue,expr* elist);
 
 #endif

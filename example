@@ -1,1 +1,1 @@
-t["b"] = 5;
+a=(function foo(x,y){return x+y;})(1,2);

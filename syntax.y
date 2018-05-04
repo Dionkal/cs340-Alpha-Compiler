@@ -30,6 +30,7 @@
 	float floatValue;
 	void* exprPtr;
 	void* sym;
+	void* calls;
 }
 
 %token <stringValue> ID 
@@ -47,7 +48,12 @@
 %type <exprPtr> funcprefix
 %type <exprPtr> funcdef
 %type <exprPtr> member
-
+%type <calls>	methodcall
+%type <calls>   normcall
+%type <calls>   callsuffix
+%type <exprPtr> elist
+%type <exprPtr> elist1
+%type <exprPtr> call
 
 %right '='
 %left OR
@@ -240,9 +246,11 @@ primary:	lvalue 						{
 											printExpr((expr*) $$);
 
 										}
-			|call 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: call in line:%d\n",yylineno);}
+			|call 						{
+											printf("primary: call in line:%d\n",yylineno);
+										}
 			|objectdef 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
-			|'(' funcdef ')'            {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: (funcdef) in line:%d\n",yylineno);}
+			|'(' funcdef ')'            {printf("primary: (funcdef) in line:%d\n",yylineno);}
 			|const 						{ 
 											 printf("primary: const in line:%d\n",yylineno);
 											 ($$) = ($1);
@@ -286,28 +294,89 @@ member:		lvalue '.' ID 				{
 			|call '[' expr ']' 			{printf("member: call [expr] in line:%d\n",yylineno);}
 			;
 
-call: 		call '(' elist ')' 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: (elist) in line:%d\n",yylineno);}
-			|lvalue callsuffix			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: lvalue callsuffix in line:%d\n",yylineno);}
-			|'(' funcdef ')' '(' elist ')' {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("call: (func) (elist) in line:%d\n",yylineno);}
+call: 		call '(' elist ')' 			{
+											expr *ctmp= (expr *)($1);
+											printf("call: (elist) in line:%d\n",yylineno);
+											ctmp=make_call((expr*) ($1),(expr*) ($3));
+											($$)=ctmp;
+										}
+			|lvalue callsuffix			{
+											printf("call: lvalue callsuffix in line:%d\n",yylineno);
+
+											if(((calls*) $2)->method == 1){
+												expr* self = (expr* ) $1;
+												$1 = emit_iftableitem(member_item(self,((calls*)$2)->name));
+												/*Add 'this' in the expr list at the front*/
+												self->next = ((calls*) $2)->elist;
+												((calls*) $2)->elist = self;
+											}
+											$$ = make_call((expr*)$1, ((calls*) $2)->elist);
+										}
+			|'(' funcdef ')' '(' elist ')' {	
+												expr *func;
+												printf("call: (func) (elist) in line:%d\n",yylineno);
+												func=newexpr(programfunc_e);
+												func->sym=( ((expr*)$2)->sym );
+												($$)=make_call(func,(expr*) ($5));
+
+											}
 			;
 
-callsuffix:	normcall					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);}
-			|methodcall 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);}
+callsuffix:	normcall					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);
+											$$ = $1;
+										}
+			|methodcall 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);
+											$$ = $1;
+										}
 			;
 
-normcall:   '(' elist ')'				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);}
+normcall:   '(' elist ')'				{
+											calls* temp = new calls();
+											
+											temp->elist = (expr*) $2;
+											temp->method = false_t;
+											temp->name = "";
+											$$ = temp;
+										 printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);
+										}
 			;
 
-methodcall:	DOUPLEDOT ID '(' elist ')'  {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);}
+methodcall:	DOUPLEDOT ID '(' elist ')'  {	
+											calls *methodtemp = new calls();
+											printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
+											methodtemp->elist=(expr *)($4);
+											methodtemp->method=true_t;
+											methodtemp->name=($2);
+											($$)=methodtemp;
+										}
 			;
 
-elist:		/*empty*/					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist: empty list in line:%d\n",yylineno);}
-			|expr elist1 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("elist: expr elist1 list in line:%d\n",yylineno);}
+elist:		/*empty*/					{
+											printf("elist: empty list in line:%d\n",yylineno);
+											($$)=NULL;
+										}
+			|expr elist1 				{	expr *list;
+											//malloc
+											printf("elist: expr elist1 list in line:%d\n",yylineno);
+											list=(expr *)($1);
+											list->next=(expr *)($2);
+											($$)=list;
+										}
 			;
 
-elist1:		/*empty*/							{printf("elist1: empty list in line:%d\n",yylineno);}
-			|','expr elist1 					{printf("elist1: ,expr elist1 in line:%d\n",yylineno);}
-			|error expr elist1
+elist1:		/*empty*/							{
+													printf("elist1: empty list in line:%d\n",yylineno);
+													($$)=NULL;
+												}
+			|','expr elist1 					{	
+													expr *list;
+													printf("elist1: ,expr elist1 in line:%d\n",yylineno);
+													list=(expr *)($2);
+													list->next=(expr *)($3);
+													($$)=list;
+												}
+			|error expr elist1					{	//i dont know here
+												}
 			;
 
 objectdef:	'[' elist ']' 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [elist] in line:%d\n",yylineno);}
