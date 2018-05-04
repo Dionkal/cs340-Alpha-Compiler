@@ -59,6 +59,9 @@ std::string iopcodeToString(iopcode op){
 		case funcend_iopcode: 			return "FUNCEND_IOPCODE";
 		case tablegetelem_iopcode:		return "TABLEGETELEM_IOPCODE";
 		case tablesetelem_iopcode:		return "TABLESETELEM_IOPCODE";
+		case call_iopcode:				return "CALL_IOPCODE";
+		case param_iopcode:				return "PARAM_IOPCODE";
+		case getretval_iopcode:			return "GETRETVAL_IOPCODE";
 		default: 						return "INVALID IOPCODE";
 	}
 }
@@ -191,7 +194,7 @@ expr *make_call(expr *lvalue,expr* elist){
   expr *func,*lnext,*result;
   func=emit_iftableitem(lvalue);
  
-  lnext=elist->next;
+  lnext=elist;
 
   //diatreksi autis tis listas:exei to elist 
   while(lnext!=NULL){

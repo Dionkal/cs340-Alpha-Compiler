@@ -55,7 +55,6 @@
 %type <exprPtr> elist1
 %type <exprPtr> call
 
-
 %right '='
 %left OR
 %left AND
@@ -304,6 +303,14 @@ call: 		call '(' elist ')' 			{
 			|lvalue callsuffix			{
 											printf("call: lvalue callsuffix in line:%d\n",yylineno);
 
+											if(((calls*) $2)->method == 1){
+												expr* self = (expr* ) $1;
+												$1 = emit_iftableitem(member_item(self,((calls*)$2)->name));
+												/*Add 'this' in the expr list at the front*/
+												self->next = ((calls*) $2)->elist;
+												((calls*) $2)->elist = self;
+											}
+											$$ = make_call((expr*)$1, ((calls*) $2)->elist);
 										}
 			|'(' funcdef ')' '(' elist ')' {	
 												expr *func;
@@ -315,11 +322,23 @@ call: 		call '(' elist ')' 			{
 											}
 			;
 
-callsuffix:	normcall					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);}
-			|methodcall 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);}
+callsuffix:	normcall					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);
+											$$ = $1;
+										}
+			|methodcall 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);
+											$$ = $1;
+										}
 			;
 
-normcall:   '(' elist ')'				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);}
+normcall:   '(' elist ')'				{
+											calls* temp = new calls();
+											
+											temp->elist = (expr*) $2;
+											temp->method = false_t;
+											temp->name = "";
+											$$ = temp;
+										 printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);
+										}
 			;
 
 methodcall:	DOUPLEDOT ID '(' elist ')'  {	
