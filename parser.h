@@ -116,8 +116,9 @@ union YYSTYPE
 	float floatValue;
 	void* exprPtr;
 	void* sym;
+	void* calls;
 
-#line 121 "parser.h" /* yacc.c:1909  */
+#line 122 "parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
