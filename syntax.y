@@ -675,19 +675,19 @@ elseprefix:	ELSE 								{
 
 
 whilestart:		WHILE 							{
-													($$)=nextquadLabel();//+1??
+													($$)=nextquadLabel();
 												}
 
 whilesecond:	'(' expr ')'					{
-													emit(if_eq_iopcode,(expr *)($2),newexpr_constbool(true_t),NULL,nextquadLabel()+3,yylineno);
-													($$)=nextquadLabel()+1;
+													emit(if_eq_iopcode,(expr *)($2),newexpr_constbool(true_t),NULL,nextquadLabel()+2,yylineno);
+													($$)=nextquadLabel();
 													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
 
 												}
 
 whilestmt:		whilestart whilesecond stmt 	{
 													emit(jump_iopcode,NULL,NULL,NULL,($1),yylineno);
-													patchLabel(($2),nextquadLabel()+1);
+													patchLabel(($2),nextquadLabel());
 													// patchLabel();
 
 												}
