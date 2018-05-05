@@ -54,6 +54,10 @@
 %type <exprPtr> elist
 %type <exprPtr> elist1
 %type <exprPtr> call
+%type <exprPtr> objectdef
+%type <exprPtr> indexedelem
+%type <exprPtr> indexed
+%type <exprPtr> more
 
 %right '='
 %left OR
@@ -120,34 +124,28 @@ expr:		assignexpr 					{
 											$$ = (void*) emit_arithexpr(mod_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '>' expr 				{	
-											printf("expr:expr > expr in line:%d\n",yylineno);										
-											// emit(if_greater_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
-										}
+											printf("expr:expr > expr in line:%d\n",yylineno);	
+											$$ = emit_relop(if_greater_iopcode, (expr*) $1, (expr*) $3);
+																				}
 			|expr '<' expr 				{	
 											printf("expr:expr < expr in line:%d\n",yylineno);										
-											// emit(if_less_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_less_iopcode, (expr*) $1, (expr*) $3);										
 										}
 			|expr GREATEREQUAL expr 	{	
 											printf("expr:expr >= expr in line:%d\n",yylineno);										
-											// emit(if_greatereq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_greatereq_iopcode, (expr*) $1, (expr*) $3);
 										}
 			|expr LESSEQUAL expr 		{	
 											printf("expr:expr <= expr in line:%d\n",yylineno);										
-											// emit(if_lesseq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_lesseq_iopcode, (expr*) $1, (expr*) $3);											
 										}
 			|expr EQUAL expr 			{	
 											printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);										
-											// emit(if_eq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_eq_iopcode, (expr*) $1, (expr*) $3);
 										}
 			|expr NOTEQUAL expr 		{
 											printf("expr:expr != expr in line:%d\n",yylineno);										
-											// emit(if_noteq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_noteq_iopcode, (expr*) $1, (expr*) $3);	
 										}
 			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);										
 											// emit(and_iopcode,($1),($3),($$),0,yylineno);
@@ -250,7 +248,12 @@ primary:	lvalue 						{
 											printf("primary: call in line:%d\n",yylineno);
 										}
 			|objectdef 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
-			|'(' funcdef ')'            {printf("primary: (funcdef) in line:%d\n",yylineno);}
+			
+			|'(' funcdef ')'            {printf("primary: (funcdef) in line:%d\n",yylineno);
+											$$ = newexpr(programfunc_e);
+											((expr*) $$)->sym = ((expr*) $2)->sym;
+										}
+			
 			|const 						{ 
 											 printf("primary: const in line:%d\n",yylineno);
 											 ($$) = ($1);
@@ -379,20 +382,56 @@ elist1:		/*empty*/							{
 												}
 			;
 
-objectdef:	'[' elist ']' 						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [elist] in line:%d\n",yylineno);}
-			|'[' indexed ']'					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [indexed] in line:%d\n",yylineno);}
+objectdef:	'[' elist ']' 						{ printf("objectdef: [elist] in line:%d\n",yylineno);
+													expr* temp_expr = newexpr(newtable_e);
+													temp_expr->sym = newtemp();
+													emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
+
+													int count = 0;
+													expr * expr_list = (expr*) $2;
+													while(expr_list){
+														emit(tablesetelem_iopcode,newexpr_constnum(count++),expr_list,temp_expr,0, yylineno);
+														expr_list= expr_list->next;
+													}
+													$$ = temp_expr;
+												}
+
+			|'[' indexed ']'					{ printf("objectdef: [indexed] in line:%d\n",yylineno);
+													expr* temp_expr = newexpr(newtable_e);
+													temp_expr->sym = newtemp();
+													emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
+													
+													expr * expr_list = (expr*) $2;
+													while(expr_list){
+														emit(tablesetelem_iopcode,expr_list->index,expr_list,temp_expr,0, yylineno);
+														expr_list = expr_list->next;
+													}
+													$$ = temp_expr;
+												}
 			;
 
 
-indexed:	indexedelem more					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("indexed: indexedelem more in line:%d\n",yylineno);}
+indexed:	indexedelem more					{ printf("indexed: indexedelem more in line:%d\n",yylineno);
+													$$ = $1;
+													((expr*)$$)->next = (expr*) $2;
+												}
 			;
 
-more:       ',' indexedelem more 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("more: ,indexedelem more in line:%d\n",yylineno);}
-            |/*empty*/            			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("more: empty in line:%d\n",yylineno);}
+more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d\n",yylineno);
+												$$ = $2;
+												((expr*)$$)->next = (expr*) $3;
+											}
+
+            |/*empty*/            			{ printf("more: empty in line:%d\n",yylineno);
+												$$ = NULL;
+											}
             ; 
 	
 
-indexedelem:'{' expr ':' expr '}'			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
+indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d\n",yylineno);
+												$$ = $4;
+												((expr*) $$ )->index = (expr*) $2;
+											}
 			;
 
 block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{printf("``: {stmt1} in line:%d\n",yylineno);}		
@@ -455,7 +494,7 @@ funcbody:	block								{
 			;
 
 const:		NUMBER 								{
-													expr* temp_expr = newexpr(costnum_e);
+													expr* temp_expr = newexpr(constnum_e);
 													temp_expr->numConst=($1);  
 													($$) = temp_expr;
 												}

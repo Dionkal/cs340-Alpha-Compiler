@@ -46,6 +46,33 @@ expr* emit_arithexpr(iopcode opCode,expr *_arg1,expr *_arg2,int yylineno){
 	}
 }
 
+expr* emit_iftableitem(expr *e){
+
+	if(e->type!=tableitem_e){
+		return e;
+	}
+	else{
+		expr* result = newexpr(var_e);
+		result->sym = newtemp();
+		emit(tablegetelem_iopcode,e,e->index,result,0,yylineno);
+		return result;
+	}
+}
+
+/*Creates some quads based on relational operators*/
+expr* emit_relop(iopcode icode, expr* expr1, expr* expr2){
+
+	expr* result = newexpr(boolexpr_e);
+	result->sym = newtemp();
+
+	emit(icode, expr1, expr2, NULL, nextquadLabel()+4, yylineno);
+	emit(assign_iopcode, newexpr_constbool(false_t), NULL, result, 0 ,yylineno);
+	emit(jump_iopcode, NULL, NULL, NULL, nextquadLabel()+3, yylineno);
+	emit(assign_iopcode, newexpr_constbool(true_t), NULL, result, 0, yylineno);
+
+	return result;
+}
+
 std::string iopcodeToString(iopcode op){
 	/*TODO: add cases for more opcodes*/
 	switch(op){
@@ -59,9 +86,17 @@ std::string iopcodeToString(iopcode op){
 		case funcend_iopcode: 			return "FUNCEND_IOPCODE";
 		case tablegetelem_iopcode:		return "TABLEGETELEM_IOPCODE";
 		case tablesetelem_iopcode:		return "TABLESETELEM_IOPCODE";
+		case tablecreate_iopcode:		return "TABLECREATE_IOPCODE";
 		case call_iopcode:				return "CALL_IOPCODE";
 		case param_iopcode:				return "PARAM_IOPCODE";
 		case getretval_iopcode:			return "GETRETVAL_IOPCODE";
+		case if_eq_iopcode:				return "IF_EQ_IOPCODE";
+		case if_noteq_iopcode:			return "IF_NOTEQ_IOPCODE";
+		case if_lesseq_iopcode:			return "IF_LESSEQ_IOPCODE";
+		case if_greatereq_iopcode:		return "IF_GREATEREQ_IOPCODE";
+		case if_less_iopcode:			return "IF_LESS_IOPCODE";
+		case if_greater_iopcode:		return "IF_GREATER_IOPCODE";
+		case jump_iopcode:				return "JUMP_IOPCODE";
 		default: 						return "INVALID IOPCODE";
 	}
 }
@@ -76,7 +111,7 @@ std::string expr_ToString(expr_t e){
 		case boolexpr_e:		return "boolexpr_e";
 		case assignexpr_e:		return "assignexpr_e";
 		case newtable_e:		return "newtable_e";
-		case costnum_e:			return "costnum_e";
+		case constnum_e:		return "costnum_e";
 		case constbool_e:		return "constbool_e";
 		case conststring_e:		return "conststring_e";
 		case nil_e:				return "nil_e";
@@ -94,14 +129,11 @@ void printSymbol(symTableEntry* sym){
 /*Prints the given expression*/
 void printExpr(expr* e){
 	std::cout <<"\t\tType: " << expr_ToString(e->type) <<std::endl; 
+
 	if (e->sym) {std::cout <<"\t\tSymbol: " <<std::endl; printSymbol(e->sym);}
-
-	/*TODO print index*/
-	if (e->numConst)std::cout <<"\t\tnumConst: " << e->numConst <<std::endl;
-	if (!e->strConst.empty())std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
-	if (e->boolConst)std::cout <<"\t\tboolConst: " << e->boolConst <<std::endl;
-	/*TODO: print next*/
-
+	if (e->type == constnum_e) 		std::cout <<"\t\tnumConst: " << e->numConst <<std::endl;
+	if (e->type == conststring_e) 	std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
+	if (e->type == constbool_e) 	std::cout <<"\t\tboolConst: " << e->boolConst <<std::endl;
 }
 
 
@@ -176,18 +208,6 @@ expr *newxpr_conststring(std::string s){
 	return e;
 }
 
-expr* emit_iftableitem(expr *e){
-
-	if(e->type!=tableitem_e){
-		return e;
-	}
-	else{
-		expr* result = newexpr(var_e);
-		result->sym = newtemp();
-		emit(tablegetelem_iopcode,e,e->index,result,0,yylineno);
-		return result;
-	}
-}
 
 expr *make_call(expr *lvalue,expr* elist){
   std::stack <expr *> callsElist;
@@ -214,4 +234,22 @@ expr *make_call(expr *lvalue,expr* elist){
  
  
   return result; 
+}
+
+
+/*Creates a new expression with constnum_e type 
+and fills the numConst field with the given value*/
+expr* newexpr_constnum(double i){
+	expr* e = newexpr(constnum_e);
+	e->numConst = i;
+	return e; 
+}
+
+
+/*Creates a new expression with constbool_e type 
+and fills the boolConst field with the given value*/
+expr* newexpr_constbool(bool_t b){
+	expr* e = newexpr(constbool_e);
+	e->boolConst = b;
+	return e;
 }
