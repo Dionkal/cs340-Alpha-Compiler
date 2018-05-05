@@ -76,7 +76,7 @@ expr* emit_bool(iopcode icode, expr* expr1, expr* expr2){
 	expr *result=newexpr(boolexpr_e);
 	result->sym=newtemp();
 
-	emit(iopcode,expr1,expr2,result,0,yylineno);
+	emit(icode,expr1,expr2,result,0,yylineno);
 
 	return result;	
 }
@@ -105,6 +105,8 @@ std::string iopcodeToString(iopcode op){
 		case if_less_iopcode:			return "IF_LESS_IOPCODE";
 		case if_greater_iopcode:		return "IF_GREATER_IOPCODE";
 		case jump_iopcode:				return "JUMP_IOPCODE";
+		case and_iopcode:				return "AND_IOPCODE";
+		case or_iopcode:				return "OR_IOPCODE";
 		default: 						return "INVALID IOPCODE";
 	}
 }
