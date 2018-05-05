@@ -55,7 +55,9 @@
 %type <exprPtr> elist1
 %type <exprPtr> call
 %type <exprPtr> objectdef
-
+%type <exprPtr> indexedelem
+%type <exprPtr> indexed
+%type <exprPtr> more
 
 %right '='
 %left OR
@@ -389,24 +391,48 @@ objectdef:	'[' elist ']' 						{ printf("objectdef: [elist] in line:%d\n",yyline
 													int count = 0;
 													expr * expr_list = (expr*) $2;
 													while(expr_list){
-														emit(tablesetelem_iopcode,temp_expr,newexpr_constnum(count++),expr_list,0, yylineno);
+														emit(tablesetelem_iopcode,newexpr_constnum(count++),expr_list,temp_expr,0, yylineno);
 														expr_list= expr_list->next;
 													}
 													$$ = temp_expr;
 												}
-			|'[' indexed ']'					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [indexed] in line:%d\n",yylineno);}
+
+			|'[' indexed ']'					{ printf("objectdef: [indexed] in line:%d\n",yylineno);
+													expr* temp_expr = newexpr(newtable_e);
+													temp_expr->sym = newtemp();
+													emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
+													
+													expr * expr_list = (expr*) $2;
+													while(expr_list){
+														emit(tablesetelem_iopcode,expr_list->index,expr_list,temp_expr,0, yylineno);
+														expr_list = expr_list->next;
+													}
+													$$ = temp_expr;
+												}
 			;
 
 
-indexed:	indexedelem more					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("indexed: indexedelem more in line:%d\n",yylineno);}
+indexed:	indexedelem more					{ printf("indexed: indexedelem more in line:%d\n",yylineno);
+													$$ = $1;
+													((expr*)$$)->next = (expr*) $2;
+												}
 			;
 
-more:       ',' indexedelem more 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("more: ,indexedelem more in line:%d\n",yylineno);}
-            |/*empty*/            			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("more: empty in line:%d\n",yylineno);}
+more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d\n",yylineno);
+												$$ = $2;
+												((expr*)$$)->next = (expr*) $3;
+											}
+
+            |/*empty*/            			{ printf("more: empty in line:%d\n",yylineno);
+												$$ = NULL;
+											}
             ; 
 	
 
-indexedelem:'{' expr ':' expr '}'			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
+indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d\n",yylineno);
+												$$ = $4;
+												((expr*) $$ )->index = (expr*) $2;
+											}
 			;
 
 block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{printf("``: {stmt1} in line:%d\n",yylineno);}		
