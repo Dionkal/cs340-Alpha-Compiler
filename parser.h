@@ -117,8 +117,9 @@ union YYSTYPE
 	void* exprPtr;
 	void* sym;
 	void* calls;
+	unsigned index;
 
-#line 122 "parser.h" /* yacc.c:1909  */
+#line 123 "parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

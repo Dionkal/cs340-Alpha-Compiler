@@ -559,7 +559,7 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 												}
 			;
 
-if:			ifprefix stmt elseprefix stmt 		{
+ifstmt:		ifprefix stmt elseprefix stmt 		{
 													patchLabel(($1),($3)+1);
 													patchLabel(($3),nextquadLabel()+1);
 												}

@@ -133,4 +133,6 @@ expr* newexpr_constnum(double i);
 and fills the boolConst field with the given value*/
 expr* newexpr_constbool(bool_t b);
 
+void patchLabel(unsigned index, unsigned nextQuad);
+
 #endif
