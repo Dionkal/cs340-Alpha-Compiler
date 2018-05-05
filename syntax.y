@@ -61,6 +61,9 @@
 %type <exprPtr> more
 %type <index> 	ifprefix
 %type <index>   elseprefix
+%type <index> 	whilestart
+%type <index> 	whilesecond
+%type <exprPtr> whilestmt
 
 %right '='
 %left OR
@@ -671,17 +674,25 @@ elseprefix:	ELSE 								{
 			;
 
 
-/*
+whilestart:		WHILE 							{
+													($$)=nextquadLabel();//+1??
+												}
 
-ifstmt:		IF '(' expr ')' stmt ifstmt1		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
-			;
+whilesecond:	'(' expr ')'					{
+													emit(if_eq_iopcode,(expr *)($2),newexpr_constbool(true_t),NULL,nextquadLabel()+3,yylineno);
+													($$)=nextquadLabel()+1;
+													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
 
-ifstmt1:	/*empty						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: empty in line:%d\n",yylineno);}
-			|ELSE stmt 							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: ELSE stmt in line:%d\n",yylineno);}
-			;
-*/
-whilestmt:	WHILE '(' expr ')' stmt 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
-			;
+												}
+
+whilestmt:		whilestart whilesecond stmt 	{
+													emit(jump_iopcode,NULL,NULL,NULL,($1),yylineno);
+													patchLabel(($2),nextquadLabel()+1);
+													patchLabel();
+
+												}
+/*whilestmt:	WHILE '(' expr ')' stmt 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
+			;*/
 
 forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("forstmt: FOR (elist;expr;elist) stmt in 								;											line:%d\n",yylineno);}
 
