@@ -254,7 +254,12 @@ primary:	lvalue 						{
 											printf("primary: call in line:%d\n",yylineno);
 										}
 			|objectdef 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
-			|'(' funcdef ')'            {printf("primary: (funcdef) in line:%d\n",yylineno);}
+			
+			|'(' funcdef ')'            {printf("primary: (funcdef) in line:%d\n",yylineno);
+											$$ = newexpr(programfunc_e);
+											((expr*) $$)->sym = ((expr*) $2)->sym;
+										}
+			
 			|const 						{ 
 											 printf("primary: const in line:%d\n",yylineno);
 											 ($$) = ($1);
