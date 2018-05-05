@@ -137,4 +137,11 @@ expr* newexpr_constnum(double i);
 and fills the boolConst field with the given value*/
 expr* newexpr_constbool(bool_t b);
 
+
+/*
+	Since we know at compile time a unary minus conflict, we can spot it.
+	Returns 1 for legal expressions to uminus, and 0 to ilegal ones.
+*/
+int checkuminus(expr *e);
+
 #endif
