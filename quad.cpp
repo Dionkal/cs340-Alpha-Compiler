@@ -95,14 +95,11 @@ void printSymbol(symTableEntry* sym){
 /*Prints the given expression*/
 void printExpr(expr* e){
 	std::cout <<"\t\tType: " << expr_ToString(e->type) <<std::endl; 
+
 	if (e->sym) {std::cout <<"\t\tSymbol: " <<std::endl; printSymbol(e->sym);}
-
-	/*TODO print index*/
-	if (e->numConst)std::cout <<"\t\tnumConst: " << e->numConst <<std::endl;
-	if (!e->strConst.empty())std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
-	if (e->boolConst)std::cout <<"\t\tboolConst: " << e->boolConst <<std::endl;
-	/*TODO: print next*/
-
+	if (e->type == constnum_e) 		std::cout <<"\t\tnumConst: " << e->numConst <<std::endl;
+	if (e->type == conststring_e) 	std::cout <<"\t\tstrConst: " << e->strConst <<std::endl;
+	if (e->type == constbool_e) 	std::cout <<"\t\tboolConst: " << e->boolConst <<std::endl;
 }
 
 
