@@ -11,8 +11,6 @@ extern int yylineno;
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
 
-
-
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
 	
 	/*Create new quad*/
@@ -73,6 +71,16 @@ expr* emit_relop(iopcode icode, expr* expr1, expr* expr2){
 	return result;
 }
 
+/*Creates some quads based on boolean operators*/
+expr* emit_bool(iopcode icode, expr* expr1, expr* expr2){
+	expr *result=newexpr(boolexpr_e);
+	result->sym=newtemp();
+
+	emit(icode,expr1,expr2,result,0,yylineno);
+
+	return result;	
+}
+
 std::string iopcodeToString(iopcode op){
 	/*TODO: add cases for more opcodes*/
 	switch(op){
@@ -97,6 +105,8 @@ std::string iopcodeToString(iopcode op){
 		case if_less_iopcode:			return "IF_LESS_IOPCODE";
 		case if_greater_iopcode:		return "IF_GREATER_IOPCODE";
 		case jump_iopcode:				return "JUMP_IOPCODE";
+		case and_iopcode:				return "AND_IOPCODE";
+		case or_iopcode:				return "OR_IOPCODE";
 		default: 						return "INVALID IOPCODE";
 	}
 }
@@ -252,4 +262,30 @@ expr* newexpr_constbool(bool_t b){
 	expr* e = newexpr(constbool_e);
 	e->boolConst = b;
 	return e;
+}
+
+
+
+//eriona
+/*
+	Since we know at compile time a unary minus conflict, we can spot it.
+	Returns 1 for legal expressions to uminus, and 0 to ilegal ones.
+*/
+int checkuminus(expr *e){
+	if( e->type == constbool_e   ||
+		e->type == conststring_e ||
+		e->type == nil_e		 ||
+		e->type == newtable_e	 ||
+		e->type == programfunc_e ||
+		e->type == libraryfunc_e ||
+		e->type == boolexpr_e 
+	  ) return 0; //error case
+
+
+	else return 1; //legal case 
+}
+
+
+void patchLabel(unsigned index, unsigned nextQuad){
+	vctr_quads[index-1].label=nextQuad-1;
 }

@@ -115,18 +115,14 @@ expr *member_item(expr * e,std::string id);
 
 expr *newxpr_conststring(std::string s);
 
-
-
 void elist_vctr_add(expr *e);
 
+expr* emit_bool(iopcode icode, expr* expr1, expr* expr2);
 
-
-//eriona ioanna
 expr *member_item(expr * e,std::string id);
 
 expr *newxpr_constrstring(std::string s);
 
-//ioanna
 expr *make_call(expr *lvalue,expr* elist);
 
 /*Creates a new expression with constnum_e type 
@@ -136,5 +132,14 @@ expr* newexpr_constnum(double i);
 /*Creates a new expression with constbool_e type 
 and fills the boolConst field with the given value*/
 expr* newexpr_constbool(bool_t b);
+
+
+/*
+	Since we know at compile time a unary minus conflict, we can spot it.
+	Returns 1 for legal expressions to uminus, and 0 to ilegal ones.
+*/
+int checkuminus(expr *e);
+
+void patchLabel(unsigned index, unsigned nextQuad);
 
 #endif

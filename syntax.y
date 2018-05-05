@@ -31,6 +31,7 @@
 	void* exprPtr;
 	void* sym;
 	void* calls;
+	unsigned index;
 }
 
 %token <stringValue> ID 
@@ -58,6 +59,8 @@
 %type <exprPtr> indexedelem
 %type <exprPtr> indexed
 %type <exprPtr> more
+%type <index> 	ifprefix
+%type <index>   elseprefix
 
 %right '='
 %left OR
@@ -147,13 +150,11 @@ expr:		assignexpr 					{
 											printf("expr:expr != expr in line:%d\n",yylineno);										
 											$$ = emit_relop(if_noteq_iopcode, (expr*) $1, (expr*) $3);	
 										}
-			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);										
-											// emit(and_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);		
+											($$)= emit_bool(and_iopcode, (expr*) ($1), (expr*) ($3));
 										}
-			|expr OR expr 				{	printf("expr:expr OR expr in line:%d\n",yylineno);										
-											// emit(or_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+			|expr OR expr 				{	printf("expr:expr OR expr in line:%d\n",yylineno);	
+											($$)= emit_bool(or_iopcode, (expr*) ($1), (expr*) ($3));
 										}
 			|term						{ 
 											printf("expr:term in line:%d\n",yylineno);
@@ -167,43 +168,132 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 											($$) = ($2);
 										}
 			| '-' expr %prec UMINUS		{	
-											printf("term:-expr in line:%d\n",yylineno);									
-											// emit(uminus_iopcode,($1),($2),($$),0,yylineno);
+											printf("term:-expr in line:%d\n",yylineno);	
+
+											if(checkuminus((expr *)$2))
+											{
+											($$)= newexpr(arithexpr_e);
+											((expr*)($$))->sym = newtemp();
+											emit(uminus_iopcode,(expr*)($2), NULL,(expr*)($$),0,yylineno);
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											}
+											
+											else	printf("term:-expr in line has ilegal expression type:%d\n",yylineno);							
+											 
 
 										}
 			| NOT expr 					{
-											printf("term:!expr in line:%d\n",yylineno);					
-											// emit(not_iopcode,($1),($2),($$),0,yylineno);
+											printf("term:!expr in line:%d\n",yylineno);	
+
+											($$)= newexpr(boolexpr_e);
+											((expr*)($$))->sym = newtemp();
+											 emit(not_iopcode,(expr*)($2),NULL, (expr*)($$),0,yylineno);
+										
+
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
-										}
+										}										
 			|PLUSPLUS lvalue 			{	printf("term:++lvalue in line:%d\n",yylineno);
-											symTableEntry* ptr = (symTableEntry*) $2;
 											
+											/*TODO: Check if lvalue is a function*/
+											/*symTableEntry* ptr = (symTableEntry*) $2;
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
 												std::cout << "\033[01;31mERROR:Cannot use function " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
+											}*/
+
+
+											//xreiazetai else edw???
+											if(((expr*)($2))->type == tableitem_e){
+												($$) = emit_iftableitem((expr*)$2);
+												emit(add_iopcode,(expr*)($$), newexpr_constnum(1), (expr*)($$), 0, yylineno);
+												emit(tablesetelem_iopcode, (expr*)($2), ((expr*)($2))->index, (expr*)($$), 0, yylineno);
+											}
+											else{
+												emit(add_iopcode,(expr*)($2), newexpr_constnum(1), (expr*)($2), 0, yylineno);
+												($$) = newexpr(arithexpr_e);
+												((expr*)($$))->sym = newtemp();
+												emit(assign_iopcode, (expr*)($2), NULL,(expr*) ($$), 0, yylineno);
 											}
 										}
-			|lvalue PLUSPLUS 			{	printf("term:lvalue++ in line:%d\n",yylineno);
-											symTableEntry* ptr = (symTableEntry*) $1;
+			|lvalue PLUSPLUS 			{
+											expr* value;
+											printf("term:lvalue++ in line:%d\n",yylineno);
+
+											/*TODO: Check if lvalue is a function*/
+											/*symTableEntry* ptr = (symTableEntry*) $1;
 
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
+											}*/
+
+											//na valw else edw ston elegxo????
+
+											($$) = newexpr(var_e);
+											((expr*)($$))->sym = newtemp();
+
+											if(((expr*)($1))->type == tableitem_e){
+											value=emit_iftableitem((expr*)$1);
+											emit(assign_iopcode,value,NULL,(expr*)($$),0, yylineno);
+											emit(add_iopcode,value,newexpr_constnum(1),value,0,yylineno);
+											emit(tablesetelem_iopcode,(expr*)($1),((expr*)($1))->index,value,0,yylineno);
 											}
+
+											else{
+											emit(assign_iopcode,(expr*)($1),NULL,(expr*)($$),0, yylineno);
+											emit(add_iopcode,(expr*)($1),newexpr_constnum(1),(expr*)($1),0,yylineno);
+											}
+
+
 										}
 			|MINUSMINUS lvalue 			{	printf("term:--lvalue in line:%d\n",yylineno);
-											symTableEntry* ptr = (symTableEntry*) $2;
-
+											
+											/*TODO: Check if lvalue is a function*/
+											/*symTableEntry* ptr = (symTableEntry*) $2;
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno << "\033[00m" << std::endl;
+												std::cout << "\033[01;31mERROR:Cannot use function " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
+											}*/
+
+
+											//xreiazetai else edw???
+											if(((expr*)($2))->type == tableitem_e){
+												($$) = emit_iftableitem((expr*)$2);
+												emit(sub_iopcode,(expr*)($$), newexpr_constnum(1), (expr*)($$), 0, yylineno);
+												emit(tablesetelem_iopcode, (expr*)($2), ((expr*)($2))->index, (expr*)($$), 0, yylineno);
+											}
+											else{
+												emit(sub_iopcode,(expr*)($2), newexpr_constnum(1), (expr*)($2), 0, yylineno);
+												($$) = newexpr(arithexpr_e);
+												((expr*)($$))->sym = newtemp();
+												emit(assign_iopcode, (expr*)($2), NULL,(expr*) ($$), 0, yylineno);
 											}
 										}
-			|lvalue MINUSMINUS 			{	printf("term:lvalue-- in line:%d\n",yylineno);
-											symTableEntry* ptr = (symTableEntry*) $1;
-											
+			|lvalue MINUSMINUS 			{
+											expr* value;
+											printf("term:lvalue++ in line:%d\n",yylineno);
+
+											/*TODO: Check if lvalue is a function*/
+											/*symTableEntry* ptr = (symTableEntry*) $1;
+
 											if(ptr != NULL && (ptr->symType == USER_FUNC || ptr->symType == LIB_FUNC)){
-												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator -- " <<yylineno << "\033[00m" << std::endl;
+												std::cout << "\033[01;31mERROR:Cannot use funtion " <<ptr->name <<" with operator ++ at line " <<yylineno << "\033[00m" << std::endl;
+											}*/
+
+											//na valw else edw ston elegxo????
+
+											($$) = newexpr(var_e);
+											((expr*)($$))->sym = newtemp();
+
+											if(((expr*)($1))->type == tableitem_e){
+											value=emit_iftableitem((expr*)$1);
+											emit(assign_iopcode,value,NULL,(expr*)($$),0, yylineno);
+											emit(sub_iopcode,value,newexpr_constnum(1),value,0,yylineno);
+											emit(tablesetelem_iopcode,(expr*)($1),((expr*)($1))->index,value,0,yylineno);
 											}
+
+											else{
+											emit(assign_iopcode,(expr*)($1),NULL,(expr*)($$),0, yylineno);
+											emit(sub_iopcode,(expr*)($1),newexpr_constnum(1),(expr*)($1),0,yylineno);
+											}
+
 										}
 			|primary 					{
 											printf("term:primary in line:%d\n",yylineno);
@@ -558,13 +648,38 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 												}
 			;
 
+ifstmt:		ifprefix stmt elseprefix stmt 		{
+													patchLabel(($1),($3)+1);
+													patchLabel(($3),nextquadLabel()+1);
+												}
+			|ifprefix stmt 						{
+													patchLabel(($1),nextquadLabel()+1);
+												} 		
+			;			
+
+ifprefix:	IF '(' expr ')'						{
+													emit(if_eq_iopcode,(expr *)($3),newexpr_constbool(true_t),NULL,nextquadLabel()+3,yylineno);
+													($$)=nextquadLabel()+1;
+													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
+												}
+			;
+
+elseprefix:	ELSE 								{
+													($$)=nextquadLabel()+1;
+													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
+												}
+			;
+
+
+/*
+
 ifstmt:		IF '(' expr ')' stmt ifstmt1		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
 			;
 
-ifstmt1:	/*empty*/							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: empty in line:%d\n",yylineno);}
+ifstmt1:	/*empty						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: empty in line:%d\n",yylineno);}
 			|ELSE stmt 							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: ELSE stmt in line:%d\n",yylineno);}
 			;
-
+*/
 whilestmt:	WHILE '(' expr ')' stmt 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
 			;
 
