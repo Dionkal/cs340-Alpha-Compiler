@@ -261,3 +261,8 @@ expr* newexpr_constbool(bool_t b){
 	e->boolConst = b;
 	return e;
 }
+
+
+void patchLabel(unsigned index, unsigned nextQuad){
+	vctr_quads[index-1].label=nextQuad-1;
+}
