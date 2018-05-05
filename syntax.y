@@ -147,13 +147,11 @@ expr:		assignexpr 					{
 											printf("expr:expr != expr in line:%d\n",yylineno);										
 											$$ = emit_relop(if_noteq_iopcode, (expr*) $1, (expr*) $3);	
 										}
-			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);										
-											// emit(and_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);		
+											($$)=expr* emit_bool(and_iopcode, expr* ($1), expr* ($3));
 										}
-			|expr OR expr 				{	printf("expr:expr OR expr in line:%d\n",yylineno);										
-											// emit(or_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+			|expr OR expr 				{	printf("expr:expr OR expr in line:%d\n",yylineno);	
+											($$)=expr* emit_bool(or_iopcode, expr* ($1), expr* ($3));
 										}
 			|term						{ 
 											printf("expr:term in line:%d\n",yylineno);

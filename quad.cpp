@@ -11,8 +11,6 @@ extern int yylineno;
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
 
-
-
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
 	
 	/*Create new quad*/
@@ -71,6 +69,16 @@ expr* emit_relop(iopcode icode, expr* expr1, expr* expr2){
 	emit(assign_iopcode, newexpr_constbool(true_t), NULL, result, 0, yylineno);
 
 	return result;
+}
+
+/*Creates some quads based on boolean operators*/
+expr* emit_bool(iopcode icode, expr* expr1, expr* expr2){
+	expr *result=newexpr(boolexpr_e);
+	result->sym=newtemp();
+
+	emit(iopcode,expr1,expr2,result,0,yylineno);
+
+	return result;	
 }
 
 std::string iopcodeToString(iopcode op){
