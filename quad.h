@@ -140,4 +140,6 @@ expr* newexpr_constbool(bool_t b);
 */
 int checkuminus(expr *e);
 
+void patchLabel(unsigned index, unsigned nextQuad);
+
 #endif

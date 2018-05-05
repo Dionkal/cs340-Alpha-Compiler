@@ -284,3 +284,8 @@ int checkuminus(expr *e){
 
 	else return 1; //legal case 
 }
+
+
+void patchLabel(unsigned index, unsigned nextQuad){
+	vctr_quads[index-1].label=nextQuad-1;
+}

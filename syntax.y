@@ -31,6 +31,7 @@
 	void* exprPtr;
 	void* sym;
 	void* calls;
+	unsigned index;
 }
 
 %token <stringValue> ID 
@@ -58,6 +59,8 @@
 %type <exprPtr> indexedelem
 %type <exprPtr> indexed
 %type <exprPtr> more
+%type <index> 	ifprefix
+%type <index>   elseprefix
 
 %right '='
 %left OR
@@ -645,13 +648,38 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 												}
 			;
 
+ifstmt:		ifprefix stmt elseprefix stmt 		{
+													patchLabel(($1),($3)+1);
+													patchLabel(($3),nextquadLabel()+1);
+												}
+			|ifprefix stmt 						{
+													patchLabel(($1),nextquadLabel()+1);
+												} 		
+			;			
+
+ifprefix:	IF '(' expr ')'						{
+													emit(if_eq_iopcode,(expr *)($3),newexpr_constbool(true_t),NULL,nextquadLabel()+3,yylineno);
+													($$)=nextquadLabel()+1;
+													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
+												}
+			;
+
+elseprefix:	ELSE 								{
+													($$)=nextquadLabel()+1;
+													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
+												}
+			;
+
+
+/*
+
 ifstmt:		IF '(' expr ')' stmt ifstmt1		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
 			;
 
-ifstmt1:	/*empty*/							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: empty in line:%d\n",yylineno);}
+ifstmt1:	/*empty						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: empty in line:%d\n",yylineno);}
 			|ELSE stmt 							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: ELSE stmt in line:%d\n",yylineno);}
 			;
-
+*/
 whilestmt:	WHILE '(' expr ')' stmt 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
 			;
 
