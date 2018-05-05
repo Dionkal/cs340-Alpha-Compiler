@@ -124,34 +124,28 @@ expr:		assignexpr 					{
 											$$ = (void*) emit_arithexpr(mod_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '>' expr 				{	
-											printf("expr:expr > expr in line:%d\n",yylineno);										
-											// emit(if_greater_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
-										}
+											printf("expr:expr > expr in line:%d\n",yylineno);	
+											$$ = emit_relop(if_greater_iopcode, (expr*) $1, (expr*) $3);
+																				}
 			|expr '<' expr 				{	
 											printf("expr:expr < expr in line:%d\n",yylineno);										
-											// emit(if_less_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_less_iopcode, (expr*) $1, (expr*) $3);										
 										}
 			|expr GREATEREQUAL expr 	{	
 											printf("expr:expr >= expr in line:%d\n",yylineno);										
-											// emit(if_greatereq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_greatereq_iopcode, (expr*) $1, (expr*) $3);
 										}
 			|expr LESSEQUAL expr 		{	
 											printf("expr:expr <= expr in line:%d\n",yylineno);										
-											// emit(if_lesseq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_lesseq_iopcode, (expr*) $1, (expr*) $3);											
 										}
 			|expr EQUAL expr 			{	
 											printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);										
-											// emit(if_eq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_eq_iopcode, (expr*) $1, (expr*) $3);
 										}
 			|expr NOTEQUAL expr 		{
 											printf("expr:expr != expr in line:%d\n",yylineno);										
-											// emit(if_noteq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_noteq_iopcode, (expr*) $1, (expr*) $3);	
 										}
 			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);										
 											// emit(and_iopcode,($1),($3),($$),0,yylineno);
