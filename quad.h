@@ -115,18 +115,14 @@ expr *member_item(expr * e,std::string id);
 
 expr *newxpr_conststring(std::string s);
 
-
-
 void elist_vctr_add(expr *e);
 
+expr* emit_bool(iopcode icode, expr* expr1, expr* expr2);
 
-
-//eriona ioanna
 expr *member_item(expr * e,std::string id);
 
 expr *newxpr_constrstring(std::string s);
 
-//ioanna
 expr *make_call(expr *lvalue,expr* elist);
 
 /*Creates a new expression with constnum_e type 
