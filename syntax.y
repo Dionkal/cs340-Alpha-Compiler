@@ -653,22 +653,22 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 
 ifstmt:		ifprefix stmt elseprefix stmt 		{
 													patchLabel(($1),($3)+1);
-													patchLabel(($3),nextquadLabel()+1);
+													patchLabel(($3),nextquadLabel());
 												}
 			|ifprefix stmt 						{
-													patchLabel(($1),nextquadLabel()+1);
+													patchLabel(($1),nextquadLabel());
 												} 		
 			;			
 
 ifprefix:	IF '(' expr ')'						{
-													emit(if_eq_iopcode,(expr *)($3),newexpr_constbool(true_t),NULL,nextquadLabel()+3,yylineno);
-													($$)=nextquadLabel()+1;
+													emit(if_eq_iopcode,(expr *)($3),newexpr_constbool(true_t),NULL,nextquadLabel()+2,yylineno);
+													($$)=nextquadLabel();
 													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
 												}
 			;
 
 elseprefix:	ELSE 								{
-													($$)=nextquadLabel()+1;
+													($$)=nextquadLabel();
 													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
 												}
 			;
@@ -688,7 +688,7 @@ whilesecond:	'(' expr ')'					{
 whilestmt:		whilestart whilesecond stmt 	{
 													emit(jump_iopcode,NULL,NULL,NULL,($1),yylineno);
 													patchLabel(($2),nextquadLabel()+1);
-													patchLabel();
+													// patchLabel();
 
 												}
 /*whilestmt:	WHILE '(' expr ')' stmt 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
