@@ -199,23 +199,31 @@ expr:		assignexpr 					{
 											printf("expr:expr != expr in line:%d\n",yylineno);										
 											$$ = emit_relop_short(if_noteq_iopcode, (expr*) $1, (expr*) $3);	
 										}
-			|expr AND logicalTemp expr 	{	printf("expr:expr AND expr in line:%d\n",yylineno);		
+			|expr AND {$1 = true_test((expr*)$1);} logicalTemp expr 	
+
+										{	printf("expr:expr AND expr in line:%d\n",yylineno);		
 											expr *result=newexpr(boolexpr_e);
 											result->sym=newtemp();
 
-											patchList( *(((expr*)$1)->truelist), $3);
-											result->truelist = ((expr*) $4)->truelist;
-											result->falselist = mergelist((((expr*) $1)->falselist), (((expr*) $4)->falselist));
-
+											$5 = true_test((expr*) $5);
+											patchList( *(((expr*)$1)->truelist), $4);
+											printf("TEST1\n");
+											result->truelist = ((expr*) $5)->truelist;
+											printf("TEST2\n");
+											result->falselist = mergelist((((expr*) $1)->falselist), (((expr*) $5)->falselist));
+											printf("TEST3\n");
 											$$ = result;
 										}
-			|expr OR logicalTemp expr 	{	printf("expr:expr OR expr in line:%d\n",yylineno);	
+			|expr OR {$1 = true_test((expr*)$1);} logicalTemp expr 	
+
+										{	printf("expr:expr OR expr in line:%d\n",yylineno);	
 											expr *result=newexpr(boolexpr_e);
 											result->sym=newtemp();
 
-											patchList( *(((expr*)$1)->falselist), $3);
-											result->falselist = ((expr*) $4)->falselist;
-											result->truelist = mergelist((((expr*) $1)->truelist), (((expr*) $4)->truelist));
+											$5 = true_test((expr*) $5);
+											patchList( *(((expr*)$1)->falselist), $4);
+											result->falselist = ((expr*) $5)->falselist;
+											result->truelist = mergelist((((expr*) $1)->truelist), (((expr*) $5)->truelist));
 											
 											$$ = result;
 										}
@@ -249,11 +257,11 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 			| NOT expr 					{
 											printf("term:!expr in line:%d\n",yylineno);	
 
-											($$)= newexpr(boolexpr_e);
-											((expr*)($$))->sym = newtemp();
-										
-											((expr*)($$))->truelist = ((expr*)($2))->falselist;
-											((expr*)($$))->falselist = ((expr*)($2))->truelist;
+											($$)= true_test((expr*)$2); 
+											short_list temp = ((expr*)($$))->truelist;  
+
+											((expr*)($$))->truelist =  ((expr*)($$))->falselist;
+											((expr*)($$))->falselist = temp;
 										}										
 			|PLUSPLUS lvalue 			{	printf("term:++lvalue in line:%d\n",yylineno);
 											
@@ -380,22 +388,8 @@ assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",y
 													result->type=assignexpr_e;//needs firther understandin
 													($$)=(void *)result;
 												}else{
-													unsigned templabel;
+													evaluate_short((expr*) $3);
 
-													if(!((expr*)$3)->truelist->empty()) {
-														patchList(*(((expr*)$3)->truelist), nextquadLabel());
-														emit(assign_iopcode, newexpr_constbool(true_t), NULL, (expr*)$3, 0, yylineno);
-													}
-
-													if(!((expr*)$3)->falselist->empty()){ 
-														templabel = nextquadLabel();
-														emit(jump_iopcode, NULL, NULL, NULL, nextquadLabel()+1 , yylineno); /*jump to the normal assignment*/
-														patchList(*(((expr*)$3)->falselist), nextquadLabel());
-														emit(assign_iopcode, newexpr_constbool(false_t), NULL, (expr*)$3, 0, yylineno);
-													}
-
-													patchLabel(templabel,nextquadLabel());/*patch the previous jump*/
-													
 													emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
 													expr* result_e = newexpr(var_e);
 													result_e->sym = newtemp();

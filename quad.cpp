@@ -314,8 +314,11 @@ short_list makelist(unsigned label){
 short_list mergelist(short_list l1, short_list l2){
 	std::list<unsigned>::iterator it;
 
-	it = (*l1).begin();	
+	it = (*l1).begin();
+	printf("BEFORE SPLICE\n");	
+	if(l2 == NULL) printf("L2 is NULL!!!!\n");
 	l1->splice(it, *l2);
+	printf("AFTER SPLICE\n");
 	return l1;
 }
 

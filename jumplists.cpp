@@ -20,11 +20,8 @@ void newlistEntry(){
 /*patch all the jumps indexed by the given list with the given label*/
 void patchList(std::list<unsigned> List, unsigned label){
 	while(!List.empty()){
-		printf("IN patch list----------------------------\n");
-		printf("index:  %d\tlabel: %d\n",List.front(), label);
 		(vctr_quads[List.front()]).label = label;
 		List.pop_front();
-		printf("IN patch list END----------------------------\n");
 	}
 }
 
