@@ -9,7 +9,10 @@
 #include <stack>
 
 using namespace std;
- extern std::stack<bool> scopeAccessStack;
+extern std::stack<bool> scopeAccessStack;
+
+extern unsigned loopcounter;
+extern std::stack<unsigned> loopcounterStack;
 	
 %}
 %option yylineno
@@ -417,6 +420,7 @@ int main (int argc, char *argv[]){
    		scopeAccessStack.push(false);
    		newOffset();
    		insertLibFuncSym();
+		loopcounterStack.push(loopcounter);
 		yyparse();
    		scopeAccessStack.pop();
 

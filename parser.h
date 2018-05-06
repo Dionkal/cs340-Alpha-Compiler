@@ -110,7 +110,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 28 "syntax.y" /* yacc.c:1909  */
+#line 36 "syntax.y" /* yacc.c:1909  */
 
 	char* stringValue;
 	float floatValue;
@@ -118,8 +118,9 @@ union YYSTYPE
 	void* sym;
 	void* calls;
 	unsigned index;
+	void* jumpListEntry;
 
-#line 123 "parser.h" /* yacc.c:1909  */
+#line 124 "parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

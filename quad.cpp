@@ -11,6 +11,8 @@ extern int yylineno;
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
 
+
+
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
 	
 	/*Create new quad*/
@@ -167,9 +169,11 @@ void printQuads(){
 			std::cout << "\tresult: " << "\n";
 			printExpr( i->result);
 		}
-		if(i->label) std::cout << "\tlabel: " <<i->label << "\n";
+		if(i->op == jump_iopcode || i->op == if_eq_iopcode || i->op == if_noteq_iopcode
+			|| i->op == if_lesseq_iopcode || i->op == if_greatereq_iopcode || i->op == if_less_iopcode
+			|| i->op == if_greater_iopcode) std::cout << "\tlabel: " <<i->label << "\n";
 
-		if(i->line) std::cout << "\tline: " <<i->line << "\n";
+		std::cout << "\tline: " <<i->line << "\n";
 
 	}
 }

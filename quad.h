@@ -34,7 +34,8 @@ typedef enum iopcode{
 	tablecreate_iopcode,
 	tablegetelem_iopcode,
 	tablesetelem_iopcode,
-	jump_iopcode
+	jump_iopcode,
+	invalid_iopcode
 }iopcode;
 
 /*Enumerator that defines all the differnet types of expressions*/

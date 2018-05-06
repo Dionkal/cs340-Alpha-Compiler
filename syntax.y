@@ -5,6 +5,8 @@
 	#include <string>
 	#include "quad.h"
 	#include "symbolUtilities.h"
+	#include "jumplists.h"
+	#include <list>
 	#include <iostream>
 	#include <sstream>
 	#include <assert.h>
@@ -12,12 +14,18 @@
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
 	int k=0;
+	/*Counts how many loops we are currently in w/o entering a function space*/
+	unsigned loopcounter = 0;
+	std::stack<unsigned> loopcounterStack;
+
+
 
 	extern int yylineno;
 	extern char* yytext;
 	extern FILE* yyin;
 	extern int current_scope;
 	extern unsigned int scopeSpaceCounter;
+	extern std::stack<jumplistEntry*> jumpListStack;
 	std::stack<bool> scopeAccessStack;
 	unsigned int anonymousCounter = 0;
 %}
@@ -32,38 +40,43 @@
 	void* sym;
 	void* calls;
 	unsigned index;
+	void* jumpListEntry;
 }
 
 %token <stringValue> ID 
 %token <floatValue> NUMBER
 %token <stringValue> STRING 
+
 %token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
-%type <exprPtr> lvalue
-%type <exprPtr> const
-%type <exprPtr> primary
-%type <exprPtr> term
-%type <exprPtr> expr
-%type <exprPtr> assignexpr
-%type <sym>		funcname
-%type <exprPtr> funcprefix
-%type <exprPtr> funcdef
-%type <exprPtr> member
-%type <calls>	methodcall
-%type <calls>   normcall
-%type <calls>   callsuffix
-%type <exprPtr> elist
-%type <exprPtr> elist1
-%type <exprPtr> call
-%type <exprPtr> objectdef
-%type <exprPtr> indexedelem
-%type <exprPtr> indexed
-%type <exprPtr> more
-%type <index> 	ifprefix
-%type <index>   elseprefix
-%type <index> 	whilestart
-%type <index> 	whilesecond
-%type <exprPtr> whilestmt
+%type <exprPtr> 		lvalue
+%type <exprPtr> 		const
+%type <exprPtr> 		primary
+%type <exprPtr> 		term
+%type <exprPtr> 		expr
+%type <exprPtr> 		assignexpr
+%type <sym>				funcname
+%type <exprPtr> 		funcprefix
+%type <exprPtr> 		funcdef
+%type <exprPtr> 		member
+%type <calls>			methodcall
+%type <calls>   		normcall
+%type <calls>   		callsuffix
+%type <exprPtr> 		elist
+%type <exprPtr> 		elist1
+%type <exprPtr> 		call
+%type <exprPtr> 		objectdef
+%type <exprPtr> 		indexedelem
+%type <exprPtr> 		indexed
+%type <exprPtr> 		more
+%type <index> 			ifprefix
+%type <index>   		elseprefix
+%type <index> 			whilestart
+%type <index> 			whilesecond
+%type <exprPtr> 		whilestmt
+%type <jumpListEntry> 	loopstmt
+%type <jumpListEntry> 	stmt
+%type <jumpListEntry> 	stmt1
 
 %right '='
 %left OR
@@ -83,21 +96,44 @@ program:	stmt1						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf(
 			|/*empty*/					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program did not start\n");}
 			;
 
-stmt1:		stmt1 stmt
-            |stmt
+stmt1:		stmt1 stmt     															{ $$ = $2; }
+            |stmt 																	{ $$ = $1; }
 			;
 
 stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",yylineno); resettemp();}
-			|expr error ';'
-			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno); resettemp();}
-			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno); resettemp();}
-			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno); resettemp();}
-			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno); resettemp();}
-			|BREAK ';' 																{printf("stmt:Break with ';' in line:%d\n",yylineno); resettemp();}
-			|CONTINUE ';'															{printf("stmt:Continue with ';' in line:%d\n",yylineno); resettemp();}
-			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno); resettemp();}
-			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno); resettemp();}
-			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno); resettemp();}
+			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno); }
+			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno);}
+			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno); }
+			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno);}
+			|BREAK ';' 																{ 
+																						printf("stmt: break stmt in line %d\n",yylineno);
+																						if(jumpListStack.empty() || loopcounter == 0){
+																							std::cout <<"ERROR cannot break outside of loops" <<std::endl;
+																						}else{
+
+																							jumplistEntry* temp = jumpListStack.top(); 
+																							printf("inside break stmt stack not empty\n");
+																							temp->breakList->push_back(nextquadLabel());
+																							printf("TEST\n");
+																							emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+																							$$ = temp;
+																							
+																						}
+																					}
+			|CONTINUE ';'															{ 
+																						printf("stmt: continue stmt in line %d\n",yylineno);
+																						if(jumpListStack.empty() || loopcounter == 0){
+																							std::cout <<"ERROR cannot continue outside of loops" <<std::endl;
+																						}else{
+																							jumplistEntry* temp = jumpListStack.top();
+																							temp->continueList->push_front(nextquadLabel());
+																							emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+																							$$ = temp;
+																						}	
+																					}
+			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno); }
+			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno);}
+			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno); }
 			;
 
 expr:		assignexpr 					{ 
@@ -234,15 +270,15 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 											((expr*)($$))->sym = newtemp();
 
 											if(((expr*)($1))->type == tableitem_e){
-											value=emit_iftableitem((expr*)$1);
-											emit(assign_iopcode,value,NULL,(expr*)($$),0, yylineno);
-											emit(add_iopcode,value,newexpr_constnum(1),value,0,yylineno);
-											emit(tablesetelem_iopcode,(expr*)($1),((expr*)($1))->index,value,0,yylineno);
+												value=emit_iftableitem((expr*)$1);
+												emit(assign_iopcode,value,NULL,(expr*)($$),0, yylineno);
+												emit(add_iopcode,value,newexpr_constnum(1),value,0,yylineno);
+												emit(tablesetelem_iopcode,(expr*)($1),((expr*)($1))->index,value,0,yylineno);
 											}
 
 											else{
-											emit(assign_iopcode,(expr*)($1),NULL,(expr*)($$),0, yylineno);
-											emit(add_iopcode,(expr*)($1),newexpr_constnum(1),(expr*)($1),0,yylineno);
+												emit(assign_iopcode,(expr*)($1),NULL,(expr*)($$),0, yylineno);
+												emit(add_iopcode,(expr*)($1),newexpr_constnum(1),(expr*)($1),0,yylineno);
 											}
 
 
@@ -533,7 +569,9 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
              |error '}'
 			;	
 
-funcdef:	funcprefix funcargs funcbody 		{
+funcdef:	funcprefix funcargs funcblockstart funcbody funcblockend 		
+												
+												{
 													std::cout<<"funcdef___\n";
 													scopeSpaceCounter--; 
 													scopeAccessStack.pop();
@@ -580,11 +618,21 @@ funcargs:	'(' idlist ')'						{
 												}
 			;
 
+funcblockstart:	/*empty*/						{
+													loopcounterStack.push(loopcounter);
+													loopcounter = 0;
+												}
+
 funcbody:	block								{
 													std::cout<<"funcbody___\n";
 													scopeSpaceCounter--; 
 												}
 			;
+
+funcblockend: /*empty*/							{
+													loopcounter = loopcounterStack.top();
+													loopcounterStack.pop();
+												}
 
 const:		NUMBER 								{
 													expr* temp_expr = newexpr(constnum_e);
@@ -685,14 +733,24 @@ whilesecond:	'(' expr ')'					{
 
 												}
 
-whilestmt:		whilestart whilesecond stmt 	{
+whilestmt:		whilestart whilesecond loopstmt {
+													printf("WHILESTART RETURNED %d\n",$1);
 													emit(jump_iopcode,NULL,NULL,NULL,($1),yylineno);
 													patchLabel(($2),nextquadLabel());
-													// patchLabel();
+													patchList(*(jumpListStack.top()->breakList), nextquadLabel());
+													patchList(*(jumpListStack.top()->continueList), $1 );
+													jumpListStack.pop();
 
 												}
-/*whilestmt:	WHILE '(' expr ')' stmt 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
-			;*/
+
+loopstmt: loopstart stmt loopend				{ $$ = $2; }
+
+loopstart:										{ ++loopcounter;  newlistEntry();	printf("NEW LIST\n");}
+
+loopend:										{ --loopcounter; }
+
+
+
 
 forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("forstmt: FOR (elist;expr;elist) stmt in 								;											line:%d\n",yylineno);}
 
