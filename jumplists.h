@@ -13,4 +13,5 @@ void newlistEntry();
 /*patch all the jumps indexed by the given list with the given label*/
 void patchList(std::list<unsigned> List, unsigned label);
 
+void debbug_printList(std::list<unsigned> mylist);
 #endif

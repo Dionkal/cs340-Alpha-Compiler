@@ -1,6 +1,7 @@
 #include "jumplists.h"
 #include <stack>
 #include <vector>
+#include <iostream>
 
 /*Jump*/
 std::stack<jumplistEntry*> jumpListStack;
@@ -22,4 +23,13 @@ void patchList(std::list<unsigned> List, unsigned label){
 		(vctr_quads[List.front()]).label = label;
 		List.pop_front();
 	}
+}
+
+
+void debbug_printList(std::list<unsigned> mylist){
+	
+	std::cout <<"Print list: ";
+	for (std::list<unsigned>::iterator it=mylist.begin(); it != mylist.end(); ++it)
+    	std::cout << ' ' << *it;
+    std::cout <<std::endl;
 }
