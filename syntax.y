@@ -795,8 +795,26 @@ loopstart:										{ ++loopcounter;  newlistEntry();	printf("NEW LIST\n");}
 
 loopend:										{ --loopcounter; }
 
-returnstmt:	RETURN ';' 							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN; in line:%d",yylineno);}
-			|RETURN expr ';'					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN expr; in line:%d",yylineno);}
+returnstmt:	RETURN ';' 							{ 
+													// printf("returnstmt: RETURN; in line:%d",yylineno);
+													/*Scopespace counter is 1 when we are not in a function and increments
+													 only when we enter a new fucntion therefore its ideal as a flag for the 
+													 return value*/
+													if (scopeSpaceCounter >1){
+														emit(ret_iopcode, NULL, NULL, NULL, 0 , yylineno);
+													}else{
+														std::cout <<"ERROR cannot emit quad with iopcode return when not in a fuction " <<yylineno <<std::endl;
+													}
+												}
+
+			|RETURN expr ';'					{ 
+													// printf("returnstmt: RETURN expr; in line:%d",yylineno);
+													if (scopeSpaceCounter >1 ){
+														emit(ret_iopcode, NULL, NULL,(expr*) $2 , 0 , yylineno);
+													}else{
+														std::cout <<"ERROR cannot emit quad with iopcode return at line" <<yylineno <<" when not in a fuction "  <<std::endl;
+													}	
+												}
 			;
 
 %%

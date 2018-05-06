@@ -109,6 +109,7 @@ std::string iopcodeToString(iopcode op){
 		case jump_iopcode:				return "JUMP_IOPCODE";
 		case and_iopcode:				return "AND_IOPCODE";
 		case or_iopcode:				return "OR_IOPCODE";
+		case ret_iopcode:				return "RETURN_IOPCODE";
 		default: 						return "INVALID IOPCODE";
 	}
 }
