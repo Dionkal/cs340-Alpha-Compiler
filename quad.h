@@ -166,4 +166,14 @@ short_list mergelist(short_list l1, short_list l2);
 /*Emits quads for relops using short circuit method*/
 expr* emit_relop_short(iopcode icode, expr* expr1, expr* expr2);
 
+
+/*
+	Creates the true and false assignments and backpatches 
+	into them.
+*/
+expr* evaluate_short(expr* e);
+
+/*If e is boolean then returns itself else it makes a truelist and a falselist*/
+expr* true_test(expr* e);
+
 #endif

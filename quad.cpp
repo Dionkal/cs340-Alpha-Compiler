@@ -1,5 +1,6 @@
 #include "quad.h"
 #include "symbolUtilities.h"
+#include "jumplists.h"
 #include <vector>
 #include <iostream>
 #include <stack>
@@ -333,3 +334,42 @@ expr* emit_relop_short(iopcode icode, expr* expr1, expr* expr2){
 	return result;
 }
 
+
+/*
+	Creates the true and false assignments and backpatches 
+	into them.
+*/
+expr* evaluate_short(expr* e){
+
+	if(!( e->truelist->empty() ) ) {
+		patchList(*(e->truelist), nextquadLabel());
+		emit(assign_iopcode, newexpr_constbool(true_t), NULL, e, 0, yylineno);
+	}
+
+	if(!( e->falselist->empty() ) ){ 
+		emit(jump_iopcode, NULL, NULL, NULL, nextquadLabel()+2 , yylineno); /*skip the false assignment*/
+		patchList(*(e->falselist), nextquadLabel());
+		emit(assign_iopcode, newexpr_constbool(false_t), NULL, e, 0, yylineno);
+	}
+
+	return e;
+}
+
+/*If e is boolean then returns itself else it makes a truelist and a falselist*/
+expr* true_test(expr* e){
+	if(e->type == boolexpr_e ){ 
+		printf("TYPE IS BOOLEAN\n");
+		return e;
+	}
+
+	expr* temp =newexpr(boolexpr_e);
+	temp->sym = newtemp();
+
+	temp->truelist = makelist(nextquadLabel());
+	temp->falselist = makelist(nextquadLabel()+1); 
+
+	emit(if_eq_iopcode, e , newexpr_constbool(true_t), NULL, 0, yylineno);
+	emit(jump_iopcode,NULL, NULL, NULL, 0 , yylineno);
+	return temp;
+
+}
