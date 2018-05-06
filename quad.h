@@ -127,4 +127,11 @@ expr *make_call(expr *lvalue,expr* elist);
 
 expr* newexpr_constnum(double i);
 
+
+/*
+	Since we know at compile time a unary minus conflict, we can spot it.
+	Returns 1 for legal expressions to uminus, and 0 to ilegal ones.
+*/
+int checkuminus(expr *e);
+
 #endif
