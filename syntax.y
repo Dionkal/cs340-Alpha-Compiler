@@ -5,6 +5,8 @@
 	#include <string>
 	#include "quad.h"
 	#include "symbolUtilities.h"
+	#include "jumplists.h"
+	#include <list>
 	#include <iostream>
 	#include <sstream>
 	#include <assert.h>
@@ -12,12 +14,18 @@
 	void yyerror (const char *yaccProvidedMessage);
 	extern int yylex(void);
 	int k=0;
+	/*Counts how many loops we are currently in w/o entering a function space*/
+	unsigned loopcounter = 0;
+	std::stack<unsigned> loopcounterStack;
+
+
 
 	extern int yylineno;
 	extern char* yytext;
 	extern FILE* yyin;
 	extern int current_scope;
 	extern unsigned int scopeSpaceCounter;
+	extern std::stack<jumplistEntry*> jumpListStack;
 	std::stack<bool> scopeAccessStack;
 	unsigned int anonymousCounter = 0;
 %}
@@ -31,31 +39,50 @@
 	void* exprPtr;
 	void* sym;
 	void* calls;
+	unsigned index;
+	void* jumpListEntry;
+	void* forjump;
 }
 
 %token <stringValue> ID 
 %token <floatValue> NUMBER
 %token <stringValue> STRING 
+
 %token BREAK CONTINUE AND OR NOT GREATEREQUAL LESSEQUAL EQUAL NOTEQUAL  PLUSPLUS MINUSMINUS LOCAL SCOPEOP DOUPLEDOT FUNCTION NIL TRUE FALSE IF ELSE WHILE FOR RETURN
 
-%type <exprPtr> lvalue
-%type <exprPtr> const
-%type <exprPtr> primary
-%type <exprPtr> term
-%type <exprPtr> expr
-%type <exprPtr> assignexpr
-%type <sym>		funcname
-%type <exprPtr> funcprefix
-%type <exprPtr> funcdef
-%type <exprPtr> member
-%type <calls>	methodcall
-%type <calls>   normcall
-%type <calls>   callsuffix
-%type <exprPtr> elist
-%type <exprPtr> elist1
-%type <exprPtr> call
-%type <exprPtr> objectdef
-
+%type <exprPtr> 		lvalue
+%type <exprPtr> 		const
+%type <exprPtr> 		primary
+%type <exprPtr> 		term
+%type <exprPtr> 		expr
+%type <exprPtr> 		assignexpr
+%type <sym>				funcname
+%type <exprPtr> 		funcprefix
+%type <exprPtr> 		funcdef
+%type <exprPtr> 		member
+%type <calls>			methodcall
+%type <calls>   		normcall
+%type <calls>   		callsuffix
+%type <exprPtr> 		elist
+%type <exprPtr> 		elist1
+%type <exprPtr> 		call
+%type <exprPtr> 		objectdef
+%type <exprPtr> 		indexedelem
+%type <exprPtr> 		indexed
+%type <exprPtr> 		more
+%type <index> 			ifprefix
+%type <index>   		elseprefix
+%type <index> 			whilestart
+%type <index> 			whilesecond
+%type <exprPtr> 		whilestmt
+%type <jumpListEntry> 	loopstmt
+%type <jumpListEntry> 	stmt
+%type <jumpListEntry> 	stmt1
+%type <forjump>			forprefix
+%type <index>			N1
+%type <index>			N2
+%type <index>			N3
+%type <index>			M
 
 %right '='
 %left OR
@@ -75,21 +102,44 @@ program:	stmt1						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf(
 			|/*empty*/					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program did not start\n");}
 			;
 
-stmt1:		stmt1 stmt
-            |stmt
+stmt1:		stmt1 stmt     															{ $$ = $2; }
+            |stmt 																	{ $$ = $1; }
 			;
 
 stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",yylineno); resettemp();}
-			|expr error ';'
-			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno); resettemp();}
-			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno); resettemp();}
-			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno); resettemp();}
-			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno); resettemp();}
-			|BREAK ';' 																{printf("stmt:Break with ';' in line:%d\n",yylineno); resettemp();}
-			|CONTINUE ';'															{printf("stmt:Continue with ';' in line:%d\n",yylineno); resettemp();}
-			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno); resettemp();}
-			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno); resettemp();}
-			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno); resettemp();}
+			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno); }
+			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno);}
+			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno); }
+			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno);}
+			|BREAK ';' 																{ 
+																						printf("stmt: break stmt in line %d\n",yylineno);
+																						if(jumpListStack.empty() || loopcounter == 0){
+																							std::cout <<"ERROR cannot break outside of loops" <<std::endl;
+																						}else{
+
+																							jumplistEntry* temp = jumpListStack.top(); 
+																							printf("inside break stmt stack not empty\n");
+																							temp->breakList->push_back(nextquadLabel());
+																							printf("TEST\n");
+																							emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+																							$$ = temp;
+																							
+																						}
+																					}
+			|CONTINUE ';'															{ 
+																						printf("stmt: continue stmt in line %d\n",yylineno);
+																						if(jumpListStack.empty() || loopcounter == 0){
+																							std::cout <<"ERROR cannot continue outside of loops" <<std::endl;
+																						}else{
+																							jumplistEntry* temp = jumpListStack.top();
+																							temp->continueList->push_front(nextquadLabel());
+																							emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+																							$$ = temp;
+																						}	
+																					}
+			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno); }
+			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno);}
+			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno); }
 			;
 
 expr:		assignexpr 					{ 
@@ -122,42 +172,34 @@ expr:		assignexpr 					{
 											$$ = (void*) emit_arithexpr(mod_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '>' expr 				{	
-											printf("expr:expr > expr in line:%d\n",yylineno);										
-											// emit(if_greater_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
-										}
+											printf("expr:expr > expr in line:%d\n",yylineno);	
+											$$ = emit_relop(if_greater_iopcode, (expr*) $1, (expr*) $3);
+																				}
 			|expr '<' expr 				{	
 											printf("expr:expr < expr in line:%d\n",yylineno);										
-											// emit(if_less_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_less_iopcode, (expr*) $1, (expr*) $3);										
 										}
 			|expr GREATEREQUAL expr 	{	
 											printf("expr:expr >= expr in line:%d\n",yylineno);										
-											// emit(if_greatereq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_greatereq_iopcode, (expr*) $1, (expr*) $3);
 										}
 			|expr LESSEQUAL expr 		{	
 											printf("expr:expr <= expr in line:%d\n",yylineno);										
-											// emit(if_lesseq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_lesseq_iopcode, (expr*) $1, (expr*) $3);											
 										}
 			|expr EQUAL expr 			{	
 											printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);										
-											// emit(if_eq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_eq_iopcode, (expr*) $1, (expr*) $3);
 										}
 			|expr NOTEQUAL expr 		{
 											printf("expr:expr != expr in line:%d\n",yylineno);										
-											// emit(if_noteq_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+											$$ = emit_relop(if_noteq_iopcode, (expr*) $1, (expr*) $3);	
 										}
-			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);										
-											// emit(and_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);		
+											($$)= emit_bool(and_iopcode, (expr*) ($1), (expr*) ($3));
 										}
-			|expr OR expr 				{	printf("expr:expr OR expr in line:%d\n",yylineno);										
-											// emit(or_iopcode,($1),($3),($$),0,yylineno);
-											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
+			|expr OR expr 				{	printf("expr:expr OR expr in line:%d\n",yylineno);	
+											($$)= emit_bool(or_iopcode, (expr*) ($1), (expr*) ($3));
 										}
 			|term						{ 
 											printf("expr:term in line:%d\n",yylineno);
@@ -234,15 +276,15 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 											((expr*)($$))->sym = newtemp();
 
 											if(((expr*)($1))->type == tableitem_e){
-											value=emit_iftableitem((expr*)$1);
-											emit(assign_iopcode,value,NULL,(expr*)($$),0, yylineno);
-											emit(add_iopcode,value,newexpr_constnum(1),value,0,yylineno);
-											emit(tablesetelem_iopcode,(expr*)($1),((expr*)($1))->index,value,0,yylineno);
+												value=emit_iftableitem((expr*)$1);
+												emit(assign_iopcode,value,NULL,(expr*)($$),0, yylineno);
+												emit(add_iopcode,value,newexpr_constnum(1),value,0,yylineno);
+												emit(tablesetelem_iopcode,(expr*)($1),((expr*)($1))->index,value,0,yylineno);
 											}
 
 											else{
-											emit(assign_iopcode,(expr*)($1),NULL,(expr*)($$),0, yylineno);
-											emit(add_iopcode,(expr*)($1),newexpr_constnum(1),(expr*)($1),0,yylineno);
+												emit(assign_iopcode,(expr*)($1),NULL,(expr*)($$),0, yylineno);
+												emit(add_iopcode,(expr*)($1),newexpr_constnum(1),(expr*)($1),0,yylineno);
 											}
 
 
@@ -341,7 +383,12 @@ primary:	lvalue 						{
 											printf("primary: call in line:%d\n",yylineno);
 										}
 			|objectdef 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
-			|'(' funcdef ')'            {printf("primary: (funcdef) in line:%d\n",yylineno);}
+			
+			|'(' funcdef ')'            {printf("primary: (funcdef) in line:%d\n",yylineno);
+											$$ = newexpr(programfunc_e);
+											((expr*) $$)->sym = ((expr*) $2)->sym;
+										}
+			
 			|const 						{ 
 											 printf("primary: const in line:%d\n",yylineno);
 											 ($$) = ($1);
@@ -413,89 +460,112 @@ call: 		call '(' elist ')' 			{
 											}
 			;
 
-callsuffix:	normcall					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);
-											$$ = $1;
-										}
-			|methodcall 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);
-											$$ = $1;
-										}
+callsuffix:	normcall						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);
+												$$ = $1;
+											}
+			|methodcall 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);
+												$$ = $1;
+											}
 			;
 
-normcall:   '(' elist ')'				{
-											calls* temp = new calls();
+normcall:   '(' elist ')'					{
+												calls* temp = new calls();
 											
-											temp->elist = (expr*) $2;
-											temp->method = false_t;
-											temp->name = "";
-											$$ = temp;
-										 printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);
+												temp->elist = (expr*) $2;
+												temp->method = false_t;
+												temp->name = "";
+												$$ = temp;
+										 		printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);
+											}
+			;
+
+methodcall:	DOUPLEDOT ID '(' elist ')'  	{	
+												calls *methodtemp = new calls();
+												printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
+												methodtemp->elist=(expr *)($4);
+												methodtemp->method=true_t;
+												methodtemp->name=($2);
+												($$)=methodtemp;
+											}
+			;
+
+elist:		/*empty*/						{
+												printf("elist: empty list in line:%d\n",yylineno);
+												($$)=NULL;
+											}
+			|expr elist1 					{	expr *list;
+												//malloc
+												printf("elist: expr elist1 list in line:%d\n",yylineno);
+												list=(expr *)($1);
+												list->next=(expr *)($2);
+												($$)=list;
+											}
+			;
+
+elist1:		/*empty*/						{
+												printf("elist1: empty list in line:%d\n",yylineno);
+												($$)=NULL;
+											}
+			|','expr elist1 				{	
+												expr *list;
+												printf("elist1: ,expr elist1 in line:%d\n",yylineno);
+												list=(expr *)($2);
+												list->next=(expr *)($3);
+												($$)=list;
+											}
+			|error expr elist1				{}
+			;
+
+objectdef:	'[' elist ']' 				{ printf("objectdef: [elist] in line:%d\n",yylineno);
+											expr* temp_expr = newexpr(newtable_e);
+											temp_expr->sym = newtemp();
+											emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
+
+											int count = 0;
+											expr * expr_list = (expr*) $2;
+											while(expr_list){
+												emit(tablesetelem_iopcode,newexpr_constnum(count++),expr_list,temp_expr,0, yylineno);
+												expr_list= expr_list->next;
+											}
+											$$ = temp_expr;
+										}
+
+			|'[' indexed ']'			{ printf("objectdef: [indexed] in line:%d\n",yylineno);
+											expr* temp_expr = newexpr(newtable_e);
+											temp_expr->sym = newtemp();
+											emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
+											
+											expr * expr_list = (expr*) $2;
+											while(expr_list){
+												emit(tablesetelem_iopcode,expr_list->index,expr_list,temp_expr,0, yylineno);
+												expr_list = expr_list->next;
+											}
+											$$ = temp_expr;
 										}
 			;
 
-methodcall:	DOUPLEDOT ID '(' elist ')'  {	
-											calls *methodtemp = new calls();
-											printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
-											methodtemp->elist=(expr *)($4);
-											methodtemp->method=true_t;
-											methodtemp->name=($2);
-											($$)=methodtemp;
+
+indexed:	indexedelem more			{ printf("indexed: indexedelem more in line:%d\n",yylineno);
+											$$ = $1;
+											((expr*)$$)->next = (expr*) $2;
 										}
 			;
 
-elist:		/*empty*/					{
-											printf("elist: empty list in line:%d\n",yylineno);
-											($$)=NULL;
-										}
-			|expr elist1 				{	expr *list;
-											//malloc
-											printf("elist: expr elist1 list in line:%d\n",yylineno);
-											list=(expr *)($1);
-											list->next=(expr *)($2);
-											($$)=list;
-										}
-			;
+more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d\n",yylineno);
+												$$ = $2;
+												((expr*)$$)->next = (expr*) $3;
+											}
 
-elist1:		/*empty*/							{
-													printf("elist1: empty list in line:%d\n",yylineno);
-													($$)=NULL;
-												}
-			|','expr elist1 					{	
-													expr *list;
-													printf("elist1: ,expr elist1 in line:%d\n",yylineno);
-													list=(expr *)($2);
-													list->next=(expr *)($3);
-													($$)=list;
-												}
-			|error expr elist1					{	//i dont know here
-												}
-			;
-
-objectdef:	'[' elist ']' 						{ printf("objectdef: [elist] in line:%d\n",yylineno);
-													expr* temp_expr = newexpr(newtable_e);
-													temp_expr->sym = newtemp();
-													emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
-
-													int count = 0;
-													expr * expr_list = (expr*) $2;
-													while(expr_list){
-														emit(tablesetelem_iopcode,temp_expr,newexpr_constnum(count++),expr_list,0, yylineno);
-														expr_list= expr_list->next;
-													}
-													$$ = temp_expr;
-												}
-			|'[' indexed ']'					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("objectdef: [indexed] in line:%d\n",yylineno);}
-			;
-
-
-indexed:	indexedelem more					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("indexed: indexedelem more in line:%d\n",yylineno);}
-			;
-
-more:       ',' indexedelem more 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("more: ,indexedelem more in line:%d\n",yylineno);}
-            |/*empty*/            			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("more: empty in line:%d\n",yylineno);}
+            |/*empty*/            			{ printf("more: empty in line:%d\n",yylineno);
+												$$ = NULL;
+											}
             ; 
 	
 
-indexedelem:'{' expr ':' expr '}'			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("indexedelem: {expr:expr} in line:%d\n",yylineno);}
+indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d\n",yylineno);
+												$$ = $4;
+												((expr*) $$ )->index = (expr*) $2;
+											}
 			;
 
 block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{printf("``: {stmt1} in line:%d\n",yylineno);}		
@@ -504,7 +574,9 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
              |error '}'
 			;	
 
-funcdef:	funcprefix funcargs funcbody 		{
+funcdef:	funcprefix funcargs funcblockstart funcbody funcblockend 		
+												
+												{
 													std::cout<<"funcdef___\n";
 													scopeSpaceCounter--; 
 													scopeAccessStack.pop();
@@ -551,11 +623,21 @@ funcargs:	'(' idlist ')'						{
 												}
 			;
 
+funcblockstart:	/*empty*/						{
+													loopcounterStack.push(loopcounter);
+													loopcounter = 0;
+												}
+
 funcbody:	block								{
 													std::cout<<"funcbody___\n";
 													scopeSpaceCounter--; 
 												}
 			;
+
+funcblockend: /*empty*/							{
+													loopcounter = loopcounterStack.top();
+													loopcounterStack.pop();
+												}
 
 const:		NUMBER 								{
 													expr* temp_expr = newexpr(constnum_e);
@@ -622,20 +704,117 @@ idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
 												}
 			;
 
-ifstmt:		IF '(' expr ')' stmt ifstmt1		{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt: IF (expr) stmt ifstmt1 in line:%d\n",yylineno);}
+ifstmt:		ifprefix stmt elseprefix stmt 		{
+													patchLabel(($1),($3)+1);
+													patchLabel(($3),nextquadLabel());
+												}
+			|ifprefix stmt 						{
+													patchLabel(($1),nextquadLabel());
+												} 		
+			;			
+
+ifprefix:	IF '(' expr ')'						{
+													emit(if_eq_iopcode,(expr *)($3),newexpr_constbool(true_t),NULL,nextquadLabel()+2,yylineno);
+													($$)=nextquadLabel();
+													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
+												}
 			;
 
-ifstmt1:	/*empty*/							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: empty in line:%d\n",yylineno);}
-			|ELSE stmt 							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("ifstmt1: ELSE stmt in line:%d\n",yylineno);}
+elseprefix:	ELSE 								{
+													($$)=nextquadLabel();
+													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
+												}
 			;
 
-whilestmt:	WHILE '(' expr ')' stmt 			{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("whilestmt: WHILE (expr) stmt in line:%d\n",yylineno);}
-			;
+whilestmt:		whilestart whilesecond loopstmt {
+													
+													emit(jump_iopcode,NULL,NULL,NULL,($1),yylineno);
+													patchLabel(($2),nextquadLabel());
+													patchList(*(jumpListStack.top()->breakList), nextquadLabel());
+													patchList(*(jumpListStack.top()->continueList), $1 );
+													jumpListStack.pop();
 
-forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("forstmt: FOR (elist;expr;elist) stmt in 								;											line:%d\n",yylineno);}
+												}
 
-returnstmt:	RETURN ';' 							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN; in line:%d",yylineno);}
-			|RETURN expr ';'					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN expr; in line:%d",yylineno);}
+
+whilestart:		WHILE 							{
+													($$)=nextquadLabel();
+												}
+
+whilesecond:	'(' expr ')'					{
+													emit(if_eq_iopcode,(expr *)($2),newexpr_constbool(true_t),NULL,nextquadLabel()+2,yylineno);
+													($$)=nextquadLabel();
+													emit(jump_iopcode,NULL,NULL,NULL,0,yylineno);
+
+												}
+
+
+forstmt: forprefix N1 elist ')' N2 loopstmt N3		{
+													patchLabel( ((forJump*)$1)->enter , $5+1); 						/*true jump*/
+													patchLabel($2, nextquadLabel());		  						/*false jump*/
+													patchLabel($5, ((forJump*)$1)->test);							/*loop jump*/
+													patchLabel($7, $2 +1);											/*closure jump*/
+
+													patchList(*(jumpListStack.top()->breakList), nextquadLabel());	/*false jump*/
+													patchList(*(jumpListStack.top()->continueList), $2 +1);			/*closure jump*/
+												}
+
+forprefix:	FOR '(' elist ';' M expr ';'		{
+													forJump* temp = new forJump();
+													temp->test = $5;
+													temp->enter = nextquadLabel();
+													emit(if_eq_iopcode, (expr*) $6, newexpr_constbool(true_t), NULL, 0, yylineno);
+													$$ = temp;
+												}
+
+N1:			/*empty*/							{
+													$$ = nextquadLabel();
+													emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+												}
+
+N2:			/*empty*/							{
+													$$ = nextquadLabel();
+													emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+												}
+
+N3:			/*empty*/							{
+													$$ = nextquadLabel();
+													emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+												}
+
+M:			/*empty*/							{
+
+													$$ = nextquadLabel();
+												}
+
+
+
+loopstmt: loopstart stmt loopend				{ $$ = $2; }
+
+loopstart:										{ ++loopcounter;  newlistEntry();	printf("NEW LIST\n");}
+
+loopend:										{ --loopcounter; }
+
+returnstmt:	RETURN ';' 							{ 
+													// printf("returnstmt: RETURN; in line:%d",yylineno);
+													/*Scopespace counter is 1 when we are not in a function and increments
+													 only when we enter a new fucntion therefore its ideal as a flag for the 
+													 return value*/
+													if (scopeSpaceCounter >1){
+														emit(ret_iopcode, NULL, NULL, NULL, 0 , yylineno);
+													}else{
+														std::cout <<"ERROR cannot emit quad with iopcode return when not in a fuction " <<yylineno <<std::endl;
+													}
+												}
+
+			|RETURN expr ';'					{ 
+													// printf("returnstmt: RETURN expr; in line:%d",yylineno);
+													if (scopeSpaceCounter >1 ){
+														emit(ret_iopcode, NULL, NULL,(expr*) $2 , 0 , yylineno);
+													}else{
+														std::cout <<"ERROR cannot emit quad with iopcode return at line" <<yylineno <<" when not in a fuction "  <<std::endl;
+													}	
+												}
 			;
 
 %%

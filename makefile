@@ -1,6 +1,6 @@
 all:clean bi fl main 
 main: 
-	g++ -Wall lex.yy.c parser.c quad.cpp symbolActions.cpp symbolUtilities.cpp -o scanner 
+	g++ -Wall lex.yy.c parser.c quad.cpp symbolActions.cpp symbolUtilities.cpp jumplists.cpp -o scanner 
 fl:  
 	flex  keywords.l
 bi:
