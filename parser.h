@@ -119,8 +119,9 @@ union YYSTYPE
 	void* calls;
 	unsigned index;
 	void* jumpListEntry;
+	void* forjump;
 
-#line 124 "parser.h" /* yacc.c:1909  */
+#line 125 "parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
