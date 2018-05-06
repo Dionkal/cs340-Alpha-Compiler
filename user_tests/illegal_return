@@ -1,0 +1,6 @@
+return x;
+
+function(){
+
+	return a;
+}

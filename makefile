@@ -1,7 +1,9 @@
-all:clean fl main 
+all:clean bi fl main 
 main: 
-	g++ lex.yy.cc -o scanner 
+	g++ -Wall lex.yy.c parser.c quad.cpp symbolActions.cpp symbolUtilities.cpp jumplists.cpp -o scanner 
 fl:  
-	flex --c++ keywords.l 
+	flex  keywords.l
+bi:
+	bison --yacc --defines --output=parser.c -v syntax.y 
 clean: 
-	rm -rf lex.yy.cc scanner 
+	rm -rf lex.yy.c parser.c parser.output scanner 

@@ -1,10 +1,18 @@
 %{
-	
+#define YY_DECL int yylex(void)	
 #include "scanner.h"
+#include "parser.h"
+#include "quad.h"
+#include "symbolUtilities.h"
+#include <string.h>
 #include <iomanip>
+#include <stack>
+
 using namespace std;
+extern std::stack<bool> scopeAccessStack;
 
-
+extern unsigned loopcounter;
+extern std::stack<unsigned> loopcounterStack;
 	
 %}
 %option yylineno
@@ -14,335 +22,347 @@ integer [0-9]+
 real	[0-9]+"."[0-9]+
 
 /*Punctuation*/
-leftBracket1	\{
-rightBracket1	\}	
-leftBracket2	\[
-rightBracket2	\]
-leftBracket3	\(
-rightBracket3	\)
-semicolon		\;
-comma			\,
-colon			\:
+leftBracket1	'\{'
+rightBracket1	'\}'	
+leftBracket2	'\['
+rightBracket2	'\]'
+leftBracket3	'\('
+rightBracket3	'\)'
+comma			'\,'
+colon			'\:'
 doubleColon	[:]{2}
-period			\.
+period			'\.'
 doublePeriod[.]{2}
 
 comment1		\/{2}.*
 
-ID				[a-zA-Z][a-zA-Z0-9_]*
+ID_LEX			[a-zA-Z][a-zA-Z0-9_]*
 Whitespace 		[ \t\n]
-
+ANY				.
 %%
 
-if				{
-					addToken(KEYWORD,string("IF"),string(yytext),yylineno); 
+"if"				{
+					return IF;
+					//addToken(KEYWORD,string("IF"),string(yytext),yylineno); 
 				}
-else 			{ 
-					 
-					addToken(KEYWORD,string("ELSE"),string(yytext),yylineno);
+"else" 			{ 
+					return ELSE; 
+					//addToken(KEYWORD,string("ELSE"),string(yytext),yylineno);
 				}
-while			{ 
-					 
-					addToken(KEYWORD,string("WHILE"),string(yytext),yylineno);
+"while"			{ 
+					return WHILE; 
+					//addToken(KEYWORD,string("WHILE"),string(yytext),yylineno);
 				}
-for				{ 
+"for"				{ 
           			
-					 
-					addToken(KEYWORD,string("FOR"),string(yytext),yylineno);
+					return FOR;
+					//addToken(KEYWORD,string("FOR"),string(yytext),yylineno);
 				}
-function		{ 
+"function"		{ 
+					return FUNCTION; 
+					//addToken(KEYWORD,string("FUNCTION"),string(yytext),yylineno);
+				}
+"return"		{ 
           			
-					 
-					addToken(KEYWORD,string("FUNCTION"),string(yytext),yylineno);
+					return RETURN; 
+					//addToken(KEYWORD,string("RETURN"),string(yytext),yylineno);
 				}
-return			{ 
+"break"			{ 
           			
-					 
-					addToken(KEYWORD,string("RETURN"),string(yytext),yylineno);
+					return BREAK; 
+					//addToken(KEYWORD,string("BREAK"),string(yytext),yylineno);
 				}
-break			{ 
+"continue"		{ 
           			
-					 
-					addToken(KEYWORD,string("BREAK"),string(yytext),yylineno);
+					return CONTINUE; 
+					//addToken(KEYWORD,string("CONTINUE"),string(yytext),yylineno);
 				}
-continue		{ 
+"and"			{ 
           			
-					 
-					addToken(KEYWORD,string("CONTINUE"),string(yytext),yylineno);
+					return AND; 
+					//addToken(KEYWORD,string("AND"),string(yytext),yylineno); 
 				}
-and				{ 
+"not"				{ 
           			
-					 
-					addToken(KEYWORD,string("AND"),string(yytext),yylineno); 
+					return NOT; 
+					//addToken(KEYWORD,string("NOT"),string(yytext),yylineno);
 				}
-not				{ 
+"or"				{ 
           			
-					 
-					addToken(KEYWORD,string("NOT"),string(yytext),yylineno);
+					return OR; 
+					//addToken(KEYWORD,string("OR"),string(yytext),yylineno);
 				}
-or				{ 
+"local"			{ 
           			
-					 
-					addToken(KEYWORD,string("OR"),string(yytext),yylineno);
+					return LOCAL; 
+					//addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno); 
 				}
-local			{ 
+"true"			{ 
           			
-					 
-					addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno); 
+					return TRUE; 
+					//addToken(KEYWORD,string("TRUE"),string(yytext),yylineno);
 				}
-true			{ 
+"false"			{ 
           			
-					 
-					addToken(KEYWORD,string("TRUE"),string(yytext),yylineno);
+					return FALSE; 
+					//addToken(KEYWORD,string("FALSE"),string(yytext),yylineno); 
 				}
-false			{ 
+"nil"			{ 
           			
-					 
-					addToken(KEYWORD,string("FALSE"),string(yytext),yylineno); 
+					return NIL; 
+					//addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
 				}
-nil				{ 
-          			
-					 
-					addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
-				}
-{ID}			{
-					addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
+{ID_LEX}		{	
+					yylval.stringValue = strdup(yytext);
+					return ID;
+					//addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
 				
 "="				{ 
-          			addToken(OPERATOR,string("ASSIGNMENT"),string(yytext),yylineno);
+					return '=';
+          			//addToken(OPERATOR,string("ASSIGNMENT"),string(yytext),yylineno);
 				}				
 "+"				{ 
-          			addToken(OPERATOR,string("PLUS"),string(yytext),yylineno);
+          			return '+';
+					//addToken(OPERATOR,string("PLUS"),string(yytext),yylineno);
 				}				
 "-"				{ 
-          			addToken(OPERATOR,string("MINUS"),string(yytext),yylineno);
+          			return '-';
+					//addToken(OPERATOR,string("MINUS"),string(yytext),yylineno);
 				}
 "*"				{ 
-          			addToken(OPERATOR,string("MULTIPLICATION"),string(yytext),yylineno);
+          			return '*';
+					//addToken(OPERATOR,string("MULTIPLICATION"),string(yytext),yylineno);
 				}
 "/"				{ 
-          			addToken(OPERATOR,string("DIVISION"),string(yytext),yylineno);
+          			return '/';
+					//addToken(OPERATOR,string("DIVISION"),string(yytext),yylineno);
 				}
 "%"				{ 
-          			addToken(OPERATOR,string("MODULO"),string(yytext),yylineno);
+          			return '%';
+					//addToken(OPERATOR,string("MODULO"),string(yytext),yylineno);
 				}
 "=="			{ 
-          			addToken(OPERATOR,string("EQUALS"),string(yytext),yylineno);
+          			return EQUAL;
+					//addToken(OPERATOR,string("EQUALS"),string(yytext),yylineno);
 				}
 "!="			{ 
-          			addToken(OPERATOR,string("NOT_EQUALS"),string(yytext),yylineno);
+          			return NOTEQUAL;
+					//addToken(OPERATOR,string("NOT_EQUALS"),string(yytext),yylineno);
 				}
 "++"			{	 
-          			addToken(OPERATOR,string("PLUS_PLUS"),string(yytext),yylineno);
+          			return PLUSPLUS;
+					//addToken(OPERATOR,string("PLUS_PLUS"),string(yytext),yylineno);
 				}
 "--"			{ 
-          			addToken(OPERATOR,string("MINUS_MINUS"),string(yytext),yylineno);
+          			return MINUSMINUS;
+					//addToken(OPERATOR,string("MINUS_MINUS"),string(yytext),yylineno);
 				}
 ">"				{ 
-          			addToken(OPERATOR,string("GREATER"),string(yytext),yylineno);
+          			return '>';
+					//addToken(OPERATOR,string("GREATER"),string(yytext),yylineno);
 				}
 "<"				{ 
-          			addToken(OPERATOR,string("LESS"),string(yytext),yylineno);
+          			return '<';
+					//addToken(OPERATOR,string("LESS"),string(yytext),yylineno);
 				}
 ">="			{ 
-          			addToken(OPERATOR,string("G_EQUAL"),string(yytext),yylineno);
+          			return GREATEREQUAL;
+					//addToken(OPERATOR,string("G_EQUAL"),string(yytext),yylineno);
 				}
 "<="			{ 
-          			addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
+          			return LESSEQUAL;
+					//addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
 				}
-{integer}		{
-					addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
+{integer}		{	
+					// printf("Integer\n");
+					yylval.floatValue = atof(yytext);
+					return NUMBER;
+					//addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
 				}
 
 {real}			{
-					addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
+					yylval.floatValue = atof(yytext);
+					return NUMBER;
+					//addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
 				}
 
-{Whitespace}	;
+{Whitespace}	{
+					//addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
+				}
+"{"				{return '{';}
 
-{leftBracket1}  { 
-          	addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
-        } 
-{rightBracket1}  { 
-          	addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
-        } 
-{leftBracket2}  { 
-          	addToken(PUNCTUATION,string("LEFT_SQR_BRACKET"),string(yytext),yylineno);
-        } 
-{rightBracket2}  { 
-          	addToken(PUNCTUATION,string("RIGHT_SQR_BRACKET"),string(yytext),yylineno); 
-        } 
-{leftBracket3}  { 
-          	addToken(PUNCTUATION,string("LEFT_PARENTHESIS"),string(yytext),yylineno);
-        } 
-{rightBracket3}  { 
-          	addToken(PUNCTUATION,string("RIGHT_PARENTHESIS"),string(yytext),yylineno); 
-        } 
-{semicolon}    { 
-          	addToken(PUNCTUATION,string("SEMICOLON"),string(yytext),yylineno);
-        } 
-{comma}      { 
-          	addToken(PUNCTUATION,string("COMMA"),string(yytext),yylineno);
-        } 
-{colon}      { 
-          	addToken(PUNCTUATION,string("COLON"),string(yytext),yylineno);
-        } 
-{doubleColon}  { 
-        	addToken(PUNCTUATION,string("DOUBLE_COLON"),string(yytext),yylineno);
-        } 
-{period}    { 
-          	addToken(PUNCTUATION,string("PERIOD"),string(yytext),yylineno); 
-        } 
+"}"  			{ return '}';} 
+
+"["  			{ 
+					return '[';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				} 
+"]"  			{ 
+					return ']';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				}
+"("  			{ 
+					return '(';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				}
+")"  			{ 
+					return ')';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				}
+";"    			{ 
+					return ';';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				}
+","     		{ 
+					return ',';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+			    }
+":"      		{ 
+					return ':';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+				} 
+{doubleColon}   { 
+					return SCOPEOP;
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+			    } 
+"."    			{ 
+					return '.';
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+			    } 
 {doublePeriod}  { 
-        	addToken(PUNCTUATION,string("DOUBLE_PERIOD"),string(yytext),yylineno);
-} 
+					return DOUPLEDOT;
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+			    }  
 
 
-"\""	{
+"\""		{ 	
+			char input = *yytext; /*get input*/
+  			char next;
+  			string output;
+  			int stringLine = yylineno;
+  			int isLegal = 1;
 
-				/*code for strings*/
-				char input = *yytext;/*get input*/
-				char next;
-				int buf_size = 1;
-				char * output=(char *)malloc(buf_size*sizeof(char));
-				int cnt=0;
-				output[cnt]=input;
+  			while (input != EOF && (input = yyinput()) != '\0' ) {
+    		/*Check cases which start with '\'*/
+    			if (input == '\\') {
+      				//Lookahead
+      				next = yyinput();
 
-				while( (input=yyinput()) != '\0' && input != EOF){
-					if(cnt >( buf_size/2)){
-						//cout <<"Reallocating..buffsize is now: " << buf_size <<endl;
-						buf_size = buf_size *2;
-						output = (char*) realloc((void*)output, buf_size);
-						//hope it works...pls <3
-					}
-					/*Check cases which start with '\'*/
-					if(input == '\\'){
-						next=yyinput();
-
-						if(next=='n'){
-							output[cnt]='\n';
-							cnt++;
-							continue;							
-						}
-						if(next=='t'){
-							output[cnt]='\t';
-							cnt++;
-							continue;
-						}
-						if(next=='v'){
-							output[cnt]='\v';
-							cnt++;
-							continue;
-						}
-						if(next=='\\'){
-							output[cnt]='\\';
-							cnt++;
-							continue;
-						}
-						if(next=='b'){
-							output[cnt]='\b';
-							cnt++;
-							continue;
-						}
-						if(next=='\"'){
-							output[cnt]='\"';
-							cnt++;
-							continue;
-						}
-					}
-
-					/*other cases*/
-					if(input=='\n'){
-						// output[cnt]='\n';
-						break;//not sure
-					}
-					if(input =='\"'){
-						break;//not sure	
-					}
-
-					output[cnt]=input;
-					cnt++;
-
+      				if (next == 'n') {
+        				output += '\n';
+        				continue;
+      				}else if (next == 't') {
+        				output += '\t';
+        				continue;
+        			}else if (next == '\\') {
+        				output += '\\';
+        				continue;
+      				}else if (next == '\"') {
+        				output += '\"';
+        				continue;
+        			}else{
+        				printf("Error: Illegal escape character \'%c%c\' in string at line %d\n",input,next,yylineno);
+        				isLegal = 0;
+        			}
 				}
-				if(input==EOF){
-						addToken(STRING,string(""),"Error: End-of-file reached while in string\n",yylineno);							
-				}else{
-					output[cnt] = '\0';
-					addToken(STRING,string("STRING"),string(output),yylineno); 
-				}	
-				free(output);
 
+
+				/*check if string ends legally*/
+				if(input== '\"'){
+					if(isLegal){
+					// addToken(STRING_TYPE, string("STRING_TYPE"), output, stringLine);
+						yylval.stringValue = (char*)(output.c_str());
+
+						return STRING;
+					}					 
+					break;		
+				}
+
+    			output += input; 
+  			}
+  		
+  		if (input == '\0') {
+    		printf("Error: End-of-file reached while in string: %s at line #%d\n",yytext,stringLine);
+    	}
+}
+
+
+{comment1}		; //addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
+
+"/*"	{	
+					char c;
+			int start_line;
+			string startToEnd;
+			ostringstream convert1,convert2;
+			std :: vector <int> v;
+
+			v.push_back (yylineno);
+	
+			while(((c = yyinput()) != '\0') && (c  != EOF) )
+			{
+				if(c == '*')
+				{
+					if((c = yyinput()) == '/')
+					{
+						if(!v.empty())
+						{
+							start_line=v.back();
+							v.pop_back();
+							
+							convert1<<start_line;
+							convert2<<yylineno;
+							startToEnd=convert1.str()+"-"+convert2.str();
+							//addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line); 
+							convert1.str(std::string());
+							convert2.str(std::string());
+							
+						}
+						if(v.empty()) break;
+						
+					}	
+					else unput(c);
+				}else if(c == '/')
+				{
+					if((c = yyinput()) == '*')
+					v.push_back(yylineno);
+					
+					else
+					unput(c);
+				}
+				
+				
 			}
-{comment1}		addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
+			
+			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
+		}
 
-"/*"			{	
-					int c,lineBegin,lineEnd,nested=0; /*lineBegin and lineEnd for printing where the comment is,and nested checks if the comment is nested*/
-					string lines;/*for output*/
-					stringstream ss;
-					lineBegin=yylineno;					
-					ss<<lineBegin;
-					lines=ss.str();
-
-					while(1){
-						while( (c=yyinput()) != '*' && c!=EOF){
-
-							while( (c=yyinput())=='/'){
-
-								if((c=yyinput())=='*'){//possible nested
-											
-									//idios kodikas		
-									//nested++;	output[cnt]		
-								}	
-							}
-
-							while(c == '\\' && (c=yyinput())=='n'){//edo tora thelei den thelei input den ksero ego mperdeutei
-								;
-							}				
-
-							lineEnd=yylineno;
-							ss<<lineEnd;
-							lines=lines + "-" + ss.str();
-							addToken(COMMENT,string("MULTILINE COMMENT"),lines,yylineno); 
-						}
-
-						if(c=='*'){
-							while( (c=yyinput())=='*'){//ta lookforward prepei na ta pao piso
-								unput(c);/*put it back*/
-							}
-
-							if(c=='/')
-								//ki an einai nested na to valo edo i guess
-								break;/*here is the end of the commnent*/
-						}
-
-						if(c==EOF){
-							printf("EOF found");
-							break;
-						}
-
-					}
-				}
-
-.			printf("Invalid token %s at line: #%d \n",yytext,yylineno);		
+{ANY}		{printf("LEX: Invalid token %s at line: #%d \n",yytext,yylineno);}		
 				
 %%
+//Global Hashtables
+std::multimap<string,symTableEntry*> SymTableName;
+std::multimap< int,symTableEntry*> SymTableScope;
+
+
+// std::map<string,symTableEntry> SymTableScope; 
+int current_scope = 0;
 //Global token vector
 vector  <alpha_token_t>* vctr_ptr; 
 //Global token number
 int token_number = 0;
 //Global lex object
-yyFlexLexer temp;
+//yyFlexLexer temp;
 
 int alpha_yylex(void* yylval){ 
   vctr_ptr = (vector <alpha_token_t>*) yylval;  
-  return  temp.yylex(); 
+  return  yylex(); 
 } 
 
 void addToken(type token_t,string token_sT, string value, int line){
 	alpha_token_t token_struct;
 	
-	token_number++;
+	token_number++; 
 
 	token_struct.number_of_token = token_number; 		//save token number
 	token_struct.line_number = line;	  				//save line number
@@ -358,7 +378,7 @@ void addToken(type token_t,string token_sT, string value, int line){
 			token_struct.arrow_type = "<--enumerated";
 			break;
 		case IDENTIFIER: 	
-		case STRING:
+		case STRING_TYPE:
 			token_struct.arrow_type = "<--char*";
 			break;
 		case INT_CONST: 	
@@ -381,7 +401,7 @@ string typeToString(type t){
 		case IDENTIFIER: 	return "IDENTIFIER";
 		case INT_CONST: 	return "INT_CONST";
 		case REAL_CONST: 	return "REAL_CONST";
-		case STRING: 		return "STRING";
+		case STRING_TYPE: 		return "STRING_TYPE";
 		case OPERATOR: 		return "OPERATOR";
 		case PUNCTUATION: 	return "PUNCTUATION";
 		case COMMENT: 		return "COMMENT";
@@ -390,56 +410,154 @@ string typeToString(type t){
 }
 
 int main (int argc, char *argv[]){
-	vector <alpha_token_t> token_vector; 
+	// vector <alpha_token_t> token_vector; 
+	if (argc != 2) {
+		std::cout <<"Incorrect usage."<<std::endl;
+		std::cout <<"Use: ./scanner <input file> <optional output file>" <<std::endl;
+    }else{
+    	yyin = fopen(argv[1], "r");
 
-	if (argc < 2 || argc > 3) {
-		printf("Invalid parameter\nUsage: <program> <path to input file> <optional "
-           "path to output file>\n");
-		exit(1);
-	}
-	
-	
-	std::filebuf fb_in;
-	std::filebuf fb_out;
-	if (fb_in.open (argv[1],std::ios::in)){
-		std::istream is(&fb_in);
-	
-	
-		if (argc == 3) {
-	
-			fb_out.open (argv[2],std::ios::out);
-			std::ostream os(&fb_out);
-			temp.switch_streams(&is,&os);
+   		scopeAccessStack.push(false);
+   		newOffset();
+   		insertLibFuncSym();
+		loopcounterStack.push(loopcounter);
+		yyparse();
+   		scopeAccessStack.pop();
 
-			alpha_yylex( &token_vector);
-  
-  
-			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
-			//print token info 
-				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
-				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
-			}
-		}else{
-			std::ostream os(NULL);
-			os.rdbuf(std::cout.rdbuf());
-			temp.switch_streams(&is,&os);
-			
-			alpha_yylex( &token_vector);
-  
-  
-			for (vector<alpha_token_t>::iterator token = token_vector.begin() ; token != token_vector.end(); ++token){
-			//print token info 
-				os  <<left  <<std::setw(5)<<token->number_of_token <<": #" << token->line_number <<" \"" <<std::setw(6)<<token->token_value <<"\"\t";
-				os  <<left << typeToString(token->token_type) <<"\t" <<setw(8) <<token->str_subType  <<setw(18) <<token->arrow_type <<endl;
+    	printSymTable();
+    	fclose(yyin);
+    	printf("==================Print Quads===============\n");
+    	printQuads();
+    }
+  	return 0;
+}
+
+
+
+symTableEntry* lookupSym(string key){
+	int max_scope = -1;
+	symTableEntry* tempVal = NULL;
+	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
+	
+	retList = SymTableName.equal_range(key);
+
+		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			if(it->second->isVisible && it->second->scope > max_scope){
+				max_scope = it->second->scope;
+				tempVal = it->second;
 			}
 		}
-	
+	return tempVal;
+}
 
-	}else{
-		cout <<"Error opening file: " << string(argv[1]) <<endl;
-		exit(-1);
+
+
+symTableEntry* lookupSym(string key, int scope){
+	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
+	retList = SymTableName.equal_range(key);
+
+		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			if(it->second->isVisible && it->second->scope == scope ){
+				return it->second;
+			}
+		}
+	return NULL;
+}
+
+
+void insertSym(string key,symTableType type,int scp,unsigned int line){
+
+	/*insert new symbol*/
+	symTableEntry* symptr = new symTableEntry(); 
+	symptr->name = key;
+	symptr->symType = type;
+	symptr->scope = scp;	
+	symptr->declLine = line;
+	symptr->isVisible = true;
 	
+	/*Offset operations, only for variables*/
+	if(type == GLOBAL_VAR || type == LOCAL_VAR || type == ARGUMENT_VAR){
+		symptr->offset = currScopeOffset();
+		symptr->space = current_scopescape();
+		incrementScopeOffset(); //increase offset
 	}
+	
+	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
+	SymTableScope.insert( std::pair<int,symTableEntry*>(scp,symptr) );
+}
 
-  	return 0;
+
+
+void hideSym(int scope){
+	std::pair <std::multimap<int,symTableEntry*>::iterator, std::multimap<int,symTableEntry*>::iterator> retList;
+	retList = SymTableScope.equal_range(scope);
+
+		for (std::multimap< int,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
+			it->second->isVisible = false;
+		}
+}
+
+bool lvalueCheckSym(symTableEntry* sym, int scope,unsigned int line){
+	if(sym == NULL) return true;
+
+	if(sym->symType == LIB_FUNC){
+		std::cout <<"ERROR: cannot name symbol at line "  <<line <<" as library function "<<sym->name <<std::endl;
+		return false;
+	}
+	return true;
+}
+
+void printSymTable(){
+	int i = 0;
+	int size = SymTableScope.size();
+
+	for(i = 0; i<size; i++){
+		std::pair <std::multimap< int,symTableEntry*>::iterator, std::multimap< int,symTableEntry*>::iterator> ret;
+    	ret = SymTableScope.equal_range(i);
+    	std::cout << "-------------" <<"	Scope #" <<i <<"	" << "-------------------" << endl;
+    	for (std::multimap< int,symTableEntry*>::iterator it=ret.first; it!=ret.second; ++it){
+      		std::cout << "\"" << it->second->name << "\"   [" <<symTableTypeToString(it->second->symType) <<"]";
+      		std::cout <<"(line " <<it->second->declLine << ")" <<"		(scope " <<it->second->scope <<")" <<endl;
+    	}
+	}
+}
+
+string symTableTypeToString(symTableType t){
+	switch(t){
+		case GLOBAL_VAR:
+			return "global variable";
+		case LOCAL_VAR:
+			return "local variable";
+		case ARGUMENT_VAR:
+			return "formal argument";
+		case USER_FUNC:
+			return "user function";
+		case LIB_FUNC:
+			return "library function";
+		default:
+			return "ERROR: Invalid symbol type";
+	}
+}
+
+void insertLibFuncSym(){
+	insertSym(std::string("print"),LIB_FUNC,0,0);
+	insertSym(std::string("input"),LIB_FUNC,0,0);
+	insertSym(std::string("objectmemberkeys"),LIB_FUNC,0,0);
+	insertSym(std::string("objecttotalmembers"),LIB_FUNC,0,0);
+	insertSym(std::string("objectcopy"),LIB_FUNC,0,0);
+	insertSym(std::string("totalarguments"),LIB_FUNC,0,0);
+	insertSym(std::string("argument"),LIB_FUNC,0,0);
+	insertSym(std::string("typeof"),LIB_FUNC,0,0);
+	insertSym(std::string("strtonum"),LIB_FUNC,0,0);
+	insertSym(std::string("sqrt"),LIB_FUNC,0,0);
+	insertSym(std::string("cos"),LIB_FUNC,0,0);
+	insertSym(std::string("sin"),LIB_FUNC,0,0);
+}
+
+
+bool checkCollisionSym(string key){
+	if(key =="print" || key == "input" || key == "objectmemberkeys" || key == "objecttotalmembers" || key == "objectcopy" || key == "totalarguments" || key == "argument" || key == "typeof" || key == "strtonum" || key == "sqrt" || key == "cos" || key == "sin"){
+		return true;
+	}
+	return false;
 }
