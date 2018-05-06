@@ -11,6 +11,8 @@ extern int yylineno;
 /*Global vector that contains all the quads*/
 std::vector  <quad> vctr_quads; 
 
+
+
 void emit(iopcode opCode,expr *_arg1,expr *_arg2,expr *_res,unsigned _label,int yylineno){
 	
 	/*Create new quad*/
@@ -63,9 +65,9 @@ expr* emit_relop(iopcode icode, expr* expr1, expr* expr2){
 	expr* result = newexpr(boolexpr_e);
 	result->sym = newtemp();
 
-	emit(icode, expr1, expr2, NULL, nextquadLabel()+4, yylineno);
+	emit(icode, expr1, expr2, NULL, nextquadLabel()+3, yylineno);
 	emit(assign_iopcode, newexpr_constbool(false_t), NULL, result, 0 ,yylineno);
-	emit(jump_iopcode, NULL, NULL, NULL, nextquadLabel()+3, yylineno);
+	emit(jump_iopcode, NULL, NULL, NULL, nextquadLabel()+2, yylineno);
 	emit(assign_iopcode, newexpr_constbool(true_t), NULL, result, 0, yylineno);
 
 	return result;
@@ -149,7 +151,7 @@ void printExpr(expr* e){
 
 /*Prints all the quads in the vector*/
 void printQuads(){
-	int count = 1;		
+	int count = 0;		
 	for (std::vector<quad>::const_iterator i = vctr_quads.begin(); i != vctr_quads.end(); ++i){
 		std::cout <<"#" <<"Quad " <<count++ <<": " <<std::endl;
 		std::cout <<"\tiopcode: " << iopcodeToString(i->op) << "\n";
@@ -167,9 +169,11 @@ void printQuads(){
 			std::cout << "\tresult: " << "\n";
 			printExpr( i->result);
 		}
-		if(i->label) std::cout << "\tlabel: " <<i->label << "\n";
+		if(i->op == jump_iopcode || i->op == if_eq_iopcode || i->op == if_noteq_iopcode
+			|| i->op == if_lesseq_iopcode || i->op == if_greatereq_iopcode || i->op == if_less_iopcode
+			|| i->op == if_greater_iopcode) std::cout << "\tlabel: " <<i->label << "\n";
 
-		if(i->line) std::cout << "\tline: " <<i->line << "\n";
+		std::cout << "\tline: " <<i->line << "\n";
 
 	}
 }
@@ -287,5 +291,5 @@ int checkuminus(expr *e){
 
 
 void patchLabel(unsigned index, unsigned nextQuad){
-	vctr_quads[index-1].label=nextQuad-1;
+	vctr_quads[index].label=nextQuad;
 }

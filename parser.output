@@ -3,7 +3,7 @@ Terminals unused in grammar
    DOUBLEDOT
 
 
-State 102 conflicts: 1 shift/reduce
+State 101 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -17,193 +17,206 @@ Grammar
     4      | stmt
 
     5 stmt: expr ';'
-    6     | expr error ';'
-    7     | ifstmt
-    8     | whilestmt
-    9     | forstmt
-   10     | returnstmt
-   11     | BREAK ';'
-   12     | CONTINUE ';'
+    6     | ifstmt
+    7     | whilestmt
+    8     | forstmt
+    9     | returnstmt
+   10     | BREAK ';'
+   11     | CONTINUE ';'
 
-   13 $@1: %empty
+   12 $@1: %empty
 
-   14 $@2: %empty
+   13 $@2: %empty
 
-   15 stmt: $@1 block $@2
-   16     | funcdef
-   17     | ';'
+   14 stmt: $@1 block $@2
+   15     | funcdef
+   16     | ';'
 
-   18 expr: assignexpr
-   19     | expr '+' expr
-   20     | expr '-' expr
-   21     | expr '*' expr
-   22     | expr '/' expr
-   23     | expr '%' expr
-   24     | expr '>' expr
-   25     | expr '<' expr
-   26     | expr GREATEREQUAL expr
-   27     | expr LESSEQUAL expr
-   28     | expr EQUAL expr
-   29     | expr NOTEQUAL expr
-   30     | expr AND expr
-   31     | expr OR expr
-   32     | term
+   17 expr: assignexpr
+   18     | expr '+' expr
+   19     | expr '-' expr
+   20     | expr '*' expr
+   21     | expr '/' expr
+   22     | expr '%' expr
+   23     | expr '>' expr
+   24     | expr '<' expr
+   25     | expr GREATEREQUAL expr
+   26     | expr LESSEQUAL expr
+   27     | expr EQUAL expr
+   28     | expr NOTEQUAL expr
+   29     | expr AND expr
+   30     | expr OR expr
+   31     | term
 
-   33 term: '(' expr ')'
-   34     | '-' expr
-   35     | NOT expr
-   36     | PLUSPLUS lvalue
-   37     | lvalue PLUSPLUS
-   38     | MINUSMINUS lvalue
-   39     | lvalue MINUSMINUS
-   40     | primary
+   32 term: '(' expr ')'
+   33     | '-' expr
+   34     | NOT expr
+   35     | PLUSPLUS lvalue
+   36     | lvalue PLUSPLUS
+   37     | MINUSMINUS lvalue
+   38     | lvalue MINUSMINUS
+   39     | primary
 
-   41 assignexpr: lvalue '=' expr
+   40 assignexpr: lvalue '=' expr
 
-   42 primary: lvalue
-   43        | call
-   44        | objectdef
-   45        | '(' funcdef ')'
-   46        | const
+   41 primary: lvalue
+   42        | call
+   43        | objectdef
+   44        | '(' funcdef ')'
+   45        | const
 
-   47 lvalue: ID
-   48       | LOCAL ID
-   49       | SCOPEOP ID
-   50       | member
+   46 lvalue: ID
+   47       | LOCAL ID
+   48       | SCOPEOP ID
+   49       | member
 
-   51 member: lvalue '.' ID
-   52       | lvalue '[' expr ']'
-   53       | call '.' ID
-   54       | call '[' expr ']'
+   50 member: lvalue '.' ID
+   51       | lvalue '[' expr ']'
+   52       | call '.' ID
+   53       | call '[' expr ']'
 
-   55 call: call '(' elist ')'
-   56     | lvalue callsuffix
-   57     | '(' funcdef ')' '(' elist ')'
+   54 call: call '(' elist ')'
+   55     | lvalue callsuffix
+   56     | '(' funcdef ')' '(' elist ')'
 
-   58 callsuffix: normcall
-   59           | methodcall
+   57 callsuffix: normcall
+   58           | methodcall
 
-   60 normcall: '(' elist ')'
+   59 normcall: '(' elist ')'
 
-   61 methodcall: DOUPLEDOT ID '(' elist ')'
+   60 methodcall: DOUPLEDOT ID '(' elist ')'
 
-   62 elist: %empty
-   63      | expr elist1
+   61 elist: %empty
+   62      | expr elist1
 
-   64 elist1: %empty
-   65       | ',' expr elist1
-   66       | error expr elist1
+   63 elist1: %empty
+   64       | ',' expr elist1
+   65       | error expr elist1
 
-   67 objectdef: '[' elist ']'
-   68          | '[' indexed ']'
+   66 objectdef: '[' elist ']'
+   67          | '[' indexed ']'
 
-   69 indexed: indexedelem more
+   68 indexed: indexedelem more
 
-   70 more: ',' indexedelem more
-   71     | %empty
+   69 more: ',' indexedelem more
+   70     | %empty
 
-   72 indexedelem: '{' expr ':' expr '}'
+   71 indexedelem: '{' expr ':' expr '}'
 
-   73 $@3: %empty
+   72 $@3: %empty
 
-   74 $@4: %empty
+   73 $@4: %empty
 
-   75 block: '{' $@3 stmt1 '}' $@4
+   74 block: '{' $@3 stmt1 '}' $@4
 
-   76 $@5: %empty
+   75 $@5: %empty
 
-   77 $@6: %empty
+   76 $@6: %empty
 
-   78 block: '{' $@5 '}' $@6
-   79      | error stmt1 '}'
-   80      | error '}'
+   77 block: '{' $@5 '}' $@6
+   78      | error stmt1 '}'
+   79      | error '}'
 
-   81 funcdef: funcprefix funcargs funcbody
+   80 funcdef: funcprefix funcargs funcblockstart funcbody funcblockend
 
-   82 funcname: ID
-   83         | %empty
+   81 funcname: ID
+   82         | %empty
 
-   84 funcprefix: FUNCTION funcname
+   83 funcprefix: FUNCTION funcname
 
-   85 funcargs: '(' idlist ')'
+   84 funcargs: '(' idlist ')'
+
+   85 funcblockstart: %empty
 
    86 funcbody: block
 
-   87 const: NUMBER
-   88      | STRING
-   89      | NIL
-   90      | TRUE
-   91      | FALSE
+   87 funcblockend: %empty
 
-   92 idlist: %empty
-   93       | ID idlist1
+   88 const: NUMBER
+   89      | STRING
+   90      | NIL
+   91      | TRUE
+   92      | FALSE
 
-   94 idlist1: %empty
-   95        | ',' ID idlist1
+   93 idlist: %empty
+   94       | ID idlist1
 
-   96 ifstmt: ifprefix stmt elseprefix stmt
-   97       | ifprefix stmt
+   95 idlist1: %empty
+   96        | ',' ID idlist1
 
-   98 ifprefix: IF '(' expr ')'
+   97 ifstmt: ifprefix stmt elseprefix stmt
+   98       | ifprefix stmt
 
-   99 elseprefix: ELSE
+   99 ifprefix: IF '(' expr ')'
 
-  100 whilestmt: WHILE '(' expr ')' stmt
+  100 elseprefix: ELSE
 
-  101 forstmt: FOR '(' elist ';' expr ';' elist ')' stmt
+  101 whilestart: WHILE
 
-  102 returnstmt: RETURN ';'
-  103           | RETURN expr ';'
+  102 whilesecond: '(' expr ')'
+
+  103 whilestmt: whilestart whilesecond loopstmt
+
+  104 loopstmt: loopstart stmt loopend
+
+  105 loopstart: %empty
+
+  106 loopend: %empty
+
+  107 forstmt: FOR '(' elist ';' expr ';' elist ')' stmt
+
+  108 returnstmt: RETURN ';'
+  109           | RETURN expr ';'
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'%' (37) 23
-'(' (40) 33 45 55 57 60 61 85 98 100 101
-')' (41) 33 45 55 57 60 61 85 98 100 101
-'*' (42) 21
-'+' (43) 19
-',' (44) 65 70 95
-'-' (45) 20 34
-'.' (46) 51 53
-'/' (47) 22
-':' (58) 72
-';' (59) 5 6 11 12 17 101 102 103
-'<' (60) 25
-'=' (61) 41
-'>' (62) 24
-'[' (91) 52 54 67 68
-']' (93) 52 54 67 68
-'{' (123) 72 75 78
-'}' (125) 72 75 78 79 80
-error (256) 6 66 79 80
-ID (258) 47 48 49 51 53 61 82 93 95
-NUMBER (259) 87
-STRING (260) 88
-BREAK (261) 11
-CONTINUE (262) 12
-AND (263) 30
-OR (264) 31
-NOT (265) 35
-GREATEREQUAL (266) 26
-LESSEQUAL (267) 27
-EQUAL (268) 28
-NOTEQUAL (269) 29
-PLUSPLUS (270) 36 37
-MINUSMINUS (271) 38 39
-LOCAL (272) 48
-SCOPEOP (273) 49
-DOUPLEDOT (274) 61
-FUNCTION (275) 84
-NIL (276) 89
-TRUE (277) 90
-FALSE (278) 91
-IF (279) 98
-ELSE (280) 99
-WHILE (281) 100
-FOR (282) 101
-RETURN (283) 102 103
+'%' (37) 22
+'(' (40) 32 44 54 56 59 60 84 99 102 107
+')' (41) 32 44 54 56 59 60 84 99 102 107
+'*' (42) 20
+'+' (43) 18
+',' (44) 64 69 96
+'-' (45) 19 33
+'.' (46) 50 52
+'/' (47) 21
+':' (58) 71
+';' (59) 5 10 11 16 107 108 109
+'<' (60) 24
+'=' (61) 40
+'>' (62) 23
+'[' (91) 51 53 66 67
+']' (93) 51 53 66 67
+'{' (123) 71 74 77
+'}' (125) 71 74 77 78 79
+error (256) 65 78 79
+ID (258) 46 47 48 50 52 60 81 94 96
+NUMBER (259) 88
+STRING (260) 89
+BREAK (261) 10
+CONTINUE (262) 11
+AND (263) 29
+OR (264) 30
+NOT (265) 34
+GREATEREQUAL (266) 25
+LESSEQUAL (267) 26
+EQUAL (268) 27
+NOTEQUAL (269) 28
+PLUSPLUS (270) 35 36
+MINUSMINUS (271) 37 38
+LOCAL (272) 47
+SCOPEOP (273) 48
+DOUPLEDOT (274) 60
+FUNCTION (275) 83
+NIL (276) 90
+TRUE (277) 91
+FALSE (278) 92
+IF (279) 99
+ELSE (280) 100
+WHILE (281) 101
+FOR (282) 107
+RETURN (283) 108 109
 UMINUS (284)
 DOUBLEDOT (285)
 
@@ -215,85 +228,99 @@ $accept (49)
 program (50)
     on left: 1 2, on right: 0
 stmt1 (51)
-    on left: 3 4, on right: 1 3 75 79
+    on left: 3 4, on right: 1 3 74 78
 stmt (52)
-    on left: 5 6 7 8 9 10 11 12 15 16 17, on right: 3 4 96 97 100 101
+    on left: 5 6 7 8 9 10 11 14 15 16, on right: 3 4 97 98 104 107
 $@1 (53)
-    on left: 13, on right: 15
+    on left: 12, on right: 14
 $@2 (54)
-    on left: 14, on right: 15
+    on left: 13, on right: 14
 expr (55)
-    on left: 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32, on right:
-    5 6 19 20 21 22 23 24 25 26 27 28 29 30 31 33 34 35 41 52 54 63
-    65 66 72 98 100 101 103
+    on left: 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31, on right:
+    5 18 19 20 21 22 23 24 25 26 27 28 29 30 32 33 34 40 51 53 62 64
+    65 71 99 102 107 109
 term (56)
-    on left: 33 34 35 36 37 38 39 40, on right: 32
+    on left: 32 33 34 35 36 37 38 39, on right: 31
 assignexpr (57)
-    on left: 41, on right: 18
+    on left: 40, on right: 17
 primary (58)
-    on left: 42 43 44 45 46, on right: 40
+    on left: 41 42 43 44 45, on right: 39
 lvalue (59)
-    on left: 47 48 49 50, on right: 36 37 38 39 41 42 51 52 56
+    on left: 46 47 48 49, on right: 35 36 37 38 40 41 50 51 55
 member (60)
-    on left: 51 52 53 54, on right: 50
+    on left: 50 51 52 53, on right: 49
 call (61)
-    on left: 55 56 57, on right: 43 53 54 55
+    on left: 54 55 56, on right: 42 52 53 54
 callsuffix (62)
-    on left: 58 59, on right: 56
+    on left: 57 58, on right: 55
 normcall (63)
-    on left: 60, on right: 58
+    on left: 59, on right: 57
 methodcall (64)
-    on left: 61, on right: 59
+    on left: 60, on right: 58
 elist (65)
-    on left: 62 63, on right: 55 57 60 61 67 101
+    on left: 61 62, on right: 54 56 59 60 66 107
 elist1 (66)
-    on left: 64 65 66, on right: 63 65 66
+    on left: 63 64 65, on right: 62 64 65
 objectdef (67)
-    on left: 67 68, on right: 44
+    on left: 66 67, on right: 43
 indexed (68)
-    on left: 69, on right: 68
+    on left: 68, on right: 67
 more (69)
-    on left: 70 71, on right: 69 70
+    on left: 69 70, on right: 68 69
 indexedelem (70)
-    on left: 72, on right: 69 70
+    on left: 71, on right: 68 69
 block (71)
-    on left: 75 78 79 80, on right: 15 86
+    on left: 74 77 78 79, on right: 14 86
 $@3 (72)
-    on left: 73, on right: 75
+    on left: 72, on right: 74
 $@4 (73)
-    on left: 74, on right: 75
+    on left: 73, on right: 74
 $@5 (74)
-    on left: 76, on right: 78
+    on left: 75, on right: 77
 $@6 (75)
-    on left: 77, on right: 78
+    on left: 76, on right: 77
 funcdef (76)
-    on left: 81, on right: 16 45 57
+    on left: 80, on right: 15 44 56
 funcname (77)
-    on left: 82 83, on right: 84
+    on left: 81 82, on right: 83
 funcprefix (78)
-    on left: 84, on right: 81
+    on left: 83, on right: 80
 funcargs (79)
-    on left: 85, on right: 81
-funcbody (80)
-    on left: 86, on right: 81
-const (81)
-    on left: 87 88 89 90 91, on right: 46
-idlist (82)
-    on left: 92 93, on right: 85
-idlist1 (83)
-    on left: 94 95, on right: 93 95
-ifstmt (84)
-    on left: 96 97, on right: 7
-ifprefix (85)
-    on left: 98, on right: 96 97
-elseprefix (86)
-    on left: 99, on right: 96
-whilestmt (87)
-    on left: 100, on right: 8
-forstmt (88)
-    on left: 101, on right: 9
-returnstmt (89)
-    on left: 102 103, on right: 10
+    on left: 84, on right: 80
+funcblockstart (80)
+    on left: 85, on right: 80
+funcbody (81)
+    on left: 86, on right: 80
+funcblockend (82)
+    on left: 87, on right: 80
+const (83)
+    on left: 88 89 90 91 92, on right: 45
+idlist (84)
+    on left: 93 94, on right: 84
+idlist1 (85)
+    on left: 95 96, on right: 94 96
+ifstmt (86)
+    on left: 97 98, on right: 6
+ifprefix (87)
+    on left: 99, on right: 97 98
+elseprefix (88)
+    on left: 100, on right: 97
+whilestart (89)
+    on left: 101, on right: 103
+whilesecond (90)
+    on left: 102, on right: 103
+whilestmt (91)
+    on left: 103, on right: 7
+loopstmt (92)
+    on left: 104, on right: 103
+loopstart (93)
+    on left: 105, on right: 104
+loopend (94)
+    on left: 106, on right: 104
+forstmt (95)
+    on left: 107, on right: 8
+returnstmt (96)
+    on left: 108 109, on right: 9
 
 
 State 0
@@ -324,7 +351,7 @@ State 0
     ';'         shift, and go to state 22
 
     $end      reduce using rule 2 (program)
-    $default  reduce using rule 13 ($@1)
+    $default  reduce using rule 12 ($@1)
 
     program     go to state 23
     stmt1       go to state 24
@@ -343,49 +370,50 @@ State 0
     const       go to state 37
     ifstmt      go to state 38
     ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
 
 
 State 1
 
-   47 lvalue: ID .
+   46 lvalue: ID .
 
-    $default  reduce using rule 47 (lvalue)
+    $default  reduce using rule 46 (lvalue)
 
 
 State 2
 
-   87 const: NUMBER .
-
-    $default  reduce using rule 87 (const)
-
-
-State 3
-
-   88 const: STRING .
+   88 const: NUMBER .
 
     $default  reduce using rule 88 (const)
 
 
+State 3
+
+   89 const: STRING .
+
+    $default  reduce using rule 89 (const)
+
+
 State 4
 
-   11 stmt: BREAK . ';'
-
-    ';'  shift, and go to state 43
-
-
-State 5
-
-   12 stmt: CONTINUE . ';'
+   10 stmt: BREAK . ';'
 
     ';'  shift, and go to state 44
 
 
+State 5
+
+   11 stmt: CONTINUE . ';'
+
+    ';'  shift, and go to state 45
+
+
 State 6
 
-   35 term: NOT . expr
+   34 term: NOT . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -402,7 +430,7 @@ State 6
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    expr        go to state 45
+    expr        go to state 46
     term        go to state 28
     assignexpr  go to state 29
     primary     go to state 30
@@ -415,103 +443,103 @@ State 6
 
 State 7
 
-   36 term: PLUSPLUS . lvalue
+   35 term: PLUSPLUS . lvalue
 
     ID       shift, and go to state 1
     LOCAL    shift, and go to state 9
     SCOPEOP  shift, and go to state 10
-    '('      shift, and go to state 46
+    '('      shift, and go to state 47
 
-    lvalue  go to state 47
+    lvalue  go to state 48
     member  go to state 32
-    call    go to state 48
+    call    go to state 49
 
 
 State 8
 
-   38 term: MINUSMINUS . lvalue
+   37 term: MINUSMINUS . lvalue
 
     ID       shift, and go to state 1
     LOCAL    shift, and go to state 9
     SCOPEOP  shift, and go to state 10
-    '('      shift, and go to state 46
+    '('      shift, and go to state 47
 
-    lvalue  go to state 49
+    lvalue  go to state 50
     member  go to state 32
-    call    go to state 48
+    call    go to state 49
 
 
 State 9
 
-   48 lvalue: LOCAL . ID
-
-    ID  shift, and go to state 50
-
-
-State 10
-
-   49 lvalue: SCOPEOP . ID
+   47 lvalue: LOCAL . ID
 
     ID  shift, and go to state 51
 
 
-State 11
+State 10
 
-   84 funcprefix: FUNCTION . funcname
+   48 lvalue: SCOPEOP . ID
 
     ID  shift, and go to state 52
 
-    $default  reduce using rule 83 (funcname)
 
-    funcname  go to state 53
+State 11
+
+   83 funcprefix: FUNCTION . funcname
+
+    ID  shift, and go to state 53
+
+    $default  reduce using rule 82 (funcname)
+
+    funcname  go to state 54
 
 
 State 12
 
-   89 const: NIL .
-
-    $default  reduce using rule 89 (const)
-
-
-State 13
-
-   90 const: TRUE .
+   90 const: NIL .
 
     $default  reduce using rule 90 (const)
 
 
-State 14
+State 13
 
-   91 const: FALSE .
+   91 const: TRUE .
 
     $default  reduce using rule 91 (const)
 
 
+State 14
+
+   92 const: FALSE .
+
+    $default  reduce using rule 92 (const)
+
+
 State 15
 
-   98 ifprefix: IF . '(' expr ')'
-
-    '('  shift, and go to state 54
-
-
-State 16
-
-  100 whilestmt: WHILE . '(' expr ')' stmt
+   99 ifprefix: IF . '(' expr ')'
 
     '('  shift, and go to state 55
 
 
+State 16
+
+  101 whilestart: WHILE .
+
+    $default  reduce using rule 101 (whilestart)
+
+
 State 17
 
-  101 forstmt: FOR . '(' elist ';' expr ';' elist ')' stmt
+  107 forstmt: FOR . '(' elist ';' expr ';' elist ')' stmt
 
     '('  shift, and go to state 56
 
 
 State 18
 
-  102 returnstmt: RETURN . ';'
-  103           | RETURN . expr ';'
+  108 returnstmt: RETURN . ';'
+  109           | RETURN . expr ';'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -542,7 +570,7 @@ State 18
 
 State 19
 
-   34 term: '-' . expr
+   33 term: '-' . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -572,8 +600,8 @@ State 19
 
 State 20
 
-   67 objectdef: '[' . elist ']'
-   68          | '[' . indexed ']'
+   66 objectdef: '[' . elist ']'
+   67          | '[' . indexed ']'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -591,7 +619,7 @@ State 20
     '('         shift, and go to state 21
     '{'         shift, and go to state 60
 
-    $default  reduce using rule 62 (elist)
+    $default  reduce using rule 61 (elist)
 
     expr         go to state 61
     term         go to state 28
@@ -609,9 +637,9 @@ State 20
 
 State 21
 
-   33 term: '(' . expr ')'
-   45 primary: '(' . funcdef ')'
-   57 call: '(' . funcdef ')' '(' elist ')'
+   32 term: '(' . expr ')'
+   44 primary: '(' . funcdef ')'
+   56 call: '(' . funcdef ')' '(' elist ')'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -644,9 +672,9 @@ State 21
 
 State 22
 
-   17 stmt: ';' .
+   16 stmt: ';' .
 
-    $default  reduce using rule 17 (stmt)
+    $default  reduce using rule 16 (stmt)
 
 
 State 23
@@ -685,7 +713,7 @@ State 24
     ';'         shift, and go to state 22
 
     $end      reduce using rule 1 (program)
-    $default  reduce using rule 13 ($@1)
+    $default  reduce using rule 12 ($@1)
 
     stmt        go to state 68
     $@1         go to state 26
@@ -702,9 +730,10 @@ State 24
     const       go to state 37
     ifstmt      go to state 38
     ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
 
 
 State 25
@@ -716,7 +745,7 @@ State 25
 
 State 26
 
-   15 stmt: $@1 . block $@2
+   14 stmt: $@1 . block $@2
 
     error  shift, and go to state 69
     '{'    shift, and go to state 70
@@ -727,146 +756,144 @@ State 26
 State 27
 
     5 stmt: expr . ';'
-    6     | expr . error ';'
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
-    error         shift, and go to state 72
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
-    ';'           shift, and go to state 86
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
+    ';'           shift, and go to state 85
 
 
 State 28
 
-   32 expr: term .
+   31 expr: term .
 
-    $default  reduce using rule 32 (expr)
+    $default  reduce using rule 31 (expr)
 
 
 State 29
 
-   18 expr: assignexpr .
+   17 expr: assignexpr .
 
-    $default  reduce using rule 18 (expr)
+    $default  reduce using rule 17 (expr)
 
 
 State 30
 
-   40 term: primary .
+   39 term: primary .
 
-    $default  reduce using rule 40 (term)
+    $default  reduce using rule 39 (term)
 
 
 State 31
 
-   37 term: lvalue . PLUSPLUS
-   39     | lvalue . MINUSMINUS
-   41 assignexpr: lvalue . '=' expr
-   42 primary: lvalue .
-   51 member: lvalue . '.' ID
-   52       | lvalue . '[' expr ']'
-   56 call: lvalue . callsuffix
+   36 term: lvalue . PLUSPLUS
+   38     | lvalue . MINUSMINUS
+   40 assignexpr: lvalue . '=' expr
+   41 primary: lvalue .
+   50 member: lvalue . '.' ID
+   51       | lvalue . '[' expr ']'
+   55 call: lvalue . callsuffix
 
-    PLUSPLUS    shift, and go to state 87
-    MINUSMINUS  shift, and go to state 88
-    DOUPLEDOT   shift, and go to state 89
-    '='         shift, and go to state 90
-    '.'         shift, and go to state 91
-    '['         shift, and go to state 92
-    '('         shift, and go to state 93
+    PLUSPLUS    shift, and go to state 86
+    MINUSMINUS  shift, and go to state 87
+    DOUPLEDOT   shift, and go to state 88
+    '='         shift, and go to state 89
+    '.'         shift, and go to state 90
+    '['         shift, and go to state 91
+    '('         shift, and go to state 92
 
-    $default  reduce using rule 42 (primary)
+    $default  reduce using rule 41 (primary)
 
-    callsuffix  go to state 94
-    normcall    go to state 95
-    methodcall  go to state 96
+    callsuffix  go to state 93
+    normcall    go to state 94
+    methodcall  go to state 95
 
 
 State 32
 
-   50 lvalue: member .
+   49 lvalue: member .
 
-    $default  reduce using rule 50 (lvalue)
+    $default  reduce using rule 49 (lvalue)
 
 
 State 33
 
-   43 primary: call .
-   53 member: call . '.' ID
-   54       | call . '[' expr ']'
-   55 call: call . '(' elist ')'
+   42 primary: call .
+   52 member: call . '.' ID
+   53       | call . '[' expr ']'
+   54 call: call . '(' elist ')'
 
-    '.'  shift, and go to state 97
-    '['  shift, and go to state 98
-    '('  shift, and go to state 99
+    '.'  shift, and go to state 96
+    '['  shift, and go to state 97
+    '('  shift, and go to state 98
 
-    $default  reduce using rule 43 (primary)
+    $default  reduce using rule 42 (primary)
 
 
 State 34
 
-   44 primary: objectdef .
+   43 primary: objectdef .
 
-    $default  reduce using rule 44 (primary)
+    $default  reduce using rule 43 (primary)
 
 
 State 35
 
-   16 stmt: funcdef .
+   15 stmt: funcdef .
 
-    $default  reduce using rule 16 (stmt)
+    $default  reduce using rule 15 (stmt)
 
 
 State 36
 
-   81 funcdef: funcprefix . funcargs funcbody
+   80 funcdef: funcprefix . funcargs funcblockstart funcbody funcblockend
 
-    '('  shift, and go to state 100
+    '('  shift, and go to state 99
 
-    funcargs  go to state 101
+    funcargs  go to state 100
 
 
 State 37
 
-   46 primary: const .
+   45 primary: const .
 
-    $default  reduce using rule 46 (primary)
+    $default  reduce using rule 45 (primary)
 
 
 State 38
 
-    7 stmt: ifstmt .
+    6 stmt: ifstmt .
 
-    $default  reduce using rule 7 (stmt)
+    $default  reduce using rule 6 (stmt)
 
 
 State 39
 
-   96 ifstmt: ifprefix . stmt elseprefix stmt
-   97       | ifprefix . stmt
+   97 ifstmt: ifprefix . stmt elseprefix stmt
+   98       | ifprefix . stmt
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -891,9 +918,9 @@ State 39
     '('         shift, and go to state 21
     ';'         shift, and go to state 22
 
-    $default  reduce using rule 13 ($@1)
+    $default  reduce using rule 12 ($@1)
 
-    stmt        go to state 102
+    stmt        go to state 101
     $@1         go to state 26
     expr        go to state 27
     term        go to state 28
@@ -908,186 +935,166 @@ State 39
     const       go to state 37
     ifstmt      go to state 38
     ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
 
 
 State 40
 
-    8 stmt: whilestmt .
+  103 whilestmt: whilestart . whilesecond loopstmt
 
-    $default  reduce using rule 8 (stmt)
+    '('  shift, and go to state 102
+
+    whilesecond  go to state 103
 
 
 State 41
 
-    9 stmt: forstmt .
+    7 stmt: whilestmt .
 
-    $default  reduce using rule 9 (stmt)
+    $default  reduce using rule 7 (stmt)
 
 
 State 42
 
-   10 stmt: returnstmt .
+    8 stmt: forstmt .
 
-    $default  reduce using rule 10 (stmt)
+    $default  reduce using rule 8 (stmt)
 
 
 State 43
 
-   11 stmt: BREAK ';' .
+    9 stmt: returnstmt .
 
-    $default  reduce using rule 11 (stmt)
+    $default  reduce using rule 9 (stmt)
 
 
 State 44
 
-   12 stmt: CONTINUE ';' .
+   10 stmt: BREAK ';' .
 
-    $default  reduce using rule 12 (stmt)
+    $default  reduce using rule 10 (stmt)
 
 
 State 45
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   35 term: NOT expr .
+   11 stmt: CONTINUE ';' .
 
-    $default  reduce using rule 35 (term)
+    $default  reduce using rule 11 (stmt)
 
 
 State 46
 
-   57 call: '(' . funcdef ')' '(' elist ')'
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   34 term: NOT expr .
 
-    FUNCTION  shift, and go to state 11
-
-    funcdef     go to state 103
-    funcprefix  go to state 36
+    $default  reduce using rule 34 (term)
 
 
 State 47
 
-   36 term: PLUSPLUS lvalue .
-   51 member: lvalue . '.' ID
-   52       | lvalue . '[' expr ']'
-   56 call: lvalue . callsuffix
+   56 call: '(' . funcdef ')' '(' elist ')'
 
-    DOUPLEDOT  shift, and go to state 89
-    '.'        shift, and go to state 91
-    '['        shift, and go to state 92
-    '('        shift, and go to state 93
+    FUNCTION  shift, and go to state 11
 
-    $default  reduce using rule 36 (term)
-
-    callsuffix  go to state 94
-    normcall    go to state 95
-    methodcall  go to state 96
+    funcdef     go to state 104
+    funcprefix  go to state 36
 
 
 State 48
 
-   53 member: call . '.' ID
-   54       | call . '[' expr ']'
-   55 call: call . '(' elist ')'
+   35 term: PLUSPLUS lvalue .
+   50 member: lvalue . '.' ID
+   51       | lvalue . '[' expr ']'
+   55 call: lvalue . callsuffix
 
-    '.'  shift, and go to state 97
-    '['  shift, and go to state 98
-    '('  shift, and go to state 99
+    DOUPLEDOT  shift, and go to state 88
+    '.'        shift, and go to state 90
+    '['        shift, and go to state 91
+    '('        shift, and go to state 92
+
+    $default  reduce using rule 35 (term)
+
+    callsuffix  go to state 93
+    normcall    go to state 94
+    methodcall  go to state 95
 
 
 State 49
 
-   38 term: MINUSMINUS lvalue .
-   51 member: lvalue . '.' ID
-   52       | lvalue . '[' expr ']'
-   56 call: lvalue . callsuffix
+   52 member: call . '.' ID
+   53       | call . '[' expr ']'
+   54 call: call . '(' elist ')'
 
-    DOUPLEDOT  shift, and go to state 89
-    '.'        shift, and go to state 91
-    '['        shift, and go to state 92
-    '('        shift, and go to state 93
-
-    $default  reduce using rule 38 (term)
-
-    callsuffix  go to state 94
-    normcall    go to state 95
-    methodcall  go to state 96
+    '.'  shift, and go to state 96
+    '['  shift, and go to state 97
+    '('  shift, and go to state 98
 
 
 State 50
 
-   48 lvalue: LOCAL ID .
+   37 term: MINUSMINUS lvalue .
+   50 member: lvalue . '.' ID
+   51       | lvalue . '[' expr ']'
+   55 call: lvalue . callsuffix
 
-    $default  reduce using rule 48 (lvalue)
+    DOUPLEDOT  shift, and go to state 88
+    '.'        shift, and go to state 90
+    '['        shift, and go to state 91
+    '('        shift, and go to state 92
+
+    $default  reduce using rule 37 (term)
+
+    callsuffix  go to state 93
+    normcall    go to state 94
+    methodcall  go to state 95
 
 
 State 51
 
-   49 lvalue: SCOPEOP ID .
+   47 lvalue: LOCAL ID .
 
-    $default  reduce using rule 49 (lvalue)
+    $default  reduce using rule 47 (lvalue)
 
 
 State 52
 
-   82 funcname: ID .
+   48 lvalue: SCOPEOP ID .
 
-    $default  reduce using rule 82 (funcname)
+    $default  reduce using rule 48 (lvalue)
 
 
 State 53
 
-   84 funcprefix: FUNCTION funcname .
+   81 funcname: ID .
 
-    $default  reduce using rule 84 (funcprefix)
+    $default  reduce using rule 81 (funcname)
 
 
 State 54
 
-   98 ifprefix: IF '(' . expr ')'
+   83 funcprefix: FUNCTION funcname .
 
-    ID          shift, and go to state 1
-    NUMBER      shift, and go to state 2
-    STRING      shift, and go to state 3
-    NOT         shift, and go to state 6
-    PLUSPLUS    shift, and go to state 7
-    MINUSMINUS  shift, and go to state 8
-    LOCAL       shift, and go to state 9
-    SCOPEOP     shift, and go to state 10
-    NIL         shift, and go to state 12
-    TRUE        shift, and go to state 13
-    FALSE       shift, and go to state 14
-    '-'         shift, and go to state 19
-    '['         shift, and go to state 20
-    '('         shift, and go to state 21
-
-    expr        go to state 104
-    term        go to state 28
-    assignexpr  go to state 29
-    primary     go to state 30
-    lvalue      go to state 31
-    member      go to state 32
-    call        go to state 33
-    objectdef   go to state 34
-    const       go to state 37
+    $default  reduce using rule 83 (funcprefix)
 
 
 State 55
 
-  100 whilestmt: WHILE '(' . expr ')' stmt
+   99 ifprefix: IF '(' . expr ')'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1117,7 +1124,7 @@ State 55
 
 State 56
 
-  101 forstmt: FOR '(' . elist ';' expr ';' elist ')' stmt
+  107 forstmt: FOR '(' . elist ';' expr ';' elist ')' stmt
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1134,7 +1141,7 @@ State 56
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    $default  reduce using rule 62 (elist)
+    $default  reduce using rule 61 (elist)
 
     expr        go to state 61
     term        go to state 28
@@ -1150,67 +1157,67 @@ State 56
 
 State 57
 
-  102 returnstmt: RETURN ';' .
+  108 returnstmt: RETURN ';' .
 
-    $default  reduce using rule 102 (returnstmt)
+    $default  reduce using rule 108 (returnstmt)
 
 
 State 58
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-  103 returnstmt: RETURN expr . ';'
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+  109 returnstmt: RETURN expr . ';'
 
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
     ';'           shift, and go to state 107
 
 
 State 59
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   34 term: '-' expr .
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   33 term: '-' expr .
 
-    $default  reduce using rule 34 (term)
+    $default  reduce using rule 33 (term)
 
 
 State 60
 
-   72 indexedelem: '{' . expr ':' expr '}'
+   71 indexedelem: '{' . expr ':' expr '}'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1240,106 +1247,106 @@ State 60
 
 State 61
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   63 elist: expr . elist1
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   62 elist: expr . elist1
 
     error         shift, and go to state 109
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
     ','           shift, and go to state 110
 
-    ']'  reduce using rule 64 (elist1)
-    ')'  reduce using rule 64 (elist1)
-    ';'  reduce using rule 64 (elist1)
+    ']'  reduce using rule 63 (elist1)
+    ')'  reduce using rule 63 (elist1)
+    ';'  reduce using rule 63 (elist1)
 
     elist1  go to state 111
 
 
 State 62
 
-   67 objectdef: '[' elist . ']'
+   66 objectdef: '[' elist . ']'
 
     ']'  shift, and go to state 112
 
 
 State 63
 
-   68 objectdef: '[' indexed . ']'
+   67 objectdef: '[' indexed . ']'
 
     ']'  shift, and go to state 113
 
 
 State 64
 
-   69 indexed: indexedelem . more
+   68 indexed: indexedelem . more
 
     ','  shift, and go to state 114
 
-    $default  reduce using rule 71 (more)
+    $default  reduce using rule 70 (more)
 
     more  go to state 115
 
 
 State 65
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   33 term: '(' expr . ')'
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   32 term: '(' expr . ')'
 
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
     ')'           shift, and go to state 116
 
 
 State 66
 
-   45 primary: '(' funcdef . ')'
-   57 call: '(' funcdef . ')' '(' elist ')'
+   44 primary: '(' funcdef . ')'
+   56 call: '(' funcdef . ')' '(' elist ')'
 
     ')'  shift, and go to state 117
 
@@ -1360,8 +1367,8 @@ State 68
 
 State 69
 
-   79 block: error . stmt1 '}'
-   80      | error . '}'
+   78 block: error . stmt1 '}'
+   79      | error . '}'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1387,7 +1394,7 @@ State 69
     ';'         shift, and go to state 22
     '}'         shift, and go to state 118
 
-    $default  reduce using rule 13 ($@1)
+    $default  reduce using rule 12 ($@1)
 
     stmt1       go to state 119
     stmt        go to state 25
@@ -1405,18 +1412,19 @@ State 69
     const       go to state 37
     ifstmt      go to state 38
     ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
 
 
 State 70
 
-   75 block: '{' . $@3 stmt1 '}' $@4
-   78      | '{' . $@5 '}' $@6
+   74 block: '{' . $@3 stmt1 '}' $@4
+   77      | '{' . $@5 '}' $@6
 
-    '}'       reduce using rule 76 ($@5)
-    $default  reduce using rule 73 ($@3)
+    '}'       reduce using rule 75 ($@5)
+    $default  reduce using rule 72 ($@3)
 
     $@3  go to state 120
     $@5  go to state 121
@@ -1424,23 +1432,46 @@ State 70
 
 State 71
 
-   15 stmt: $@1 block . $@2
+   14 stmt: $@1 block . $@2
 
-    $default  reduce using rule 14 ($@2)
+    $default  reduce using rule 13 ($@2)
 
     $@2  go to state 122
 
 
 State 72
 
-    6 stmt: expr error . ';'
+   29 expr: expr AND . expr
 
-    ';'  shift, and go to state 123
+    ID          shift, and go to state 1
+    NUMBER      shift, and go to state 2
+    STRING      shift, and go to state 3
+    NOT         shift, and go to state 6
+    PLUSPLUS    shift, and go to state 7
+    MINUSMINUS  shift, and go to state 8
+    LOCAL       shift, and go to state 9
+    SCOPEOP     shift, and go to state 10
+    NIL         shift, and go to state 12
+    TRUE        shift, and go to state 13
+    FALSE       shift, and go to state 14
+    '-'         shift, and go to state 19
+    '['         shift, and go to state 20
+    '('         shift, and go to state 21
+
+    expr        go to state 123
+    term        go to state 28
+    assignexpr  go to state 29
+    primary     go to state 30
+    lvalue      go to state 31
+    member      go to state 32
+    call        go to state 33
+    objectdef   go to state 34
+    const       go to state 37
 
 
 State 73
 
-   30 expr: expr AND . expr
+   30 expr: expr OR . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1470,7 +1501,7 @@ State 73
 
 State 74
 
-   31 expr: expr OR . expr
+   25 expr: expr GREATEREQUAL . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1500,7 +1531,7 @@ State 74
 
 State 75
 
-   26 expr: expr GREATEREQUAL . expr
+   26 expr: expr LESSEQUAL . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1530,7 +1561,7 @@ State 75
 
 State 76
 
-   27 expr: expr LESSEQUAL . expr
+   27 expr: expr EQUAL . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1560,7 +1591,7 @@ State 76
 
 State 77
 
-   28 expr: expr EQUAL . expr
+   28 expr: expr NOTEQUAL . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1590,7 +1621,7 @@ State 77
 
 State 78
 
-   29 expr: expr NOTEQUAL . expr
+   23 expr: expr '>' . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1620,7 +1651,7 @@ State 78
 
 State 79
 
-   24 expr: expr '>' . expr
+   24 expr: expr '<' . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1650,7 +1681,7 @@ State 79
 
 State 80
 
-   25 expr: expr '<' . expr
+   18 expr: expr '+' . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1680,7 +1711,7 @@ State 80
 
 State 81
 
-   19 expr: expr '+' . expr
+   19 expr: expr '-' . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1710,7 +1741,7 @@ State 81
 
 State 82
 
-   20 expr: expr '-' . expr
+   20 expr: expr '*' . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1740,7 +1771,7 @@ State 82
 
 State 83
 
-   21 expr: expr '*' . expr
+   21 expr: expr '/' . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1770,7 +1801,7 @@ State 83
 
 State 84
 
-   22 expr: expr '/' . expr
+   22 expr: expr '%' . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1800,65 +1831,35 @@ State 84
 
 State 85
 
-   23 expr: expr '%' . expr
-
-    ID          shift, and go to state 1
-    NUMBER      shift, and go to state 2
-    STRING      shift, and go to state 3
-    NOT         shift, and go to state 6
-    PLUSPLUS    shift, and go to state 7
-    MINUSMINUS  shift, and go to state 8
-    LOCAL       shift, and go to state 9
-    SCOPEOP     shift, and go to state 10
-    NIL         shift, and go to state 12
-    TRUE        shift, and go to state 13
-    FALSE       shift, and go to state 14
-    '-'         shift, and go to state 19
-    '['         shift, and go to state 20
-    '('         shift, and go to state 21
-
-    expr        go to state 136
-    term        go to state 28
-    assignexpr  go to state 29
-    primary     go to state 30
-    lvalue      go to state 31
-    member      go to state 32
-    call        go to state 33
-    objectdef   go to state 34
-    const       go to state 37
-
-
-State 86
-
     5 stmt: expr ';' .
 
     $default  reduce using rule 5 (stmt)
 
 
+State 86
+
+   36 term: lvalue PLUSPLUS .
+
+    $default  reduce using rule 36 (term)
+
+
 State 87
 
-   37 term: lvalue PLUSPLUS .
+   38 term: lvalue MINUSMINUS .
 
-    $default  reduce using rule 37 (term)
+    $default  reduce using rule 38 (term)
 
 
 State 88
 
-   39 term: lvalue MINUSMINUS .
+   60 methodcall: DOUPLEDOT . ID '(' elist ')'
 
-    $default  reduce using rule 39 (term)
+    ID  shift, and go to state 136
 
 
 State 89
 
-   61 methodcall: DOUPLEDOT . ID '(' elist ')'
-
-    ID  shift, and go to state 137
-
-
-State 90
-
-   41 assignexpr: lvalue '=' . expr
+   40 assignexpr: lvalue '=' . expr
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1875,7 +1876,7 @@ State 90
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    expr        go to state 138
+    expr        go to state 137
     term        go to state 28
     assignexpr  go to state 29
     primary     go to state 30
@@ -1886,16 +1887,16 @@ State 90
     const       go to state 37
 
 
+State 90
+
+   50 member: lvalue '.' . ID
+
+    ID  shift, and go to state 138
+
+
 State 91
 
-   51 member: lvalue '.' . ID
-
-    ID  shift, and go to state 139
-
-
-State 92
-
-   52 member: lvalue '[' . expr ']'
+   51 member: lvalue '[' . expr ']'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -1912,81 +1913,81 @@ State 92
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    expr        go to state 140
+    expr        go to state 139
     term        go to state 28
     assignexpr  go to state 29
     primary     go to state 30
     lvalue      go to state 31
     member      go to state 32
     call        go to state 33
+    objectdef   go to state 34
+    const       go to state 37
+
+
+State 92
+
+   59 normcall: '(' . elist ')'
+
+    ID          shift, and go to state 1
+    NUMBER      shift, and go to state 2
+    STRING      shift, and go to state 3
+    NOT         shift, and go to state 6
+    PLUSPLUS    shift, and go to state 7
+    MINUSMINUS  shift, and go to state 8
+    LOCAL       shift, and go to state 9
+    SCOPEOP     shift, and go to state 10
+    NIL         shift, and go to state 12
+    TRUE        shift, and go to state 13
+    FALSE       shift, and go to state 14
+    '-'         shift, and go to state 19
+    '['         shift, and go to state 20
+    '('         shift, and go to state 21
+
+    $default  reduce using rule 61 (elist)
+
+    expr        go to state 61
+    term        go to state 28
+    assignexpr  go to state 29
+    primary     go to state 30
+    lvalue      go to state 31
+    member      go to state 32
+    call        go to state 33
+    elist       go to state 140
     objectdef   go to state 34
     const       go to state 37
 
 
 State 93
 
-   60 normcall: '(' . elist ')'
+   55 call: lvalue callsuffix .
 
-    ID          shift, and go to state 1
-    NUMBER      shift, and go to state 2
-    STRING      shift, and go to state 3
-    NOT         shift, and go to state 6
-    PLUSPLUS    shift, and go to state 7
-    MINUSMINUS  shift, and go to state 8
-    LOCAL       shift, and go to state 9
-    SCOPEOP     shift, and go to state 10
-    NIL         shift, and go to state 12
-    TRUE        shift, and go to state 13
-    FALSE       shift, and go to state 14
-    '-'         shift, and go to state 19
-    '['         shift, and go to state 20
-    '('         shift, and go to state 21
-
-    $default  reduce using rule 62 (elist)
-
-    expr        go to state 61
-    term        go to state 28
-    assignexpr  go to state 29
-    primary     go to state 30
-    lvalue      go to state 31
-    member      go to state 32
-    call        go to state 33
-    elist       go to state 141
-    objectdef   go to state 34
-    const       go to state 37
+    $default  reduce using rule 55 (call)
 
 
 State 94
 
-   56 call: lvalue callsuffix .
+   57 callsuffix: normcall .
 
-    $default  reduce using rule 56 (call)
+    $default  reduce using rule 57 (callsuffix)
 
 
 State 95
 
-   58 callsuffix: normcall .
+   58 callsuffix: methodcall .
 
     $default  reduce using rule 58 (callsuffix)
 
 
 State 96
 
-   59 callsuffix: methodcall .
+   52 member: call '.' . ID
 
-    $default  reduce using rule 59 (callsuffix)
+    ID  shift, and go to state 141
 
 
 State 97
 
-   53 member: call '.' . ID
-
-    ID  shift, and go to state 142
-
-
-State 98
-
-   54 member: call '[' . expr ']'
+   53 member: call '[' . expr ']'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -2003,7 +2004,7 @@ State 98
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    expr        go to state 143
+    expr        go to state 142
     term        go to state 28
     assignexpr  go to state 29
     primary     go to state 30
@@ -2014,9 +2015,9 @@ State 98
     const       go to state 37
 
 
-State 99
+State 98
 
-   55 call: call '(' . elist ')'
+   54 call: call '(' . elist ')'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -2033,7 +2034,7 @@ State 99
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    $default  reduce using rule 62 (elist)
+    $default  reduce using rule 61 (elist)
 
     expr        go to state 61
     term        go to state 28
@@ -2042,169 +2043,174 @@ State 99
     lvalue      go to state 31
     member      go to state 32
     call        go to state 33
-    elist       go to state 144
+    elist       go to state 143
     objectdef   go to state 34
     const       go to state 37
 
 
+State 99
+
+   84 funcargs: '(' . idlist ')'
+
+    ID  shift, and go to state 144
+
+    $default  reduce using rule 93 (idlist)
+
+    idlist  go to state 145
+
+
 State 100
 
-   85 funcargs: '(' . idlist ')'
+   80 funcdef: funcprefix funcargs . funcblockstart funcbody funcblockend
 
-    ID  shift, and go to state 145
+    $default  reduce using rule 85 (funcblockstart)
 
-    $default  reduce using rule 92 (idlist)
-
-    idlist  go to state 146
+    funcblockstart  go to state 146
 
 
 State 101
 
-   81 funcdef: funcprefix funcargs . funcbody
+   97 ifstmt: ifprefix stmt . elseprefix stmt
+   98       | ifprefix stmt .
 
-    error  shift, and go to state 69
-    '{'    shift, and go to state 70
+    ELSE  shift, and go to state 147
 
-    block     go to state 147
-    funcbody  go to state 148
+    ELSE      [reduce using rule 98 (ifstmt)]
+    $default  reduce using rule 98 (ifstmt)
+
+    elseprefix  go to state 148
 
 
 State 102
 
-   96 ifstmt: ifprefix stmt . elseprefix stmt
-   97       | ifprefix stmt .
+  102 whilesecond: '(' . expr ')'
 
-    ELSE  shift, and go to state 149
+    ID          shift, and go to state 1
+    NUMBER      shift, and go to state 2
+    STRING      shift, and go to state 3
+    NOT         shift, and go to state 6
+    PLUSPLUS    shift, and go to state 7
+    MINUSMINUS  shift, and go to state 8
+    LOCAL       shift, and go to state 9
+    SCOPEOP     shift, and go to state 10
+    NIL         shift, and go to state 12
+    TRUE        shift, and go to state 13
+    FALSE       shift, and go to state 14
+    '-'         shift, and go to state 19
+    '['         shift, and go to state 20
+    '('         shift, and go to state 21
 
-    ELSE      [reduce using rule 97 (ifstmt)]
-    $default  reduce using rule 97 (ifstmt)
-
-    elseprefix  go to state 150
+    expr        go to state 149
+    term        go to state 28
+    assignexpr  go to state 29
+    primary     go to state 30
+    lvalue      go to state 31
+    member      go to state 32
+    call        go to state 33
+    objectdef   go to state 34
+    const       go to state 37
 
 
 State 103
 
-   57 call: '(' funcdef . ')' '(' elist ')'
+  103 whilestmt: whilestart whilesecond . loopstmt
 
-    ')'  shift, and go to state 151
+    $default  reduce using rule 105 (loopstart)
+
+    loopstmt   go to state 150
+    loopstart  go to state 151
 
 
 State 104
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   98 ifprefix: IF '(' expr . ')'
+   56 call: '(' funcdef . ')' '(' elist ')'
 
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
-    ')'           shift, and go to state 152
+    ')'  shift, and go to state 152
 
 
 State 105
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-  100 whilestmt: WHILE '(' expr . ')' stmt
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   99 ifprefix: IF '(' expr . ')'
 
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
     ')'           shift, and go to state 153
 
 
 State 106
 
-  101 forstmt: FOR '(' elist . ';' expr ';' elist ')' stmt
+  107 forstmt: FOR '(' elist . ';' expr ';' elist ')' stmt
 
     ';'  shift, and go to state 154
 
 
 State 107
 
-  103 returnstmt: RETURN expr ';' .
+  109 returnstmt: RETURN expr ';' .
 
-    $default  reduce using rule 103 (returnstmt)
+    $default  reduce using rule 109 (returnstmt)
 
 
 State 108
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   72 indexedelem: '{' expr . ':' expr '}'
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   71 indexedelem: '{' expr . ':' expr '}'
 
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
     ':'           shift, and go to state 155
 
 
 State 109
 
-   66 elist1: error . expr elist1
+   65 elist1: error . expr elist1
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -2234,7 +2240,7 @@ State 109
 
 State 110
 
-   65 elist1: ',' . expr elist1
+   64 elist1: ',' . expr elist1
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -2264,28 +2270,28 @@ State 110
 
 State 111
 
-   63 elist: expr elist1 .
+   62 elist: expr elist1 .
 
-    $default  reduce using rule 63 (elist)
+    $default  reduce using rule 62 (elist)
 
 
 State 112
 
-   67 objectdef: '[' elist ']' .
+   66 objectdef: '[' elist ']' .
 
-    $default  reduce using rule 67 (objectdef)
+    $default  reduce using rule 66 (objectdef)
 
 
 State 113
 
-   68 objectdef: '[' indexed ']' .
+   67 objectdef: '[' indexed ']' .
 
-    $default  reduce using rule 68 (objectdef)
+    $default  reduce using rule 67 (objectdef)
 
 
 State 114
 
-   70 more: ',' . indexedelem more
+   69 more: ',' . indexedelem more
 
     '{'  shift, and go to state 60
 
@@ -2294,39 +2300,39 @@ State 114
 
 State 115
 
-   69 indexed: indexedelem more .
+   68 indexed: indexedelem more .
 
-    $default  reduce using rule 69 (indexed)
+    $default  reduce using rule 68 (indexed)
 
 
 State 116
 
-   33 term: '(' expr ')' .
+   32 term: '(' expr ')' .
 
-    $default  reduce using rule 33 (term)
+    $default  reduce using rule 32 (term)
 
 
 State 117
 
-   45 primary: '(' funcdef ')' .
-   57 call: '(' funcdef ')' . '(' elist ')'
+   44 primary: '(' funcdef ')' .
+   56 call: '(' funcdef ')' . '(' elist ')'
 
     '('  shift, and go to state 159
 
-    $default  reduce using rule 45 (primary)
+    $default  reduce using rule 44 (primary)
 
 
 State 118
 
-   80 block: error '}' .
+   79 block: error '}' .
 
-    $default  reduce using rule 80 (block)
+    $default  reduce using rule 79 (block)
 
 
 State 119
 
     3 stmt1: stmt1 . stmt
-   79 block: error stmt1 . '}'
+   78 block: error stmt1 . '}'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -2352,7 +2358,7 @@ State 119
     ';'         shift, and go to state 22
     '}'         shift, and go to state 160
 
-    $default  reduce using rule 13 ($@1)
+    $default  reduce using rule 12 ($@1)
 
     stmt        go to state 68
     $@1         go to state 26
@@ -2369,14 +2375,15 @@ State 119
     const       go to state 37
     ifstmt      go to state 38
     ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
 
 
 State 120
 
-   75 block: '{' $@3 . stmt1 '}' $@4
+   74 block: '{' $@3 . stmt1 '}' $@4
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -2401,7 +2408,7 @@ State 120
     '('         shift, and go to state 21
     ';'         shift, and go to state 22
 
-    $default  reduce using rule 13 ($@1)
+    $default  reduce using rule 12 ($@1)
 
     stmt1       go to state 161
     stmt        go to state 25
@@ -2419,119 +2426,144 @@ State 120
     const       go to state 37
     ifstmt      go to state 38
     ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
 
 
 State 121
 
-   78 block: '{' $@5 . '}' $@6
+   77 block: '{' $@5 . '}' $@6
 
     '}'  shift, and go to state 162
 
 
 State 122
 
-   15 stmt: $@1 block $@2 .
+   14 stmt: $@1 block $@2 .
 
-    $default  reduce using rule 15 (stmt)
+    $default  reduce using rule 14 (stmt)
 
 
 State 123
 
-    6 stmt: expr error ';' .
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   29     | expr AND expr .
+   30     | expr . OR expr
 
-    $default  reduce using rule 6 (stmt)
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
+
+    $default  reduce using rule 29 (expr)
 
 
 State 124
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   30     | expr AND expr .
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   30     | expr OR expr .
 
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    AND           shift, and go to state 72
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
 
     $default  reduce using rule 30 (expr)
 
 
 State 125
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   31     | expr OR expr .
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   25     | expr GREATEREQUAL expr .
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
-    AND           shift, and go to state 73
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
+    '%'  shift, and go to state 84
 
-    $default  reduce using rule 31 (expr)
+    GREATEREQUAL  error (nonassociative)
+    LESSEQUAL     error (nonassociative)
+    '>'           error (nonassociative)
+    '<'           error (nonassociative)
+
+    $default  reduce using rule 25 (expr)
 
 
 State 126
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   26     | expr GREATEREQUAL expr .
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   26     | expr LESSEQUAL expr .
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
-    '+'  shift, and go to state 81
-    '-'  shift, and go to state 82
-    '*'  shift, and go to state 83
-    '/'  shift, and go to state 84
-    '%'  shift, and go to state 85
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
+    '%'  shift, and go to state 84
 
     GREATEREQUAL  error (nonassociative)
     LESSEQUAL     error (nonassociative)
@@ -2543,61 +2575,63 @@ State 126
 
 State 127
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   27     | expr LESSEQUAL expr .
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   27     | expr EQUAL expr .
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
-    '+'  shift, and go to state 81
-    '-'  shift, and go to state 82
-    '*'  shift, and go to state 83
-    '/'  shift, and go to state 84
-    '%'  shift, and go to state 85
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
 
-    GREATEREQUAL  error (nonassociative)
-    LESSEQUAL     error (nonassociative)
-    '>'           error (nonassociative)
-    '<'           error (nonassociative)
+    EQUAL     error (nonassociative)
+    NOTEQUAL  error (nonassociative)
 
     $default  reduce using rule 27 (expr)
 
 
 State 128
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   28     | expr EQUAL expr .
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   28     | expr NOTEQUAL expr .
+   29     | expr . AND expr
+   30     | expr . OR expr
 
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
 
     EQUAL     error (nonassociative)
     NOTEQUAL  error (nonassociative)
@@ -2607,59 +2641,57 @@ State 128
 
 State 129
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   29     | expr NOTEQUAL expr .
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   23     | expr '>' expr .
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
+    '%'  shift, and go to state 84
 
-    EQUAL     error (nonassociative)
-    NOTEQUAL  error (nonassociative)
+    GREATEREQUAL  error (nonassociative)
+    LESSEQUAL     error (nonassociative)
+    '>'           error (nonassociative)
+    '<'           error (nonassociative)
 
-    $default  reduce using rule 29 (expr)
+    $default  reduce using rule 23 (expr)
 
 
 State 130
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   24     | expr '>' expr .
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   24     | expr '<' expr .
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
-    '+'  shift, and go to state 81
-    '-'  shift, and go to state 82
-    '*'  shift, and go to state 83
-    '/'  shift, and go to state 84
-    '%'  shift, and go to state 85
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
+    '%'  shift, and go to state 84
 
     GREATEREQUAL  error (nonassociative)
     LESSEQUAL     error (nonassociative)
@@ -2671,383 +2703,376 @@ State 130
 
 State 131
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   25     | expr '<' expr .
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   18     | expr '+' expr .
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
-    '+'  shift, and go to state 81
-    '-'  shift, and go to state 82
-    '*'  shift, and go to state 83
-    '/'  shift, and go to state 84
-    '%'  shift, and go to state 85
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
+    '%'  shift, and go to state 84
 
-    GREATEREQUAL  error (nonassociative)
-    LESSEQUAL     error (nonassociative)
-    '>'           error (nonassociative)
-    '<'           error (nonassociative)
-
-    $default  reduce using rule 25 (expr)
+    $default  reduce using rule 18 (expr)
 
 
 State 132
 
-   19 expr: expr . '+' expr
-   19     | expr '+' expr .
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   19     | expr '-' expr .
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
-    '*'  shift, and go to state 83
-    '/'  shift, and go to state 84
-    '%'  shift, and go to state 85
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
+    '%'  shift, and go to state 84
 
     $default  reduce using rule 19 (expr)
 
 
 State 133
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   20     | expr '-' expr .
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-
-    '*'  shift, and go to state 83
-    '/'  shift, and go to state 84
-    '%'  shift, and go to state 85
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   20     | expr '*' expr .
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
     $default  reduce using rule 20 (expr)
 
 
 State 134
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   21     | expr '*' expr .
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   21     | expr '/' expr .
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
     $default  reduce using rule 21 (expr)
 
 
 State 135
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   22     | expr '/' expr .
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   22     | expr '%' expr .
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
 
     $default  reduce using rule 22 (expr)
 
 
 State 136
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   23     | expr '%' expr .
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-
-    $default  reduce using rule 23 (expr)
-
-
-State 137
-
-   61 methodcall: DOUPLEDOT ID . '(' elist ')'
+   60 methodcall: DOUPLEDOT ID . '(' elist ')'
 
     '('  shift, and go to state 163
 
 
+State 137
+
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   40 assignexpr: lvalue '=' expr .
+
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
+
+    $default  reduce using rule 40 (assignexpr)
+
+
 State 138
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   41 assignexpr: lvalue '=' expr .
+   50 member: lvalue '.' ID .
 
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
-
-    $default  reduce using rule 41 (assignexpr)
+    $default  reduce using rule 50 (member)
 
 
 State 139
 
-   51 member: lvalue '.' ID .
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   51 member: lvalue '[' expr . ']'
 
-    $default  reduce using rule 51 (member)
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
+    ']'           shift, and go to state 164
 
 
 State 140
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   52 member: lvalue '[' expr . ']'
-
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
-    ']'           shift, and go to state 164
-
-
-State 141
-
-   60 normcall: '(' elist . ')'
+   59 normcall: '(' elist . ')'
 
     ')'  shift, and go to state 165
 
 
+State 141
+
+   52 member: call '.' ID .
+
+    $default  reduce using rule 52 (member)
+
+
 State 142
 
-   53 member: call '.' ID .
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   53 member: call '[' expr . ']'
 
-    $default  reduce using rule 53 (member)
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
+    ']'           shift, and go to state 166
 
 
 State 143
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   54 member: call '[' expr . ']'
-
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
-    ']'           shift, and go to state 166
-
-
-State 144
-
-   55 call: call '(' elist . ')'
+   54 call: call '(' elist . ')'
 
     ')'  shift, and go to state 167
 
 
-State 145
+State 144
 
-   93 idlist: ID . idlist1
+   94 idlist: ID . idlist1
 
     ','  shift, and go to state 168
 
-    $default  reduce using rule 94 (idlist1)
+    $default  reduce using rule 95 (idlist1)
 
     idlist1  go to state 169
 
 
-State 146
+State 145
 
-   85 funcargs: '(' idlist . ')'
+   84 funcargs: '(' idlist . ')'
 
     ')'  shift, and go to state 170
 
 
+State 146
+
+   80 funcdef: funcprefix funcargs funcblockstart . funcbody funcblockend
+
+    error  shift, and go to state 69
+    '{'    shift, and go to state 70
+
+    block     go to state 171
+    funcbody  go to state 172
+
+
 State 147
 
-   86 funcbody: block .
+  100 elseprefix: ELSE .
 
-    $default  reduce using rule 86 (funcbody)
+    $default  reduce using rule 100 (elseprefix)
 
 
 State 148
 
-   81 funcdef: funcprefix funcargs funcbody .
+   97 ifstmt: ifprefix stmt elseprefix . stmt
 
-    $default  reduce using rule 81 (funcdef)
+    ID          shift, and go to state 1
+    NUMBER      shift, and go to state 2
+    STRING      shift, and go to state 3
+    BREAK       shift, and go to state 4
+    CONTINUE    shift, and go to state 5
+    NOT         shift, and go to state 6
+    PLUSPLUS    shift, and go to state 7
+    MINUSMINUS  shift, and go to state 8
+    LOCAL       shift, and go to state 9
+    SCOPEOP     shift, and go to state 10
+    FUNCTION    shift, and go to state 11
+    NIL         shift, and go to state 12
+    TRUE        shift, and go to state 13
+    FALSE       shift, and go to state 14
+    IF          shift, and go to state 15
+    WHILE       shift, and go to state 16
+    FOR         shift, and go to state 17
+    RETURN      shift, and go to state 18
+    '-'         shift, and go to state 19
+    '['         shift, and go to state 20
+    '('         shift, and go to state 21
+    ';'         shift, and go to state 22
+
+    $default  reduce using rule 12 ($@1)
+
+    stmt        go to state 173
+    $@1         go to state 26
+    expr        go to state 27
+    term        go to state 28
+    assignexpr  go to state 29
+    primary     go to state 30
+    lvalue      go to state 31
+    member      go to state 32
+    call        go to state 33
+    objectdef   go to state 34
+    funcdef     go to state 35
+    funcprefix  go to state 36
+    const       go to state 37
+    ifstmt      go to state 38
+    ifprefix    go to state 39
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
 
 
 State 149
 
-   99 elseprefix: ELSE .
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+  102 whilesecond: '(' expr . ')'
 
-    $default  reduce using rule 99 (elseprefix)
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
+    ')'           shift, and go to state 174
 
 
 State 150
 
-   96 ifstmt: ifprefix stmt elseprefix . stmt
+  103 whilestmt: whilestart whilesecond loopstmt .
 
-    ID          shift, and go to state 1
-    NUMBER      shift, and go to state 2
-    STRING      shift, and go to state 3
-    BREAK       shift, and go to state 4
-    CONTINUE    shift, and go to state 5
-    NOT         shift, and go to state 6
-    PLUSPLUS    shift, and go to state 7
-    MINUSMINUS  shift, and go to state 8
-    LOCAL       shift, and go to state 9
-    SCOPEOP     shift, and go to state 10
-    FUNCTION    shift, and go to state 11
-    NIL         shift, and go to state 12
-    TRUE        shift, and go to state 13
-    FALSE       shift, and go to state 14
-    IF          shift, and go to state 15
-    WHILE       shift, and go to state 16
-    FOR         shift, and go to state 17
-    RETURN      shift, and go to state 18
-    '-'         shift, and go to state 19
-    '['         shift, and go to state 20
-    '('         shift, and go to state 21
-    ';'         shift, and go to state 22
-
-    $default  reduce using rule 13 ($@1)
-
-    stmt        go to state 171
-    $@1         go to state 26
-    expr        go to state 27
-    term        go to state 28
-    assignexpr  go to state 29
-    primary     go to state 30
-    lvalue      go to state 31
-    member      go to state 32
-    call        go to state 33
-    objectdef   go to state 34
-    funcdef     go to state 35
-    funcprefix  go to state 36
-    const       go to state 37
-    ifstmt      go to state 38
-    ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    $default  reduce using rule 103 (whilestmt)
 
 
 State 151
 
-   57 call: '(' funcdef ')' . '(' elist ')'
-
-    '('  shift, and go to state 159
-
-
-State 152
-
-   98 ifprefix: IF '(' expr ')' .
-
-    $default  reduce using rule 98 (ifprefix)
-
-
-State 153
-
-  100 whilestmt: WHILE '(' expr ')' . stmt
+  104 loopstmt: loopstart . stmt loopend
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -3072,9 +3097,9 @@ State 153
     '('         shift, and go to state 21
     ';'         shift, and go to state 22
 
-    $default  reduce using rule 13 ($@1)
+    $default  reduce using rule 12 ($@1)
 
-    stmt        go to state 172
+    stmt        go to state 175
     $@1         go to state 26
     expr        go to state 27
     term        go to state 28
@@ -3089,14 +3114,29 @@ State 153
     const       go to state 37
     ifstmt      go to state 38
     ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
+
+
+State 152
+
+   56 call: '(' funcdef ')' . '(' elist ')'
+
+    '('  shift, and go to state 159
+
+
+State 153
+
+   99 ifprefix: IF '(' expr ')' .
+
+    $default  reduce using rule 99 (ifprefix)
 
 
 State 154
 
-  101 forstmt: FOR '(' elist ';' . expr ';' elist ')' stmt
+  107 forstmt: FOR '(' elist ';' . expr ';' elist ')' stmt
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -3113,7 +3153,7 @@ State 154
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    expr        go to state 173
+    expr        go to state 176
     term        go to state 28
     assignexpr  go to state 29
     primary     go to state 30
@@ -3126,7 +3166,7 @@ State 154
 
 State 155
 
-   72 indexedelem: '{' expr ':' . expr '}'
+   71 indexedelem: '{' expr ':' . expr '}'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -3143,7 +3183,7 @@ State 155
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    expr        go to state 174
+    expr        go to state 177
     term        go to state 28
     assignexpr  go to state 29
     primary     go to state 30
@@ -3156,98 +3196,98 @@ State 155
 
 State 156
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   66 elist1: error expr . elist1
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   65 elist1: error expr . elist1
 
     error         shift, and go to state 109
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
     ','           shift, and go to state 110
 
-    ']'  reduce using rule 64 (elist1)
-    ')'  reduce using rule 64 (elist1)
-    ';'  reduce using rule 64 (elist1)
+    ']'  reduce using rule 63 (elist1)
+    ')'  reduce using rule 63 (elist1)
+    ';'  reduce using rule 63 (elist1)
 
-    elist1  go to state 175
+    elist1  go to state 178
 
 
 State 157
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   65 elist1: ',' expr . elist1
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   64 elist1: ',' expr . elist1
 
     error         shift, and go to state 109
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
     ','           shift, and go to state 110
 
-    ']'  reduce using rule 64 (elist1)
-    ')'  reduce using rule 64 (elist1)
-    ';'  reduce using rule 64 (elist1)
+    ']'  reduce using rule 63 (elist1)
+    ')'  reduce using rule 63 (elist1)
+    ';'  reduce using rule 63 (elist1)
 
-    elist1  go to state 176
+    elist1  go to state 179
 
 
 State 158
 
-   70 more: ',' indexedelem . more
+   69 more: ',' indexedelem . more
 
     ','  shift, and go to state 114
 
-    $default  reduce using rule 71 (more)
+    $default  reduce using rule 70 (more)
 
-    more  go to state 177
+    more  go to state 180
 
 
 State 159
 
-   57 call: '(' funcdef ')' '(' . elist ')'
+   56 call: '(' funcdef ')' '(' . elist ')'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -3264,7 +3304,7 @@ State 159
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    $default  reduce using rule 62 (elist)
+    $default  reduce using rule 61 (elist)
 
     expr        go to state 61
     term        go to state 28
@@ -3273,22 +3313,22 @@ State 159
     lvalue      go to state 31
     member      go to state 32
     call        go to state 33
-    elist       go to state 178
+    elist       go to state 181
     objectdef   go to state 34
     const       go to state 37
 
 
 State 160
 
-   79 block: error stmt1 '}' .
+   78 block: error stmt1 '}' .
 
-    $default  reduce using rule 79 (block)
+    $default  reduce using rule 78 (block)
 
 
 State 161
 
     3 stmt1: stmt1 . stmt
-   75 block: '{' $@3 stmt1 . '}' $@4
+   74 block: '{' $@3 stmt1 . '}' $@4
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -3312,9 +3352,9 @@ State 161
     '['         shift, and go to state 20
     '('         shift, and go to state 21
     ';'         shift, and go to state 22
-    '}'         shift, and go to state 179
+    '}'         shift, and go to state 182
 
-    $default  reduce using rule 13 ($@1)
+    $default  reduce using rule 12 ($@1)
 
     stmt        go to state 68
     $@1         go to state 26
@@ -3331,23 +3371,24 @@ State 161
     const       go to state 37
     ifstmt      go to state 38
     ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
 
 
 State 162
 
-   78 block: '{' $@5 '}' . $@6
+   77 block: '{' $@5 '}' . $@6
 
-    $default  reduce using rule 77 ($@6)
+    $default  reduce using rule 76 ($@6)
 
-    $@6  go to state 180
+    $@6  go to state 183
 
 
 State 163
 
-   61 methodcall: DOUPLEDOT ID '(' . elist ')'
+   60 methodcall: DOUPLEDOT ID '(' . elist ')'
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -3364,7 +3405,7 @@ State 163
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    $default  reduce using rule 62 (elist)
+    $default  reduce using rule 61 (elist)
 
     expr        go to state 61
     term        go to state 28
@@ -3373,205 +3414,244 @@ State 163
     lvalue      go to state 31
     member      go to state 32
     call        go to state 33
-    elist       go to state 181
+    elist       go to state 184
     objectdef   go to state 34
     const       go to state 37
 
 
 State 164
 
-   52 member: lvalue '[' expr ']' .
+   51 member: lvalue '[' expr ']' .
 
-    $default  reduce using rule 52 (member)
+    $default  reduce using rule 51 (member)
 
 
 State 165
 
-   60 normcall: '(' elist ')' .
+   59 normcall: '(' elist ')' .
 
-    $default  reduce using rule 60 (normcall)
+    $default  reduce using rule 59 (normcall)
 
 
 State 166
 
-   54 member: call '[' expr ']' .
+   53 member: call '[' expr ']' .
 
-    $default  reduce using rule 54 (member)
+    $default  reduce using rule 53 (member)
 
 
 State 167
 
-   55 call: call '(' elist ')' .
+   54 call: call '(' elist ')' .
 
-    $default  reduce using rule 55 (call)
+    $default  reduce using rule 54 (call)
 
 
 State 168
 
-   95 idlist1: ',' . ID idlist1
+   96 idlist1: ',' . ID idlist1
 
-    ID  shift, and go to state 182
+    ID  shift, and go to state 185
 
 
 State 169
 
-   93 idlist: ID idlist1 .
+   94 idlist: ID idlist1 .
 
-    $default  reduce using rule 93 (idlist)
+    $default  reduce using rule 94 (idlist)
 
 
 State 170
 
-   85 funcargs: '(' idlist ')' .
+   84 funcargs: '(' idlist ')' .
 
-    $default  reduce using rule 85 (funcargs)
+    $default  reduce using rule 84 (funcargs)
 
 
 State 171
 
-   96 ifstmt: ifprefix stmt elseprefix stmt .
+   86 funcbody: block .
 
-    $default  reduce using rule 96 (ifstmt)
+    $default  reduce using rule 86 (funcbody)
 
 
 State 172
 
-  100 whilestmt: WHILE '(' expr ')' stmt .
+   80 funcdef: funcprefix funcargs funcblockstart funcbody . funcblockend
 
-    $default  reduce using rule 100 (whilestmt)
+    $default  reduce using rule 87 (funcblockend)
+
+    funcblockend  go to state 186
 
 
 State 173
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-  101 forstmt: FOR '(' elist ';' expr . ';' elist ')' stmt
+   97 ifstmt: ifprefix stmt elseprefix stmt .
 
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
-    ';'           shift, and go to state 183
+    $default  reduce using rule 97 (ifstmt)
 
 
 State 174
 
-   19 expr: expr . '+' expr
-   20     | expr . '-' expr
-   21     | expr . '*' expr
-   22     | expr . '/' expr
-   23     | expr . '%' expr
-   24     | expr . '>' expr
-   25     | expr . '<' expr
-   26     | expr . GREATEREQUAL expr
-   27     | expr . LESSEQUAL expr
-   28     | expr . EQUAL expr
-   29     | expr . NOTEQUAL expr
-   30     | expr . AND expr
-   31     | expr . OR expr
-   72 indexedelem: '{' expr ':' expr . '}'
+  102 whilesecond: '(' expr ')' .
 
-    AND           shift, and go to state 73
-    OR            shift, and go to state 74
-    GREATEREQUAL  shift, and go to state 75
-    LESSEQUAL     shift, and go to state 76
-    EQUAL         shift, and go to state 77
-    NOTEQUAL      shift, and go to state 78
-    '>'           shift, and go to state 79
-    '<'           shift, and go to state 80
-    '+'           shift, and go to state 81
-    '-'           shift, and go to state 82
-    '*'           shift, and go to state 83
-    '/'           shift, and go to state 84
-    '%'           shift, and go to state 85
-    '}'           shift, and go to state 184
+    $default  reduce using rule 102 (whilesecond)
 
 
 State 175
 
-   66 elist1: error expr elist1 .
+  104 loopstmt: loopstart stmt . loopend
 
-    $default  reduce using rule 66 (elist1)
+    $default  reduce using rule 106 (loopend)
+
+    loopend  go to state 187
 
 
 State 176
 
-   65 elist1: ',' expr elist1 .
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+  107 forstmt: FOR '(' elist ';' expr . ';' elist ')' stmt
 
-    $default  reduce using rule 65 (elist1)
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
+    ';'           shift, and go to state 188
 
 
 State 177
 
-   70 more: ',' indexedelem more .
+   18 expr: expr . '+' expr
+   19     | expr . '-' expr
+   20     | expr . '*' expr
+   21     | expr . '/' expr
+   22     | expr . '%' expr
+   23     | expr . '>' expr
+   24     | expr . '<' expr
+   25     | expr . GREATEREQUAL expr
+   26     | expr . LESSEQUAL expr
+   27     | expr . EQUAL expr
+   28     | expr . NOTEQUAL expr
+   29     | expr . AND expr
+   30     | expr . OR expr
+   71 indexedelem: '{' expr ':' expr . '}'
 
-    $default  reduce using rule 70 (more)
+    AND           shift, and go to state 72
+    OR            shift, and go to state 73
+    GREATEREQUAL  shift, and go to state 74
+    LESSEQUAL     shift, and go to state 75
+    EQUAL         shift, and go to state 76
+    NOTEQUAL      shift, and go to state 77
+    '>'           shift, and go to state 78
+    '<'           shift, and go to state 79
+    '+'           shift, and go to state 80
+    '-'           shift, and go to state 81
+    '*'           shift, and go to state 82
+    '/'           shift, and go to state 83
+    '%'           shift, and go to state 84
+    '}'           shift, and go to state 189
 
 
 State 178
 
-   57 call: '(' funcdef ')' '(' elist . ')'
+   65 elist1: error expr elist1 .
 
-    ')'  shift, and go to state 185
+    $default  reduce using rule 65 (elist1)
 
 
 State 179
 
-   75 block: '{' $@3 stmt1 '}' . $@4
+   64 elist1: ',' expr elist1 .
 
-    $default  reduce using rule 74 ($@4)
-
-    $@4  go to state 186
+    $default  reduce using rule 64 (elist1)
 
 
 State 180
 
-   78 block: '{' $@5 '}' $@6 .
+   69 more: ',' indexedelem more .
 
-    $default  reduce using rule 78 (block)
+    $default  reduce using rule 69 (more)
 
 
 State 181
 
-   61 methodcall: DOUPLEDOT ID '(' elist . ')'
+   56 call: '(' funcdef ')' '(' elist . ')'
 
-    ')'  shift, and go to state 187
+    ')'  shift, and go to state 190
 
 
 State 182
 
-   95 idlist1: ',' ID . idlist1
+   74 block: '{' $@3 stmt1 '}' . $@4
 
-    ','  shift, and go to state 168
+    $default  reduce using rule 73 ($@4)
 
-    $default  reduce using rule 94 (idlist1)
-
-    idlist1  go to state 188
+    $@4  go to state 191
 
 
 State 183
 
-  101 forstmt: FOR '(' elist ';' expr ';' . elist ')' stmt
+   77 block: '{' $@5 '}' $@6 .
+
+    $default  reduce using rule 77 (block)
+
+
+State 184
+
+   60 methodcall: DOUPLEDOT ID '(' elist . ')'
+
+    ')'  shift, and go to state 192
+
+
+State 185
+
+   96 idlist1: ',' ID . idlist1
+
+    ','  shift, and go to state 168
+
+    $default  reduce using rule 95 (idlist1)
+
+    idlist1  go to state 193
+
+
+State 186
+
+   80 funcdef: funcprefix funcargs funcblockstart funcbody funcblockend .
+
+    $default  reduce using rule 80 (funcdef)
+
+
+State 187
+
+  104 loopstmt: loopstart stmt loopend .
+
+    $default  reduce using rule 104 (loopstmt)
+
+
+State 188
+
+  107 forstmt: FOR '(' elist ';' expr ';' . elist ')' stmt
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -3588,7 +3668,7 @@ State 183
     '['         shift, and go to state 20
     '('         shift, and go to state 21
 
-    $default  reduce using rule 62 (elist)
+    $default  reduce using rule 61 (elist)
 
     expr        go to state 61
     term        go to state 28
@@ -3597,56 +3677,56 @@ State 183
     lvalue      go to state 31
     member      go to state 32
     call        go to state 33
-    elist       go to state 189
+    elist       go to state 194
     objectdef   go to state 34
     const       go to state 37
 
 
-State 184
-
-   72 indexedelem: '{' expr ':' expr '}' .
-
-    $default  reduce using rule 72 (indexedelem)
-
-
-State 185
-
-   57 call: '(' funcdef ')' '(' elist ')' .
-
-    $default  reduce using rule 57 (call)
-
-
-State 186
-
-   75 block: '{' $@3 stmt1 '}' $@4 .
-
-    $default  reduce using rule 75 (block)
-
-
-State 187
-
-   61 methodcall: DOUPLEDOT ID '(' elist ')' .
-
-    $default  reduce using rule 61 (methodcall)
-
-
-State 188
-
-   95 idlist1: ',' ID idlist1 .
-
-    $default  reduce using rule 95 (idlist1)
-
-
 State 189
 
-  101 forstmt: FOR '(' elist ';' expr ';' elist . ')' stmt
+   71 indexedelem: '{' expr ':' expr '}' .
 
-    ')'  shift, and go to state 190
+    $default  reduce using rule 71 (indexedelem)
 
 
 State 190
 
-  101 forstmt: FOR '(' elist ';' expr ';' elist ')' . stmt
+   56 call: '(' funcdef ')' '(' elist ')' .
+
+    $default  reduce using rule 56 (call)
+
+
+State 191
+
+   74 block: '{' $@3 stmt1 '}' $@4 .
+
+    $default  reduce using rule 74 (block)
+
+
+State 192
+
+   60 methodcall: DOUPLEDOT ID '(' elist ')' .
+
+    $default  reduce using rule 60 (methodcall)
+
+
+State 193
+
+   96 idlist1: ',' ID idlist1 .
+
+    $default  reduce using rule 96 (idlist1)
+
+
+State 194
+
+  107 forstmt: FOR '(' elist ';' expr ';' elist . ')' stmt
+
+    ')'  shift, and go to state 195
+
+
+State 195
+
+  107 forstmt: FOR '(' elist ';' expr ';' elist ')' . stmt
 
     ID          shift, and go to state 1
     NUMBER      shift, and go to state 2
@@ -3671,9 +3751,9 @@ State 190
     '('         shift, and go to state 21
     ';'         shift, and go to state 22
 
-    $default  reduce using rule 13 ($@1)
+    $default  reduce using rule 12 ($@1)
 
-    stmt        go to state 191
+    stmt        go to state 196
     $@1         go to state 26
     expr        go to state 27
     term        go to state 28
@@ -3688,13 +3768,14 @@ State 190
     const       go to state 37
     ifstmt      go to state 38
     ifprefix    go to state 39
-    whilestmt   go to state 40
-    forstmt     go to state 41
-    returnstmt  go to state 42
+    whilestart  go to state 40
+    whilestmt   go to state 41
+    forstmt     go to state 42
+    returnstmt  go to state 43
 
 
-State 191
+State 196
 
-  101 forstmt: FOR '(' elist ';' expr ';' elist ')' stmt .
+  107 forstmt: FOR '(' elist ';' expr ';' elist ')' stmt .
 
-    $default  reduce using rule 101 (forstmt)
+    $default  reduce using rule 107 (forstmt)
