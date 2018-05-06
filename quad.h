@@ -143,4 +143,10 @@ int checkuminus(expr *e);
 
 void patchLabel(unsigned index, unsigned nextQuad);
 
+
+typedef struct forJump{
+	unsigned test;
+	unsigned enter;
+}forJump;
+
 #endif

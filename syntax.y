@@ -41,6 +41,7 @@
 	void* calls;
 	unsigned index;
 	void* jumpListEntry;
+	void* forjump;
 }
 
 %token <stringValue> ID 
@@ -77,6 +78,11 @@
 %type <jumpListEntry> 	loopstmt
 %type <jumpListEntry> 	stmt
 %type <jumpListEntry> 	stmt1
+%type <forjump>			forprefix
+%type <index>			N1
+%type <index>			N2
+%type <index>			N3
+%type <index>			M
 
 %right '='
 %left OR
@@ -454,96 +460,95 @@ call: 		call '(' elist ')' 			{
 											}
 			;
 
-callsuffix:	normcall					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);
-											$$ = $1;
-										}
-			|methodcall 				{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);
-											$$ = $1;
-										}
+callsuffix:	normcall						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);
+												$$ = $1;
+											}
+			|methodcall 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);
+												$$ = $1;
+											}
 			;
 
-normcall:   '(' elist ')'				{
-											calls* temp = new calls();
+normcall:   '(' elist ')'					{
+												calls* temp = new calls();
 											
-											temp->elist = (expr*) $2;
-											temp->method = false_t;
-											temp->name = "";
-											$$ = temp;
-										 printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);
+												temp->elist = (expr*) $2;
+												temp->method = false_t;
+												temp->name = "";
+												$$ = temp;
+										 		printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);
+											}
+			;
+
+methodcall:	DOUPLEDOT ID '(' elist ')'  	{	
+												calls *methodtemp = new calls();
+												printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
+												methodtemp->elist=(expr *)($4);
+												methodtemp->method=true_t;
+												methodtemp->name=($2);
+												($$)=methodtemp;
+											}
+			;
+
+elist:		/*empty*/						{
+												printf("elist: empty list in line:%d\n",yylineno);
+												($$)=NULL;
+											}
+			|expr elist1 					{	expr *list;
+												//malloc
+												printf("elist: expr elist1 list in line:%d\n",yylineno);
+												list=(expr *)($1);
+												list->next=(expr *)($2);
+												($$)=list;
+											}
+			;
+
+elist1:		/*empty*/						{
+												printf("elist1: empty list in line:%d\n",yylineno);
+												($$)=NULL;
+											}
+			|','expr elist1 				{	
+												expr *list;
+												printf("elist1: ,expr elist1 in line:%d\n",yylineno);
+												list=(expr *)($2);
+												list->next=(expr *)($3);
+												($$)=list;
+											}
+			|error expr elist1				{}
+			;
+
+objectdef:	'[' elist ']' 				{ printf("objectdef: [elist] in line:%d\n",yylineno);
+											expr* temp_expr = newexpr(newtable_e);
+											temp_expr->sym = newtemp();
+											emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
+
+											int count = 0;
+											expr * expr_list = (expr*) $2;
+											while(expr_list){
+												emit(tablesetelem_iopcode,newexpr_constnum(count++),expr_list,temp_expr,0, yylineno);
+												expr_list= expr_list->next;
+											}
+											$$ = temp_expr;
+										}
+
+			|'[' indexed ']'			{ printf("objectdef: [indexed] in line:%d\n",yylineno);
+											expr* temp_expr = newexpr(newtable_e);
+											temp_expr->sym = newtemp();
+											emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
+											
+											expr * expr_list = (expr*) $2;
+											while(expr_list){
+												emit(tablesetelem_iopcode,expr_list->index,expr_list,temp_expr,0, yylineno);
+												expr_list = expr_list->next;
+											}
+											$$ = temp_expr;
 										}
 			;
 
-methodcall:	DOUPLEDOT ID '(' elist ')'  {	
-											calls *methodtemp = new calls();
-											printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
-											methodtemp->elist=(expr *)($4);
-											methodtemp->method=true_t;
-											methodtemp->name=($2);
-											($$)=methodtemp;
+
+indexed:	indexedelem more			{ printf("indexed: indexedelem more in line:%d\n",yylineno);
+											$$ = $1;
+											((expr*)$$)->next = (expr*) $2;
 										}
-			;
-
-elist:		/*empty*/					{
-											printf("elist: empty list in line:%d\n",yylineno);
-											($$)=NULL;
-										}
-			|expr elist1 				{	expr *list;
-											//malloc
-											printf("elist: expr elist1 list in line:%d\n",yylineno);
-											list=(expr *)($1);
-											list->next=(expr *)($2);
-											($$)=list;
-										}
-			;
-
-elist1:		/*empty*/							{
-													printf("elist1: empty list in line:%d\n",yylineno);
-													($$)=NULL;
-												}
-			|','expr elist1 					{	
-													expr *list;
-													printf("elist1: ,expr elist1 in line:%d\n",yylineno);
-													list=(expr *)($2);
-													list->next=(expr *)($3);
-													($$)=list;
-												}
-			|error expr elist1					{	//i dont know here
-												}
-			;
-
-objectdef:	'[' elist ']' 						{ printf("objectdef: [elist] in line:%d\n",yylineno);
-													expr* temp_expr = newexpr(newtable_e);
-													temp_expr->sym = newtemp();
-													emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
-
-													int count = 0;
-													expr * expr_list = (expr*) $2;
-													while(expr_list){
-														emit(tablesetelem_iopcode,newexpr_constnum(count++),expr_list,temp_expr,0, yylineno);
-														expr_list= expr_list->next;
-													}
-													$$ = temp_expr;
-												}
-
-			|'[' indexed ']'					{ printf("objectdef: [indexed] in line:%d\n",yylineno);
-													expr* temp_expr = newexpr(newtable_e);
-													temp_expr->sym = newtemp();
-													emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
-													
-													expr * expr_list = (expr*) $2;
-													while(expr_list){
-														emit(tablesetelem_iopcode,expr_list->index,expr_list,temp_expr,0, yylineno);
-														expr_list = expr_list->next;
-													}
-													$$ = temp_expr;
-												}
-			;
-
-
-indexed:	indexedelem more					{ printf("indexed: indexedelem more in line:%d\n",yylineno);
-													$$ = $1;
-													((expr*)$$)->next = (expr*) $2;
-												}
 			;
 
 more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d\n",yylineno);
@@ -721,6 +726,16 @@ elseprefix:	ELSE 								{
 												}
 			;
 
+whilestmt:		whilestart whilesecond loopstmt {
+													
+													emit(jump_iopcode,NULL,NULL,NULL,($1),yylineno);
+													patchLabel(($2),nextquadLabel());
+													patchList(*(jumpListStack.top()->breakList), nextquadLabel());
+													patchList(*(jumpListStack.top()->continueList), $1 );
+													jumpListStack.pop();
+
+												}
+
 
 whilestart:		WHILE 							{
 													($$)=nextquadLabel();
@@ -733,26 +748,52 @@ whilesecond:	'(' expr ')'					{
 
 												}
 
-whilestmt:		whilestart whilesecond loopstmt {
-													printf("WHILESTART RETURNED %d\n",$1);
-													emit(jump_iopcode,NULL,NULL,NULL,($1),yylineno);
-													patchLabel(($2),nextquadLabel());
-													patchList(*(jumpListStack.top()->breakList), nextquadLabel());
-													patchList(*(jumpListStack.top()->continueList), $1 );
-													jumpListStack.pop();
 
+forstmt: forprefix N1 elist ')' N2 loopstmt N3		{
+													patchLabel( ((forJump*)$1)->enter , $5+1); 						/*true jump*/
+													patchLabel($2, nextquadLabel());		  						/*false jump*/
+													patchLabel($5, ((forJump*)$1)->test);							/*loop jump*/
+													patchLabel($7, $2 +1);											/*closure jump*/
+
+													patchList(*(jumpListStack.top()->breakList), nextquadLabel());	/*false jump*/
+													patchList(*(jumpListStack.top()->continueList), $2 +1);			/*closure jump*/
 												}
+
+forprefix:	FOR '(' elist ';' M expr ';'		{
+													forJump* temp = new forJump();
+													temp->test = $5;
+													temp->enter = nextquadLabel();
+													emit(if_eq_iopcode, (expr*) $6, newexpr_constbool(true_t), NULL, 0, yylineno);
+													$$ = temp;
+												}
+
+N1:			/*empty*/							{
+													$$ = nextquadLabel();
+													emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+												}
+
+N2:			/*empty*/							{
+													$$ = nextquadLabel();
+													emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+												}
+
+N3:			/*empty*/							{
+													$$ = nextquadLabel();
+													emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
+												}
+
+M:			/*empty*/							{
+
+													$$ = nextquadLabel();
+												}
+
+
 
 loopstmt: loopstart stmt loopend				{ $$ = $2; }
 
 loopstart:										{ ++loopcounter;  newlistEntry();	printf("NEW LIST\n");}
 
 loopend:										{ --loopcounter; }
-
-
-
-
-forstmt:	FOR '(' elist ';' expr ';' elist ')' stmt {k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("forstmt: FOR (elist;expr;elist) stmt in 								;											line:%d\n",yylineno);}
 
 returnstmt:	RETURN ';' 							{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN; in line:%d",yylineno);}
 			|RETURN expr ';'					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("returnstmt: RETURN expr; in line:%d",yylineno);}
