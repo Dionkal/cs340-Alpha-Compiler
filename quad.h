@@ -16,7 +16,7 @@ typedef enum iopcode{
 	div_iopcode,
 	mod_iopcode,
 	uminus_iopcode,
-	and_iopcode,
+	and_iopcode,	
 	or_iopcode,
 	not_iopcode,
 	if_eq_iopcode,
@@ -25,13 +25,17 @@ typedef enum iopcode{
 	if_greatereq_iopcode,
 	if_less_iopcode,
 	if_greater_iopcode,
-	call_iopcode,param_iopcode,
-	ret_iopcode,getretval_iopcode,
+	call_iopcode,
+	param_iopcode,
+	ret_iopcode,
+	getretval_iopcode,
 	funcstart_iopcode,
 	funcend_iopcode,
 	tablecreate_iopcode,
 	tablegetelem_iopcode,
-	tablesetelem_iopcode
+	tablesetelem_iopcode,
+	jump_iopcode,
+	invalid_iopcode
 }iopcode;
 
 /*Enumerator that defines all the differnet types of expressions*/
@@ -86,6 +90,9 @@ expr* emit_arithexpr(iopcode opCode,expr *_arg1,expr *_arg2,int yylineno);
 /*Creats a new quad for tableitems*/
 expr *emit_iftableitem(expr *e);
 
+/*Creates some quads based on relational operators*/
+expr* emit_relop(iopcode icode, expr* expr1, expr* expr2);
+
 void printSymbol(symTableEntry* sym);
 
 /*Prints the given expression*/
@@ -109,23 +116,23 @@ expr *member_item(expr * e,std::string id);
 
 expr *newxpr_conststring(std::string s);
 
-
-
 void elist_vctr_add(expr *e);
 
+expr* emit_bool(iopcode icode, expr* expr1, expr* expr2);
 
-
-//eriona ioanna
 expr *member_item(expr * e,std::string id);
 
 expr *newxpr_constrstring(std::string s);
 
-expr *emit_iftableitem(expr *e);
-
-//ioanna
 expr *make_call(expr *lvalue,expr* elist);
 
+/*Creates a new expression with constnum_e type 
+and fills the numConst field with the given value*/
 expr* newexpr_constnum(double i);
+
+/*Creates a new expression with constbool_e type 
+and fills the boolConst field with the given value*/
+expr* newexpr_constbool(bool_t b);
 
 
 /*
@@ -133,5 +140,13 @@ expr* newexpr_constnum(double i);
 	Returns 1 for legal expressions to uminus, and 0 to ilegal ones.
 */
 int checkuminus(expr *e);
+
+void patchLabel(unsigned index, unsigned nextQuad);
+
+
+typedef struct forJump{
+	unsigned test;
+	unsigned enter;
+}forJump;
 
 #endif
