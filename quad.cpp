@@ -73,6 +73,7 @@ expr* emit_relop(iopcode icode, expr* expr1, expr* expr2){
 	return result;
 }
 
+
 /*Creates some quads based on boolean operators*/
 expr* emit_bool(iopcode icode, expr* expr1, expr* expr2){
 	expr *result=newexpr(boolexpr_e);
@@ -294,3 +295,41 @@ int checkuminus(expr *e){
 void patchLabel(unsigned index, unsigned nextQuad){
 	vctr_quads[index].label=nextQuad;
 }
+
+
+
+/*Short Circuit Evaluation*/
+
+/*Creates a new short_list and inserts the argument label
+ then returns the list*/
+short_list makelist(unsigned label){
+	short_list temp = new std::list <unsigned>;
+	temp->push_front(label);
+	return temp;
+}
+
+
+/*merge the two lists and return the result */
+short_list mergelist(short_list l1, short_list l2){
+	std::list<unsigned>::iterator it;
+
+	it = (*l1).begin();	
+	l1->splice(it, *l2);
+	return l1;
+}
+
+/*Emits quads for relops using short circuit method*/
+expr* emit_relop_short(iopcode icode, expr* expr1, expr* expr2){
+
+	expr* result = newexpr(boolexpr_e);
+	result->sym = newtemp();
+
+	result->truelist = makelist(nextquadLabel());
+	result->falselist = makelist(nextquadLabel()+1);
+
+	emit(icode, expr1, expr2, NULL, 0 , yylineno); 			//incomplete true jump
+	emit(jump_iopcode, NULL , NULL , NULL , 0 , yylineno); 	//incomplete false jump
+
+	return result;
+}
+
