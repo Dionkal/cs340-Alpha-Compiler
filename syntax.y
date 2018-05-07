@@ -237,7 +237,10 @@ logicalTemp: /*empty*/					{ $$ = nextquadLabel();}
 
 
 term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
-											($$) = ($2);
+										
+											($$) = evaluate_short((expr*)($2));
+											
+
 										}
 			| '-' expr %prec UMINUS		{	
 											printf("term:-expr in line:%d\n",yylineno);	
