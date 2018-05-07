@@ -602,10 +602,10 @@ funcname: 	ID 									{
 
 funcprefix:	FUNCTION funcname					{
 													std::cout<<"func prefix___\n";
-													/*TODO:check function address*/
 													/*TODO: emit an icomplete jump quad to the the next quad of the funcend*/
 													expr* result_e=newexpr(programfunc_e);
 													result_e->sym=(symTableEntry *)($2);
+													result_e->sym->address = nextquadLabel(); //save the function address 
 													emit(funcstart_iopcode,NULL,NULL,result_e,0,yylineno);
 													scopeSpaceCounter++; //this means enterScopeSpace
 													newOffset();
