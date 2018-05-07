@@ -5,6 +5,9 @@
 #include <stack>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iomanip>
+#include <assert.h>
+#include <sstream>
 
 extern int yylineno;
 
@@ -86,31 +89,31 @@ expr* emit_bool(iopcode icode, expr* expr1, expr* expr2){
 std::string iopcodeToString(iopcode op){
 	/*TODO: add cases for more opcodes*/
 	switch(op){
-		case assign_iopcode: 			return "ASSIGN_OPCODE";
-		case add_iopcode: 				return "ADD_IOPCODE";
-		case sub_iopcode:				return "SUB_IOPCODE"; 
-		case mul_iopcode:				return "MUL_IOPCODE";
-		case div_iopcode:				return "DIV_IOPCODE";
-		case mod_iopcode:				return "MOD_IOPCODE";
-		case funcstart_iopcode: 		return "FUNCSTART_IOPCODE";
-		case funcend_iopcode: 			return "FUNCEND_IOPCODE";
-		case tablegetelem_iopcode:		return "TABLEGETELEM_IOPCODE";
-		case tablesetelem_iopcode:		return "TABLESETELEM_IOPCODE";
-		case tablecreate_iopcode:		return "TABLECREATE_IOPCODE";
-		case call_iopcode:				return "CALL_IOPCODE";
-		case param_iopcode:				return "PARAM_IOPCODE";
-		case getretval_iopcode:			return "GETRETVAL_IOPCODE";
-		case if_eq_iopcode:				return "IF_EQ_IOPCODE";
-		case if_noteq_iopcode:			return "IF_NOTEQ_IOPCODE";
-		case if_lesseq_iopcode:			return "IF_LESSEQ_IOPCODE";
-		case if_greatereq_iopcode:		return "IF_GREATEREQ_IOPCODE";
-		case if_less_iopcode:			return "IF_LESS_IOPCODE";
-		case if_greater_iopcode:		return "IF_GREATER_IOPCODE";
-		case jump_iopcode:				return "JUMP_IOPCODE";
-		case and_iopcode:				return "AND_IOPCODE";
-		case or_iopcode:				return "OR_IOPCODE";
-		case ret_iopcode:				return "RETURN_IOPCODE";
-		default: 						return "INVALID IOPCODE";
+		case assign_iopcode: 			return "ASSIGN";
+		case add_iopcode: 				return "ADD";
+		case sub_iopcode:				return "SUB"; 
+		case mul_iopcode:				return "MUL";
+		case div_iopcode:				return "DIV";
+		case mod_iopcode:				return "MOD";
+		case funcstart_iopcode: 		return "FUNCSTART";
+		case funcend_iopcode: 			return "FUNCEND";
+		case tablegetelem_iopcode:		return "TABLEGETELEM";
+		case tablesetelem_iopcode:		return "TABLESETELEM";
+		case tablecreate_iopcode:		return "TABLECREATE";
+		case call_iopcode:				return "CALL";
+		case param_iopcode:				return "PARAM";
+		case getretval_iopcode:			return "GETRETVAL";
+		case if_eq_iopcode:				return "IF_EQ";
+		case if_noteq_iopcode:			return "IF_NOTEQ";
+		case if_lesseq_iopcode:			return "IF_LESSEQ";
+		case if_greatereq_iopcode:		return "IF_GREATEREQ";
+		case if_less_iopcode:			return "IF_LESS";
+		case if_greater_iopcode:		return "IF_GREATER";
+		case jump_iopcode:				return "JUMP";
+		case and_iopcode:				return "AND";
+		case or_iopcode:				return "OR";
+		case ret_iopcode:				return "RETURN";
+		default: 						return "INVALID";
 	}
 }
 
@@ -151,7 +154,7 @@ void printExpr(expr* e){
 
 
 /*Prints all the quads in the vector*/
-void printQuads(){
+void printQuads_debug(){
 	int count = 0;		
 	for (std::vector<quad>::const_iterator i = vctr_quads.begin(); i != vctr_quads.end(); ++i){
 		std::cout <<"#" <<"Quad " <<count++ <<": " <<std::endl;
@@ -176,6 +179,59 @@ void printQuads(){
 
 		std::cout << "\tline: " <<i->line << "\n";
 
+	}
+}
+
+
+void printQuads(){
+	int count = 0; 
+
+	std::cout <<std::setw(5) <<"Quad" <<std::setw(20) <<"IOPCODE";
+	std::cout <<std::setw(13) <<"arg1" <<std::setw(10) <<"arg2";
+	std::cout <<std::setw(15) <<"result/label" <<std::endl;
+
+	for (std::vector<quad>::const_iterator i = vctr_quads.begin(); i != vctr_quads.end(); ++i){
+		std::cout <<std::setw(5) <<"<#" <<count++ <<">"  <<std::setw(20) <<iopcodeToString(i->op);
+		
+		if(i->arg1){ 
+			std::cout <<std::setw(10) << exprtoString(i->arg1);
+		}else{
+			std::cout <<std::setw(10) << "";
+		}
+		
+		if(i->arg2){
+			 std::cout <<std::setw(10) << exprtoString(i->arg2);
+		}else{
+			std::cout <<std::setw(10) << "";	
+		}
+
+		if(i->result) std::cout <<std::setw(10) << exprtoString(i->result);
+		
+		if(i->op == jump_iopcode || i->op == if_eq_iopcode || i->op == if_noteq_iopcode
+			|| i->op == if_lesseq_iopcode || i->op == if_greatereq_iopcode || i->op == if_less_iopcode
+			|| i->op == if_greater_iopcode) std::cout <<std::setw(10) <<i->label << "\n";
+	
+		std::cout <<std::endl;
+	}
+}
+
+std::string exprtoString(expr* e ){
+	assert(e);
+	std::ostringstream strs;
+	std::string str;
+
+	switch(e->type){
+		case constnum_e: 		
+			strs << e->numConst;
+			str = strs.str();
+			return str;
+		case constbool_e: 		
+			strs << e->boolConst;
+			str = strs.str();
+			return str;
+		case conststring_e: 	return e->strConst;
+		case nil_e:				return "NIL";
+		default:				return e->sym->name;
 	}
 }
 

@@ -99,7 +99,11 @@ void printSymbol(symTableEntry* sym);
 void printExpr(expr* e);
 
 /*Prints all the recognized quads from the vector*/
+void printQuads_debug();
+
 void printQuads();
+
+std::string exprtoString(expr* e );
 
 /*creates a new expr*/
 expr *newexpr(expr_t e);

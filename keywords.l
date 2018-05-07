@@ -424,7 +424,7 @@ int main (int argc, char *argv[]){
 		yyparse();
    		scopeAccessStack.pop();
 
-    	printSymTable();
+    	// printSymTable();
     	fclose(yyin);
     	printf("==================Print Quads===============\n");
     	printQuads();

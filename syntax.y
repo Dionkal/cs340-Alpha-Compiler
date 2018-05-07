@@ -98,36 +98,34 @@
 
 %%
 
-program:	stmt1						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program accepted\n");}
-			|/*empty*/					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("Program did not start\n");}
+program:	stmt1						{ printf("Program accepted\n");}
+			|/*empty*/					{printf("Program accepted\n");}
 			;
 
 stmt1:		stmt1 stmt     															{ $$ = $2; }
             |stmt 																	{ $$ = $1; }
 			;
 
-stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",yylineno); resettemp();}
-			|ifstmt 																{printf("stmt:ifstmt starts in line:%d\n",yylineno); }
-			|whilestmt 																{printf("stmt:whilestmt starts in line:%d\n",yylineno);}
-			|forstmt 																{printf("stmt:forstmt starts in line:%d\n",yylineno); }
-			|returnstmt 															{printf("stmt:returnstmt starts in line:%d\n",yylineno);}
+stmt:		expr ';'																{ resettemp();}
+			|ifstmt 																{/*printf("stmt:ifstmt starts in line:%d\n",yylineno);*/ }
+			|whilestmt 																{/*printf("stmt:whilestmt starts in line:%d\n",yylineno);*/}
+			|forstmt 																{/*printf("stmt:forstmt starts in line:%d\n",yylineno);*/ }
+			|returnstmt 															{/*printf("stmt:returnstmt starts in line:%d\n",yylineno);*/}
 			|BREAK ';' 																{ 
-																						printf("stmt: break stmt in line %d\n",yylineno);
+																						// printf("stmt: break stmt in line %d\n",yylineno);
 																						if(jumpListStack.empty() || loopcounter == 0){
 																							std::cout <<"ERROR cannot break outside of loops" <<std::endl;
 																						}else{
 
 																							jumplistEntry* temp = jumpListStack.top(); 
-																							printf("inside break stmt stack not empty\n");
 																							temp->breakList->push_back(nextquadLabel());
-																							printf("TEST\n");
 																							emit(jump_iopcode, NULL, NULL, NULL, 0 , yylineno);
 																							$$ = temp;
 																							
 																						}
 																					}
 			|CONTINUE ';'															{ 
-																						printf("stmt: continue stmt in line %d\n",yylineno);
+
 																						if(jumpListStack.empty() || loopcounter == 0){
 																							std::cout <<"ERROR cannot continue outside of loops" <<std::endl;
 																						}else{
@@ -137,83 +135,86 @@ stmt:		expr ';'																{printf("stmt:Expression with ';' in line:%d\n",y
 																							$$ = temp;
 																						}	
 																					}
-			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{printf("stmt:block starts in line:%d\n",yylineno); }
-			|funcdef																{printf("stmt:funcdef starts in line:%d\n",yylineno);}
-			|';'																	{printf("stmt:SEMICOLON in line:%d\n",yylineno); }
+			|{scopeAccessStack.push(false);} block 		{scopeAccessStack.pop();}	{/*printf("stmt:block starts in line:%d\n",yylineno); */}
+			|funcdef																{/*printf("stmt:funcdef starts in line:%d\n",yylineno);*/}
+			|';'																	{/*printf("stmt:SEMICOLON in line:%d\n",yylineno);*/ }
 			;
 
 expr:		assignexpr 					{ 
-											printf("expr:	` in line:%d\n",yylineno);
+											// printf("expr:	` in line:%d\n",yylineno);
 											($$) = ($1);
 										}
 			|expr '+' expr 				{	
-											printf("expr:expr + expr in line:%d\n",yylineno);
+											// printf("expr:expr + expr in line:%d\n",yylineno);
 											
 											$$ = (void*) emit_arithexpr(add_iopcode,(expr*)$1,(expr*) $3,yylineno);
 										}
 			|expr '-' expr 				{
-											printf("lexpr:expr - expr in line:%d\n",yylineno);
+											// printf("lexpr:expr - expr in line:%d\n",yylineno);
 
 											$$ = (void*) emit_arithexpr(sub_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '*' expr 				{
-											printf("expr:expr * expr in line:%d\n",yylineno);
+											// printf("expr:expr * expr in line:%d\n",yylineno);
 
 											$$ = (void*) emit_arithexpr(mul_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '/' expr 				{
-											printf("expr:expr / expr in line:%d\n",yylineno);										
+											// printf("expr:expr / expr in line:%d\n",yylineno);										
 											
 											$$ = (void*) emit_arithexpr(div_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '%' expr 				{
-											printf("expr:expr mod expr in line:%d\n",yylineno);										
+											// printf("expr:expr mod expr in line:%d\n",yylineno);										
 											
 											$$ = (void*) emit_arithexpr(mod_iopcode,(expr*)$1,(expr*) $3,yylineno);	
 										}
 			|expr '>' expr 				{	
-											printf("expr:expr > expr in line:%d\n",yylineno);	
+											// printf("expr:expr > expr in line:%d\n",yylineno);	
 											$$ = emit_relop(if_greater_iopcode, (expr*) $1, (expr*) $3);
 																				}
 			|expr '<' expr 				{	
-											printf("expr:expr < expr in line:%d\n",yylineno);										
+											// printf("expr:expr < expr in line:%d\n",yylineno);										
 											$$ = emit_relop(if_less_iopcode, (expr*) $1, (expr*) $3);										
 										}
 			|expr GREATEREQUAL expr 	{	
-											printf("expr:expr >= expr in line:%d\n",yylineno);										
+											// printf("expr:expr >= expr in line:%d\n",yylineno);										
 											$$ = emit_relop(if_greatereq_iopcode, (expr*) $1, (expr*) $3);
 										}
 			|expr LESSEQUAL expr 		{	
-											printf("expr:expr <= expr in line:%d\n",yylineno);										
+											// printf("expr:expr <= expr in line:%d\n",yylineno);										
 											$$ = emit_relop(if_lesseq_iopcode, (expr*) $1, (expr*) $3);											
 										}
 			|expr EQUAL expr 			{	
-											printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);										
+											// printf("expr:expr ==(EQUAL) expr in line:%d\n",yylineno);										
 											$$ = emit_relop(if_eq_iopcode, (expr*) $1, (expr*) $3);
 										}
 			|expr NOTEQUAL expr 		{
-											printf("expr:expr != expr in line:%d\n",yylineno);										
+											// printf("expr:expr != expr in line:%d\n",yylineno);										
 											$$ = emit_relop(if_noteq_iopcode, (expr*) $1, (expr*) $3);	
 										}
-			|expr AND expr 				{	printf("expr:expr AND expr in line:%d\n",yylineno);		
+			|expr AND expr 				{	
+											// printf("expr:expr AND expr in line:%d\n",yylineno);		
 											($$)= emit_bool(and_iopcode, (expr*) ($1), (expr*) ($3));
 										}
-			|expr OR expr 				{	printf("expr:expr OR expr in line:%d\n",yylineno);	
+			|expr OR expr 				{	
+											// printf("expr:expr OR expr in line:%d\n",yylineno);	
 											($$)= emit_bool(or_iopcode, (expr*) ($1), (expr*) ($3));
 										}
 			|term						{ 
-											printf("expr:term in line:%d\n",yylineno);
+											// printf("expr:term in line:%d\n",yylineno);
 											($$) = ($1);
 										}
 			;
 
 
 
-term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
+term: 		'('expr ')' 				{
+											// printf("term:(expr) in line:%d\n",yylineno);
 											($$) = ($2);
 										}
 			| '-' expr %prec UMINUS		{	
-											printf("term:-expr in line:%d\n",yylineno);	
+											// printf("term:-expr in line:%d\n",yylineno);	
 
 											if(checkuminus((expr *)$2))
 											{
@@ -228,7 +229,7 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 
 										}
 			| NOT expr 					{
-											printf("term:!expr in line:%d\n",yylineno);	
+											// printf("term:!expr in line:%d\n",yylineno);	
 
 											($$)= newexpr(boolexpr_e);
 											((expr*)($$))->sym = newtemp();
@@ -237,7 +238,8 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 
 											/*vazo 0 sto label gt den ksero ti prepei na mpei*/
 										}										
-			|PLUSPLUS lvalue 			{	printf("term:++lvalue in line:%d\n",yylineno);
+			|PLUSPLUS lvalue 			{	
+											// printf("term:++lvalue in line:%d\n",yylineno);
 											
 											/*TODO: Check if lvalue is a function*/
 											/*symTableEntry* ptr = (symTableEntry*) $2;
@@ -246,7 +248,7 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 											}*/
 
 
-											//xreiazetai else edw???
+											
 											if(((expr*)($2))->type == tableitem_e){
 												($$) = emit_iftableitem((expr*)$2);
 												emit(add_iopcode,(expr*)($$), newexpr_constnum(1), (expr*)($$), 0, yylineno);
@@ -261,7 +263,7 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 										}
 			|lvalue PLUSPLUS 			{
 											expr* value;
-											printf("term:lvalue++ in line:%d\n",yylineno);
+											// printf("term:lvalue++ in line:%d\n",yylineno);
 
 											/*TODO: Check if lvalue is a function*/
 											/*symTableEntry* ptr = (symTableEntry*) $1;
@@ -289,7 +291,8 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 
 
 										}
-			|MINUSMINUS lvalue 			{	printf("term:--lvalue in line:%d\n",yylineno);
+			|MINUSMINUS lvalue 			{	
+											// printf("term:--lvalue in line:%d\n",yylineno);
 											
 											/*TODO: Check if lvalue is a function*/
 											/*symTableEntry* ptr = (symTableEntry*) $2;
@@ -298,7 +301,6 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 											}*/
 
 
-											//xreiazetai else edw???
 											if(((expr*)($2))->type == tableitem_e){
 												($$) = emit_iftableitem((expr*)$2);
 												emit(sub_iopcode,(expr*)($$), newexpr_constnum(1), (expr*)($$), 0, yylineno);
@@ -313,7 +315,7 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 										}
 			|lvalue MINUSMINUS 			{
 											expr* value;
-											printf("term:lvalue++ in line:%d\n",yylineno);
+											// printf("term:lvalue++ in line:%d\n",yylineno);
 
 											/*TODO: Check if lvalue is a function*/
 											/*symTableEntry* ptr = (symTableEntry*) $1;
@@ -341,7 +343,7 @@ term: 		'('expr ')' 				{printf("term:(expr) in line:%d\n",yylineno);
 
 										}
 			|primary 					{
-											printf("term:primary in line:%d\n",yylineno);
+											// printf("term:primary in line:%d\n",yylineno);
 											$$ = $1;
 										}
 			;
@@ -374,46 +376,45 @@ assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",y
 			;
 
 primary:	lvalue 						{
-											printf("primary: lvalue in line:%d\n",yylineno);
+											// printf("primary: lvalue in line:%d\n",yylineno);
 											($$) =  emit_iftableitem((expr*) $1);
-											printExpr((expr*) $$);
 
 										}
 			|call 						{
-											printf("primary: call in line:%d\n",yylineno);
+											// printf("primary: call in line:%d\n",yylineno);
 										}
-			|objectdef 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("primary: objectdef in line:%d\n",yylineno);}
+			|objectdef 					{/*printf("primary: objectdef in line:%d\n",yylineno);*/}
 			
-			|'(' funcdef ')'            {printf("primary: (funcdef) in line:%d\n",yylineno);
+			|'(' funcdef ')'            {//printf("primary: (funcdef) in line:%d\n",yylineno);
 											$$ = newexpr(programfunc_e);
 											((expr*) $$)->sym = ((expr*) $2)->sym;
 										}
 			
 			|const 						{ 
-											 printf("primary: const in line:%d\n",yylineno);
+											 //printf("primary: const in line:%d\n",yylineno);
 											 ($$) = ($1);
 										}
 			;
 
-lvalue: 	ID 							{printf("lvalue: ID in line:%d\n",yylineno);
+lvalue: 	ID 							{//printf("lvalue: ID in line:%d\n",yylineno);
 											expr* temp_expr = newexpr(var_e);
 											temp_expr->sym=actionID($1);  
 											($$)= temp_expr;
 															
 										}
-			|LOCAL ID 					{	printf("lvalue: LOCAL ID in line:%d\n",yylineno);
+			|LOCAL ID 					{	//printf("lvalue: LOCAL ID in line:%d\n",yylineno);
 											expr* temp_expr = newexpr(var_e);
 											temp_expr->sym = actionLocalID($2);
 											($$) = temp_expr;
 											
 										}
-			|SCOPEOP ID 				{	printf("lvalue: SCOPE ID in line:%d\n",yylineno);
+			|SCOPEOP ID 				{	//printf("lvalue: SCOPE ID in line:%d\n",yylineno);
 											expr* temp_expr = newexpr(var_e);
 											temp_expr->sym = actionGlobalID($2);	
 											($$) = temp_expr;
 										}
 			|member 					{
-											printf("lvalue: member in line:%d\n",yylineno);
+											//printf("lvalue: member in line:%d\n",yylineno);
 											$$ = $1;
 										}
 			;
@@ -428,18 +429,19 @@ member:		lvalue '.' ID 				{
 											((expr*)$$)->sym = ((expr*)$1)->sym;
 											((expr*)$$)->index = (expr*) $3;
 										}
-			|call '.' ID 				{printf("member: call.ID in line:%d\n",yylineno);}
-			|call '[' expr ']' 			{printf("member: call [expr] in line:%d\n",yylineno);}
+			|call '.' ID 				{//printf("member: call.ID in line:%d\n",yylineno);
+										}
+			|call '[' expr ']' 			{/*printf("member: call [expr] in line:%d\n",yylineno);*/}
 			;
 
 call: 		call '(' elist ')' 			{
 											expr *ctmp= (expr *)($1);
-											printf("call: (elist) in line:%d\n",yylineno);
+											// printf("call: (elist) in line:%d\n",yylineno);
 											ctmp=make_call((expr*) ($1),(expr*) ($3));
 											($$)=ctmp;
 										}
 			|lvalue callsuffix			{
-											printf("call: lvalue callsuffix in line:%d\n",yylineno);
+											// printf("call: lvalue callsuffix in line:%d\n",yylineno);
 
 											if(((calls*) $2)->method == 1){
 												expr* self = (expr* ) $1;
@@ -452,7 +454,7 @@ call: 		call '(' elist ')' 			{
 										}
 			|'(' funcdef ')' '(' elist ')' {	
 												expr *func;
-												printf("call: (func) (elist) in line:%d\n",yylineno);
+												// printf("call: (func) (elist) in line:%d\n",yylineno);
 												func=newexpr(programfunc_e);
 												func->sym=( ((expr*)$2)->sym );
 												($$)=make_call(func,(expr*) ($5));
@@ -460,10 +462,10 @@ call: 		call '(' elist ')' 			{
 											}
 			;
 
-callsuffix:	normcall						{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: normcall in line:%d\n",yylineno);
+callsuffix:	normcall						{ //printf("callsuffix: normcall in line:%d\n",yylineno);
 												$$ = $1;
 											}
-			|methodcall 					{k++; printf("time:%d___ ,token: %s____>",k,yytext); printf("callsuffix: methodcall in line:%d\n",yylineno);
+			|methodcall 					{// printf("callsuffix: methodcall in line:%d\n",yylineno);
 												$$ = $1;
 											}
 			;
@@ -475,13 +477,13 @@ normcall:   '(' elist ')'					{
 												temp->method = false_t;
 												temp->name = "";
 												$$ = temp;
-										 		printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);
+										 		//printf("time:%d___ ,token: %s____>",k,yytext); printf("normcall: (elist) in line:%d\n",yylineno);
 											}
 			;
 
 methodcall:	DOUPLEDOT ID '(' elist ')'  	{	
 												calls *methodtemp = new calls();
-												printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
+												//printf("methodcall: DOUPLEDOT ID (elist) in line:%d\n",yylineno);
 												methodtemp->elist=(expr *)($4);
 												methodtemp->method=true_t;
 												methodtemp->name=($2);
@@ -490,12 +492,12 @@ methodcall:	DOUPLEDOT ID '(' elist ')'  	{
 			;
 
 elist:		/*empty*/						{
-												printf("elist: empty list in line:%d\n",yylineno);
+												//printf("elist: empty list in line:%d\n",yylineno);
 												($$)=NULL;
 											}
 			|expr elist1 					{	expr *list;
-												//malloc
-												printf("elist: expr elist1 list in line:%d\n",yylineno);
+												
+												// printf("elist: expr elist1 list in line:%d\n",yylineno);
 												list=(expr *)($1);
 												list->next=(expr *)($2);
 												($$)=list;
@@ -503,12 +505,12 @@ elist:		/*empty*/						{
 			;
 
 elist1:		/*empty*/						{
-												printf("elist1: empty list in line:%d\n",yylineno);
+												//printf("elist1: empty list in line:%d\n",yylineno);
 												($$)=NULL;
 											}
 			|','expr elist1 				{	
 												expr *list;
-												printf("elist1: ,expr elist1 in line:%d\n",yylineno);
+												// printf("elist1: ,expr elist1 in line:%d\n",yylineno);
 												list=(expr *)($2);
 												list->next=(expr *)($3);
 												($$)=list;
@@ -516,7 +518,7 @@ elist1:		/*empty*/						{
 			|error expr elist1				{}
 			;
 
-objectdef:	'[' elist ']' 				{ printf("objectdef: [elist] in line:%d\n",yylineno);
+objectdef:	'[' elist ']' 				{ //printf("objectdef: [elist] in line:%d\n",yylineno);
 											expr* temp_expr = newexpr(newtable_e);
 											temp_expr->sym = newtemp();
 											emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
@@ -530,7 +532,7 @@ objectdef:	'[' elist ']' 				{ printf("objectdef: [elist] in line:%d\n",yylineno
 											$$ = temp_expr;
 										}
 
-			|'[' indexed ']'			{ printf("objectdef: [indexed] in line:%d\n",yylineno);
+			|'[' indexed ']'			{ //printf("objectdef: [indexed] in line:%d\n",yylineno);
 											expr* temp_expr = newexpr(newtable_e);
 											temp_expr->sym = newtemp();
 											emit(tablecreate_iopcode,NULL,NULL,temp_expr,0,yylineno);
@@ -545,31 +547,31 @@ objectdef:	'[' elist ']' 				{ printf("objectdef: [elist] in line:%d\n",yylineno
 			;
 
 
-indexed:	indexedelem more			{ printf("indexed: indexedelem more in line:%d\n",yylineno);
+indexed:	indexedelem more			{ //printf("indexed: indexedelem more in line:%d\n",yylineno);
 											$$ = $1;
 											((expr*)$$)->next = (expr*) $2;
 										}
 			;
 
-more:       ',' indexedelem more 			{printf("more: ,indexedelem more in line:%d\n",yylineno);
+more:       ',' indexedelem more 			{//printf("more: ,indexedelem more in line:%d\n",yylineno);
 												$$ = $2;
 												((expr*)$$)->next = (expr*) $3;
 											}
 
-            |/*empty*/            			{ printf("more: empty in line:%d\n",yylineno);
+            |/*empty*/            			{ //printf("more: empty in line:%d\n",yylineno);
 												$$ = NULL;
 											}
             ; 
 	
 
-indexedelem:'{' expr ':' expr '}'			{printf("indexedelem: {expr:expr} in line:%d\n",yylineno);
+indexedelem:'{' expr ':' expr '}'			{//printf("indexedelem: {expr:expr} in line:%d\n",yylineno);
 												$$ = $4;
 												((expr*) $$ )->index = (expr*) $2;
 											}
 			;
 
-block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{printf("``: {stmt1} in line:%d\n",yylineno);}		
-             |'{'{current_scope++;}'}'       {hideSym(current_scope--);} 							{printf("funcdefblock: {} in line:%d\n",yylineno);}
+block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{/*printf("``: {stmt1} in line:%d\n",yylineno);*/}		
+             |'{'{current_scope++;}'}'       {hideSym(current_scope--);} 							{/*printf("funcdefblock: {} in line:%d\n",yylineno);*/}
              |error stmt1 '}'
              |error '}'
 			;	
@@ -577,7 +579,6 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{pri
 funcdef:	funcprefix funcargs funcblockstart funcbody funcblockend 		
 												
 												{
-													std::cout<<"funcdef___\n";
 													scopeSpaceCounter--; 
 													scopeAccessStack.pop();
 													getFunctionOffset(2);			
@@ -591,17 +592,14 @@ funcdef:	funcprefix funcargs funcblockstart funcbody funcblockend
 
 
 funcname: 	ID 									{
-													std::cout<<"funcname___\n";
 													($$)=(void *)actionFuncdefID($1);
 												}
 			|/*empty*/							{
-													std::cout<<"anonymus func___\n";
 													($$)=(void *)actionFuncdefAnon();
 												}
 			;
 
 funcprefix:	FUNCTION funcname					{
-													std::cout<<"func prefix___\n";
 													/*TODO: emit an icomplete jump quad to the the next quad of the funcend*/
 													expr* result_e=newexpr(programfunc_e);
 													result_e->sym=(symTableEntry *)($2);
@@ -615,7 +613,6 @@ funcprefix:	FUNCTION funcname					{
 			;
 
 funcargs:	'(' idlist ')'						{
-													std::cout<<"funcargs___\n";
 													scopeSpaceCounter++;
 													//to reset ginetai apo prin stin newOffset
 													current_scope--; 
@@ -629,7 +626,6 @@ funcblockstart:	/*empty*/						{
 												}
 
 funcbody:	block								{
-													std::cout<<"funcbody___\n";
 													scopeSpaceCounter--; 
 												}
 			;
@@ -666,11 +662,11 @@ const:		NUMBER 								{
 												}
 			;
 
-idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
+idlist:		/*empty*/							{/*printf("idlist: empty in line:%d\n",yylineno);*/}
 			|ID idlist1 						{
 													const char* temp = $1;
 													//TODO create expr list
-													printf("idlist: ID idlist1 in line:%d\n",yylineno);
+													//printf("idlist: ID idlist1 in line:%d\n",yylineno);
 													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
 													
 													if(ptr == NULL){
@@ -686,10 +682,10 @@ idlist:		/*empty*/							{printf("idlist: empty in line:%d\n",yylineno);}
 												}
 			;
 
-idlist1:	/*empty*/ 							{printf("idlist1: empty in line:%d\n",yylineno);}
+idlist1:	/*empty*/ 							{/*printf("idlist1: empty in line:%d\n",yylineno);*/}
 			|',' ID idlist1 					{	
 													const char* temp = $2;
-													printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);
+													//printf("idlist1: ,ID idlist1 in line:%d\n",yylineno);
 													symTableEntry* ptr = lookupSym(std::string(temp),current_scope);
 													
 													if(ptr == NULL){
@@ -791,7 +787,7 @@ M:			/*empty*/							{
 
 loopstmt: loopstart stmt loopend				{ $$ = $2; }
 
-loopstart:										{ ++loopcounter;  newlistEntry();	printf("NEW LIST\n");}
+loopstart:										{ ++loopcounter;  newlistEntry();}
 
 loopend:										{ --loopcounter; }
 
