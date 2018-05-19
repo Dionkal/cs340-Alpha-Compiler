@@ -55,6 +55,16 @@ void make_operand(expr * e, vmarg* arg){
 
 /*oi seira ston pinaka einai idia me ta icodes*/
 
+void generate_ADD(quad *q){
+	instruction *newInst=new instruction();
+
+	newInst->vmopcode=q->op;/*not so simple*/
+	newInst->result=q->result;/*not so simple*/
+	newInst->arg1=q->arg1;
+	newInst->arg2=q->arg2;
+	newInst->srcLine=q->line;
+}
+
 typedef void (*generator_func_t)(quad *);//dunno what this does, i mean the typedef
 
 generator_func_t generators[]={
