@@ -1,5 +1,5 @@
 #include "quad.h"
-
+#include "assert.h"
 typedef enum vmarg_t{
 	global_a,
 	local_a,
@@ -17,17 +17,9 @@ typedef struct vmarg{
 	unsigned	val;
 }vmarg;
 
-typedef struct instruction{
-	vmopcode opcode;
-	vmarg 	 result;
-	vmarg 	 arg1;
-	vmarg 	 arg2;
-	unsigned srcLine;
-}instruction;
-
 /*ME POIA SEIRA NA TA EXOUME? SAN EMAS I SAN TOU FRONT?*/
 /*added NOP but dunno what it does*/
-typedef struct vmopcode{
+typedef enum vmopcode{//to xa struct tora egine struct
 	assign_vmopcode,
 	add_vmopcode,
 	sub_vmopcode,
@@ -96,7 +88,13 @@ extern void generate_FUNCSTART(quad*);
 extern void generate_RETURN(quad*);
 extern void generate_FUNCEND(quad*);
 
-
+typedef struct instruction{
+	vmopcode opcode;
+	vmarg 	 result;
+	vmarg 	 arg1;
+	vmarg 	 arg2;
+	unsigned srcLine;
+}instruction;
 
 
 

@@ -18,7 +18,7 @@ void make_operand(expr * e, vmarg* arg){
 				default:			assert(0);
 			}
 		}
-		case constbool:	{
+		case constbool_e:	{
 			arg->val=e->boolConst;
 			arg->type=bool_a; break;
 		}
@@ -88,6 +88,6 @@ generator_func_t generators[]={
 void generate (void){
 	unsigned i;
 	for(i=0; i<total; ++i){
-		(*generators[quads[i].op])(quads+i);
+		(*generators[vctr_quads[i].op])(vctr_quads+i);
 	}
 }
