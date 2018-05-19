@@ -3,13 +3,11 @@
 	#include "symtable.h"
 	#include <string>
 	#include <list>
+	#include <assert.h>
 
 typedef enum bool_t{
 	false_t,true_t
 }bool_t;
-
-/*Type of the true/false lists*/
-typedef std::list <unsigned> * short_list; 
 
 /*Enumerator that contains all the available instructions of alpha*/
 typedef enum iopcode{
@@ -67,8 +65,6 @@ typedef struct expr{
 	std::string 	strConst;
 	bool_t			boolConst;
 	expr* 			next;
-	short_list		truelist;
-	short_list 		falselist;
 }expr;
 
 typedef struct quad{
@@ -158,26 +154,5 @@ typedef struct forJump{
 	unsigned test;
 	unsigned enter;
 }forJump;
-
-
-/*Creates a new short_list and inserts the argument label
- then returns the list*/
-short_list makelist(unsigned label);
-
-/*merge the two lists and return the result */
-short_list mergelist(short_list l1, short_list l2);
-
-/*Emits quads for relops using short circuit method*/
-expr* emit_relop_short(iopcode icode, expr* expr1, expr* expr2);
-
-
-/*
-	Creates the true and false assignments and backpatches 
-	into them.
-*/
-expr* evaluate_short(expr* e);
-
-/*If e is boolean then returns itself else it makes a truelist and a falselist*/
-expr* true_test(expr* e);
 
 #endif

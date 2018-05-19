@@ -83,7 +83,6 @@
 %type <index>			N2
 %type <index>			N3
 %type <index>			M
-%type <index>			logicalTemp
 
 %right '='
 %left OR
@@ -208,7 +207,6 @@ expr:		assignexpr 					{
 										}
 			;
 
-logicalTemp: /*empty*/					{ $$ = nextquadLabel();}
 
 
 term: 		'('expr ')' 				{
@@ -232,12 +230,9 @@ term: 		'('expr ')' 				{
 										}
 			| NOT expr 					{
 											// printf("term:!expr in line:%d\n",yylineno);	
-
-											($$)= true_test((expr*)$2); 
-											short_list temp = ((expr*)($$))->truelist;  
-
-											((expr*)($$))->truelist =  ((expr*)($$))->falselist;
-											((expr*)($$))->falselist = temp;
+											($$)= newexpr(boolexpr_e); 
+											((expr*)($$))->sym = newtemp(); 
+                       						emit(not_iopcode,(expr*)($2),NULL, (expr*)($$),0,yylineno); 
 										}										
 			|PLUSPLUS lvalue 			{	
 											// printf("term:++lvalue in line:%d\n",yylineno);
@@ -654,13 +649,13 @@ const:		NUMBER 								{
 													($$)= (void*) newexpr(nil_e);
 												}
 			|TRUE 								{
-													expr* temp_expr =newexpr(boolexpr_e);
+													expr* temp_expr =newexpr(constbool_e);
 													temp_expr->boolConst=true_t;
 													($$)=temp_expr;
 
 												}
 			|FALSE 								{
-													expr* temp_expr = newexpr(boolexpr_e);
+													expr* temp_expr = newexpr(constbool_e);
 													temp_expr->boolConst=false_t;
 													($$) = temp_expr; 
 												}

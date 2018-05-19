@@ -1,5 +1,10 @@
 #include "vmargs.h"
+#include <vector>
 
+/*Global vector of instructions*/
+std::vector<instruction> vctr_instr;
+
+extern std::vector  <quad> vctr_quads; 
 void make_operand(expr * e, vmarg* arg){
 	switch(e->type){
 		/*All those below use a variable for storage*/
@@ -17,6 +22,7 @@ void make_operand(expr * e, vmarg* arg){
 				case formalarg:		arg->type=formal_a; break;
 				default:			assert(0);
 			}
+			break;
 		}
 		case constbool_e:	{
 			arg->val=e->boolConst;
@@ -39,7 +45,7 @@ void make_operand(expr * e, vmarg* arg){
 		/*Functions*/
 		case programfunc_e:{
 			arg->type=userfunc_a;
-			arg->val=e->sym->taddress;
+			arg->val=e->sym->address;
 			break;
 		}
 
@@ -53,19 +59,22 @@ void make_operand(expr * e, vmarg* arg){
 	}
 }
 
-/*oi seira ston pinaka einai idia me ta icodes*/
 
-void generate_ADD(quad *q){
-	instruction *newInst=new instruction();
+int iopcodeToVmopcode(iopcode op){
 
-	newInst->vmopcode=q->op;/*not so simple*/
-	newInst->result=q->result;/*not so simple*/
-	newInst->arg1=q->arg1;
-	newInst->arg2=q->arg2;
-	newInst->srcLine=q->line;
+	assert(op > 26); /*check out of bounds enum*/
+
+	if( op == 6){
+		return 3;
+	}else if (op == 7){
+		return 8;
+	}else{
+		return (int) op;
+	}
 }
 
-typedef void (*generator_func_t)(quad *);//dunno what this does, i mean the typedef
+
+typedef void (*generator_func_t)(quad *);
 
 generator_func_t generators[]={
 	generate_ADD,
@@ -95,10 +104,22 @@ generator_func_t generators[]={
 	generate_FUNCEND
 };
 
-void generate (void){
-	unsigned i;
-	int total;//apla to vala gia na min xtipaei error
-	for(i=0; i<total; ++i){
-		(*generators[vctr_quads[i].op])(vctr_quads+i);
+void generate(iopcode op, quad q){
+	instruction *newInst = new instruction();
+
+	newInst->vm_op = (vmopcode) iopcodeToVmopcode(q.op);
+
+	make_operand(q.arg1 , &(newInst->vm_arg1) );
+	make_operand(q.arg2 , &(newInst->vm_arg2) );
+	make_operand(q.result , &(newInst->vm_result) );
+	newInst->vm_srcLine = q.line;
+
+	vctr_instr.push_back(*newInst);
+}
+
+void generate_func (void){
+
+	for(unsigned i=0; i < vctr_quads.size(); ++i){
+		(*generators[vctr_quads[i].op])(&(vctr_quads[i]));
 	}
 }

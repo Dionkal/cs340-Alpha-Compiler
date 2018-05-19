@@ -20,7 +20,7 @@ typedef struct symTableEntry{
 	int 			offset;
 	symbol_t		type;
 	scopespace_t	space;
-	unsigned    address;    //For functions only: saves the index of the funcstart quad
+	unsigned    	address;    //For functions only: saves the index of the funcstart quad
 } symTableEntry;
 
 
