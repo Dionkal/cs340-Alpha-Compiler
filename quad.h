@@ -4,10 +4,6 @@
 	#include <string>
 	#include <list>
 
-
-/*Global vector that contains all the quads*/
-std::vector  <quad> vctr_quads; 
-
 typedef enum bool_t{
 	false_t,true_t
 }bool_t;

@@ -96,6 +96,15 @@ typedef struct instruction{
 	unsigned srcLine;
 }instruction;
 
+/*TO IMPLEMENT*/
+unsigned consts_newstring(std::string str);
+
+unsigned consts_newnumber(double numconst);
+
+unsigned libfuncs_newused(std::string str);
+
+
+
 
 
 

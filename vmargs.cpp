@@ -87,6 +87,7 @@ generator_func_t generators[]={
 
 void generate (void){
 	unsigned i;
+	int total;//apla to vala gia na min xtipaei error
 	for(i=0; i<total; ++i){
 		(*generators[vctr_quads[i].op])(vctr_quads+i);
 	}
