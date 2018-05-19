@@ -346,6 +346,7 @@ term: 		'('expr ')' 				{
 
 assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",yylineno);
 											assert($1); /*check for null ptr*/ 
+assert($1); /*check for null ptr*/ 
 
 											if( (((expr*)$1)->sym != NULL) && ( ((expr*)$1)->sym->symType ==USER_FUNC || ((expr*)$1)->sym->symType ==LIB_FUNC) ){
 												std::cout << "\033[01;31mERROR:Cannot use funtion " <<((expr*)$3)->sym->name 
@@ -360,14 +361,11 @@ assignexpr:	lvalue '=' expr 			{//printf("assignexpr:lvalue=expr in line:%d\n",y
 													result->type=assignexpr_e;//needs firther understandin
 													($$)=(void *)result;
 												}else{
-													evaluate_short((expr*) $3);
-
 													emit(assign_iopcode,(expr*) $3,NULL, (expr*) $1,0,yylineno);
 													expr* result_e = newexpr(var_e);
 													result_e->sym = newtemp();
 													emit(assign_iopcode,(expr*) $1,NULL, result_e,0,yylineno);
 													($$) = (void*) result_e;
-
 												}
 											}
 											

@@ -108,12 +108,21 @@ void make_operand(expr * e, vmarg* arg);
 /*Matches iopcode to vmopcode*/
 int iopcodeToVmopcode(iopcode op);
 
-/*TO IMPLEMENT*/
+typedef struct user_func_array_entry{
+	unsigned 	address;
+	unsigned	local_size;
+	std::string id;
+}user_func_array_entry;
+
+/*****Filler functions for const arrays*****/
+	
+/*Fills const_string_array*/
 unsigned consts_newstring(std::string str);
 
+/*Fills const_num_array*/
 unsigned consts_newnumber(double numconst);
 
+/*Fills lib_func_used_array*/
 unsigned libfuncs_newused(std::string str);
-
 
 #endif

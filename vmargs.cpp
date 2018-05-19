@@ -1,10 +1,34 @@
 #include "vmargs.h"
 #include <vector>
+#include "generateInstrFunc.h"
+
+extern std::vector  <quad> vctr_quads; 
 
 /*Global vector of instructions*/
 std::vector<instruction> vctr_instr;
 
-extern std::vector  <quad> vctr_quads; 
+/*Const values Data storage*/
+std::vector <std::string> 				const_string_array;
+std::vector <double> 					const_num_array;
+std::vector <std::string> 				lib_func_used_array;
+std::vector <user_func_array_entry>		user_func_array;
+
+
+unsigned consts_newstring(std::string str){
+	const_string_array.push_back(str);
+	return const_string_array.size();
+}
+
+unsigned consts_newnumber(double numconst){
+	const_num_array.push_back(numconst);
+	return const_num_array.size();
+}
+
+unsigned libfuncs_newused(std::string str){
+	lib_func_used_array.push_back(str);
+	return lib_func_used_array.size();	
+}
+
 void make_operand(expr * e, vmarg* arg){
 	switch(e->type){
 		/*All those below use a variable for storage*/
@@ -78,7 +102,7 @@ typedef void (*generator_func_t)(quad *);
 
 generator_func_t generators[]={
 	generate_ADD,
-	generate_SUB,
+	generate_SUB/*,
 	generate_MUL,
 	generate_DIV,
 	generate_MOD,
@@ -101,7 +125,7 @@ generator_func_t generators[]={
 	generate_GETRETVAL,
 	generate_FUNCSTART,
 	generate_RETURN,
-	generate_FUNCEND
+	generate_FUNCEND*/
 };
 
 void generate(iopcode op, quad q){
