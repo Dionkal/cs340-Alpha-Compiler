@@ -13,7 +13,10 @@ typedef enum vmarg_t{
 	number_a,
 	nil_a,
 	userfunc_a,
-	libfunc_a
+	libfunc_a,
+	label_a,
+	retval_a,
+	invalid_a
 }vmarg_t;
 
 typedef struct vmarg{
@@ -56,44 +59,27 @@ typedef enum vmopcode{//to xa struct tora egine struct
 typedef struct incomplete_jump{
 	unsigned	     instrNo; //The jump instruction number
 	unsigned 	     iaddress;//The i-code jump-target address
-	incomplete_jump* next;	  //a trivial linked list.
 }incomplete_jump;
 
 /*Generate instruction from given quad*/
 void generate(iopcode op, quad q);
 
+/*Generate instruction for relops and jumps
+ with incomplete jump handling*/
+void generate_relational(iopcode op, quad q);
+
+/*get the index of the next instruction label*/
+unsigned next_instruction_label();
+
 /*TODO: add comment about fuction signature*/
 void generate_func (void);
 
+/*Adds the instruction's index of an incomplete and their respective quad to the list
+for future backpatching*/
 void add_incomplete_jump (unsigned instrNo, unsigned iaddress);
 
 /*TODO: patch_incomplete_jumps function*/
 
-extern void generate_ADD(quad*);
-extern void generate_SUB(quad*);
-extern void generate_MUL(quad*);
-extern void generate_DIV(quad*);
-extern void generate_MOD(quad*);
-extern void generate_NEWTABLE(quad*);
-extern void generate_TABLEGETELEM(quad*);
-extern void generate_TABLESETELEM(quad*);
-extern void generate_ASSIGN(quad*);
-extern void generate_NOP(quad*);
-extern void generate_JUMP(quad*);
-extern void generate_IF_EQ(quad*);
-extern void generate_IF_NOTEQ(quad*);
-extern void generate_IF_GREATER(quad*);
-extern void generate_IF_GREATEREQ(quad*);
-extern void generate_IF_LESS(quad*);
-extern void generate_IF_LESSEQ(quad*);
-extern void generate_NOT(quad*);
-extern void generate_OR(quad*);
-extern void generate_PARAM(quad*);
-extern void generate_CALL(quad*);
-extern void generate_GETRETVAL(quad*);
-extern void generate_FUNCSTART(quad*);
-extern void generate_RETURN(quad*);
-extern void generate_FUNCEND(quad*);
 
 typedef struct instruction{
 	vmopcode vm_op;
@@ -103,7 +89,18 @@ typedef struct instruction{
 	unsigned vm_srcLine;
 }instruction;
 
+/*--------------Helper functions that create a vmarg from a specific value type*/
+
 void make_operand(expr * e, vmarg* arg);
+
+void make_numberoperand(vmarg* arg, double val);
+
+void make_booloperand(vmarg* arg, unsigned val);
+
+void make_retvaloperand(vmarg* arg);
+
+/*resets a specific vmarg to invalid values*/
+void reset_operand(vmarg* arg);
 
 /*Matches iopcode to vmopcode*/
 int iopcodeToVmopcode(iopcode op);

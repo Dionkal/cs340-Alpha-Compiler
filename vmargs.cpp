@@ -3,9 +3,13 @@
 #include "generateInstrFunc.h"
 
 extern std::vector  <quad> vctr_quads; 
+static  unsigned currprocessedquad = 0;
 
 /*Global vector of instructions*/
 std::vector<instruction> vctr_instr;
+
+/*Data storage of all incomplete jump instructions and their respective quads*/
+std::vector<incomplete_jump> inc_jump_list;
 
 /*Const values Data storage*/
 std::vector <std::string> 				const_string_array;
@@ -13,20 +17,24 @@ std::vector <double> 					const_num_array;
 std::vector <std::string> 				lib_func_used_array;
 std::vector <user_func_array_entry>		user_func_array;
 
+unsigned next_instruction_label(){
+	return vctr_instr.size();
+}
+
 
 unsigned consts_newstring(std::string str){
 	const_string_array.push_back(str);
-	return const_string_array.size();
+	return const_string_array.size() - 1;
 }
 
 unsigned consts_newnumber(double numconst){
 	const_num_array.push_back(numconst);
-	return const_num_array.size();
+	return const_num_array.size() - 1;
 }
 
 unsigned libfuncs_newused(std::string str){
 	lib_func_used_array.push_back(str);
-	return lib_func_used_array.size();	
+	return lib_func_used_array.size() - 1;	
 }
 
 void make_operand(expr * e, vmarg* arg){
@@ -83,6 +91,24 @@ void make_operand(expr * e, vmarg* arg){
 	}
 }
 
+void make_numberoperand(vmarg* arg, double val){
+	arg->val = consts_newnumber(val);
+	arg->type = number_a;
+}
+
+void make_booloperand(vmarg* arg, unsigned val){
+	arg->val = val;
+	arg->type = bool_a;
+}
+
+void make_retvaloperand(vmarg* arg){
+	arg->type = retval_a;
+}
+
+void reset_operand(vmarg* arg){
+	arg->val = -1; 
+	arg->type = invalid_a;
+}
 
 int iopcodeToVmopcode(iopcode op){
 
@@ -97,12 +123,20 @@ int iopcodeToVmopcode(iopcode op){
 	}
 }
 
+void add_incomplete_jump (unsigned instrNo, unsigned iaddress){
+	incomplete_jump* ij = new incomplete_jump();
+	ij->instrNo = instrNo;
+	ij->iaddress = iaddress;
+
+	inc_jump_list.push_back(*ij);	
+}
+
 
 typedef void (*generator_func_t)(quad *);
 
 generator_func_t generators[]={
 	generate_ADD,
-	generate_SUB/*,
+	generate_SUB,
 	generate_MUL,
 	generate_DIV,
 	generate_MOD,
@@ -125,7 +159,7 @@ generator_func_t generators[]={
 	generate_GETRETVAL,
 	generate_FUNCSTART,
 	generate_RETURN,
-	generate_FUNCEND*/
+	generate_FUNCEND
 };
 
 void generate(iopcode op, quad q){
@@ -141,9 +175,33 @@ void generate(iopcode op, quad q){
 	vctr_instr.push_back(*newInst);
 }
 
+
+void generate_relational(iopcode op, quad q){
+	instruction *newInst = new instruction();
+	newInst->vm_op = (vmopcode) iopcodeToVmopcode(op); 
+
+	make_operand(q.arg1, &(newInst->vm_arg1));
+	make_operand(q.arg2, &(newInst->vm_arg2));
+
+	newInst->vm_result.type = label_a;
+
+	if(q.label < currprocessedquad){
+		newInst->vm_result.val = vctr_quads[q.label].taddress;
+	}else{
+		add_incomplete_jump (next_instruction_label(),q.label);
+	}
+
+	q.taddress = next_instruction_label();
+	vctr_instr.push_back(*newInst);
+}
+
+void generate_NOT(quad q){
+	
+}
+
 void generate_func (void){
 
-	for(unsigned i=0; i < vctr_quads.size(); ++i){
-		(*generators[vctr_quads[i].op])(&(vctr_quads[i]));
+	for(unsigned currprocessedquad = 0; currprocessedquad < vctr_quads.size(); ++currprocessedquad){
+		(*generators[vctr_quads[currprocessedquad].op])(&(vctr_quads[currprocessedquad]));
 	}
 }

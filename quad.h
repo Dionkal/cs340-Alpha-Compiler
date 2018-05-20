@@ -74,6 +74,7 @@ typedef struct quad{
 	expr* 		arg2;
 	unsigned	label;
 	unsigned 	line;
+	unsigned 	taddress;	/*index of the first instruction this quad produces*/
 }quad;
 
 typedef struct calls{
