@@ -21,6 +21,7 @@ typedef struct symTableEntry{
 	symbol_t		type;
 	scopespace_t	space;
 	unsigned    	address;    //For functions only: saves the index of the funcstart quad
+	unsigned		totallocals; //For functions only: saves the number of the local symbols
 } symTableEntry;
 
 

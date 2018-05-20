@@ -1,6 +1,7 @@
 #include "generateInstrFunc.h"
 #include "vmargs.h"
 #include <vector>
+#include <stack>
 
 #define VM_FALSE 0
 #define VM_TRUE	 1
@@ -8,6 +9,8 @@
 
 /*Global vector of instructions*/
 extern std::vector<instruction> vctr_instr;
+
+std::stack<symTableEntry*> funcstack;
 
 void generate_ADD(quad* q){
 	generate(add_iopcode,*q);
@@ -195,11 +198,28 @@ void generate_GETRETVAL(quad *q){
 }
 
 void generate_FUNCSTART(quad *q){
+	symTableEntry* f = q->result->sym;
+	f->address = next_instruction_label();
+	q->taddress = next_instruction_label();
 
+	funcstack.push(f);
+
+	instruction newInst;
+	newInst.vm_op = funcstart_vmopcode;
+	make_operand(q->result, &newInst.vm_result);
+	vctr_instr.push_back(newInst);
 }
 
 void generate_RETURN(quad *q){
+	q->taddress = next_instruction_label();
+	instruction newInst;
 
+	newInst.vm_op = assign_vmopcode;
+	make_retvaloperand(&newInst.vm_result);
+	make_operand(q->arg1, &newInst.vm_arg1);
+	vctr_instr.push_back(newInst);
+
+	symTableEntry* f = funcstack.top(); 
 }
 
 void generate_FUNCEND(quad *q){

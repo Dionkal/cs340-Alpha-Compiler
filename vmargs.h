@@ -122,4 +122,5 @@ unsigned consts_newnumber(double numconst);
 /*Fills lib_func_used_array*/
 unsigned libfuncs_newused(std::string str);
 
+unsigned userfuncs_newfunc(symTableEntry* sym);
 #endif

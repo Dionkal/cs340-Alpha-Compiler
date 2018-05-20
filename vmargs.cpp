@@ -37,6 +37,16 @@ unsigned libfuncs_newused(std::string str){
 	return lib_func_used_array.size() - 1;	
 }
 
+unsigned userfuncs_newfunc(symTableEntry* sym){
+	user_func_array_entry func_entry;
+	func_entry.address = sym->address;
+	func_entry.local_size = sym->totallocals;
+	func_entry.id = sym->name;
+	user_func_array.push_back(func_entry);
+	
+	return user_func_array.size() - 1; 
+}
+
 void make_operand(expr * e, vmarg* arg){
 	switch(e->type){
 		/*All those below use a variable for storage*/
@@ -77,7 +87,7 @@ void make_operand(expr * e, vmarg* arg){
 		/*Functions*/
 		case programfunc_e:{
 			arg->type=userfunc_a;
-			arg->val=e->sym->address;
+			arg->val= userfuncs_newfunc(e->sym);
 			break;
 		}
 
