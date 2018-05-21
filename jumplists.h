@@ -8,7 +8,12 @@ typedef struct jumplistEntry{
 }jumplistEntry;
 
 
+typedef std::list <unsigned> returnList;
+
+/*Creates a new jumplistEntry*/
 void newlistEntry();
+
+void newReturnListEntry();
 
 /*patch all the jumps indexed by the given list with the given label*/
 void patchList(std::list<unsigned> List, unsigned label);

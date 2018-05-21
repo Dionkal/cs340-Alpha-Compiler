@@ -26,6 +26,7 @@
 	extern int current_scope;
 	extern unsigned int scopeSpaceCounter;
 	extern std::stack<jumplistEntry*> jumpListStack;
+	extern std::stack<returnList> returnStack;
 	std::stack<bool> scopeAccessStack;
 	unsigned int anonymousCounter = 0;
 %}
@@ -576,6 +577,9 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{/*p
 funcdef:	funcprefix funcargs funcblockstart funcbody funcblockend 		
 												
 												{
+													patchList(returnStack.top(), nextquadLabel());
+													returnStack.pop();
+
 													scopeSpaceCounter--; 
 													scopeAccessStack.pop();
 													((expr*) $$)->sym->totallocals =  getFunctionOffset(2);			
@@ -620,6 +624,7 @@ funcargs:	'(' idlist ')'						{
 funcblockstart:	/*empty*/						{
 													loopcounterStack.push(loopcounter);
 													loopcounter = 0;
+													newReturnListEntry();
 												}
 
 funcbody:	block								{
@@ -794,6 +799,7 @@ returnstmt:	RETURN ';' 							{
 													 only when we enter a new fucntion therefore its ideal as a flag for the 
 													 return value*/
 													if (scopeSpaceCounter >1){
+														(returnStack.top()).push_back(nextquadLabel());
 														emit(ret_iopcode, NULL, NULL, NULL, 0 , yylineno);
 													}else{
 														std::cout <<"ERROR cannot emit quad with iopcode return when not in a fuction " <<yylineno <<std::endl;
@@ -803,6 +809,7 @@ returnstmt:	RETURN ';' 							{
 			|RETURN expr ';'					{ 
 													// printf("returnstmt: RETURN expr; in line:%d",yylineno);
 													if (scopeSpaceCounter >1 ){
+														(returnStack.top()).push_back(nextquadLabel());
 														emit(ret_iopcode, NULL, NULL,(expr*) $2 , 0 , yylineno);
 													}else{
 														std::cout <<"ERROR cannot emit quad with iopcode return at line" <<yylineno <<" when not in a fuction "  <<std::endl;

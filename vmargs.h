@@ -3,6 +3,9 @@
 
 #include "quad.h"
 #include "assert.h"
+#include <vector>
+#include <iterator>
+
 
 typedef enum vmarg_t{
 	global_a,
@@ -45,8 +48,8 @@ typedef enum vmopcode{//to xa struct tora egine struct
 	if_greater_vmopcode = 15,
 	call_vmopcode = 16,
 	param_vmopcode = 17,
-	ret_vmopcode = 18,
-	getretval_vmopcode = 19,
+	/*ret_vmopcode = 18,*/
+	/*getretval_vmopcode = 19,*/
 	funcstart_vmopcode = 20,
 	funcend_vmopcode = 21,
 	tablecreate_vmopcode = 22,
@@ -110,6 +113,12 @@ typedef struct user_func_array_entry{
 	unsigned	local_size;
 	std::string id;
 }user_func_array_entry;
+
+
+typedef std::vector<std::string>::iterator constStringiterator;
+typedef std::vector<double>::iterator constDoubleiterator;
+typedef std::vector<std::string>::iterator libFunciterator;
+typedef std::vector<user_func_array_entry>::iterator userFunciterator;
 
 /*****Filler functions for const arrays*****/
 	

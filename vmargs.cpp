@@ -23,21 +23,59 @@ unsigned next_instruction_label(){
 
 
 unsigned consts_newstring(std::string str){
+	constStringiterator it;
+	unsigned i = 0;
+	/*Optimisation: Iterate the vector to see if the const already exists*/
+	for(it = const_string_array.begin(); it != const_string_array.end(); it++,i++ )    {
+    	if(*it == str) {
+        	return i;
+    	}
+	}
+
 	const_string_array.push_back(str);
-	return const_string_array.size() - 1;
+	return i + 1;
 }
 
 unsigned consts_newnumber(double numconst){
+	constDoubleiterator it;
+	unsigned i = 0;
+	/*Optimisation: Iterate the vector to see if the const already exists*/
+	for(it = const_num_array.begin(); it != const_num_array.end(); it++,i++ )    {
+    	if(*it == numconst) {
+        	return i;
+    	}
+	}
+
 	const_num_array.push_back(numconst);
-	return const_num_array.size() - 1;
+	return i + 1;
 }
 
 unsigned libfuncs_newused(std::string str){
+	libFunciterator it;
+	unsigned i = 0;
+	
+	/*Optimisation: Iterate the vector to see if the element already exists*/
+	for(it = lib_func_used_array.begin(); it != lib_func_used_array.end(); it++,i++ )    {
+    	if(*it == str) {
+        	return i;
+    	}
+	}
+
 	lib_func_used_array.push_back(str);
-	return lib_func_used_array.size() - 1;	
+	return i + 1;	
 }
 
 unsigned userfuncs_newfunc(symTableEntry* sym){
+	userFunciterator it;
+	unsigned i = 0;
+	
+	/*Optimisation: Iterate the vector to see if the element already exists*/
+	for(it = user_func_array.begin(); it != user_func_array.end(); it++,i++ )    {
+    	if((*it).address == sym->address && (*it).local_size == sym->totallocals && (*it).id == sym->name) {
+        	return i;
+    	}
+	}
+
 	user_func_array_entry func_entry;
 	func_entry.address = sym->address;
 	func_entry.local_size = sym->totallocals;
@@ -66,6 +104,8 @@ void make_operand(expr * e, vmarg* arg){
 			}
 			break;
 		}
+
+		/*TODO add assignexpr case*/
 		case constbool_e:	{
 			arg->val=e->boolConst;
 			arg->type=bool_a; break;
@@ -203,10 +243,6 @@ void generate_relational(iopcode op, quad q){
 
 	q.taddress = next_instruction_label();
 	vctr_instr.push_back(*newInst);
-}
-
-void generate_NOT(quad q){
-	
 }
 
 void generate_func (void){
