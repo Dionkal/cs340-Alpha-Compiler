@@ -44,12 +44,20 @@ void generate_TABLESETELEM(quad* q){
 }
 
 void generate_ASSIGN(quad* q){
-	generate(assign_iopcode, *q);
+	instruction *newInst = new instruction();
+
+	newInst->vm_op = assign_vmopcode;
+
+	make_operand(q->arg1 , &(newInst->vm_arg1) );
+	make_operand(q->result , &(newInst->vm_result) );
+	newInst->vm_srcLine = q->line;
+
+	vctr_instr.push_back(*newInst);
 }
 
 void generate_NOP(quad* q){
 	instruction *t = new instruction();
-	t->vm_op = invalid_vmopcode;
+	t->vm_op = nop_vmopcode;
 	vctr_instr.push_back(*t);
 }
 

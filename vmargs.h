@@ -8,6 +8,7 @@
 
 
 typedef enum vmarg_t{
+	assign_a,
 	global_a,
 	local_a,
 	formal_a,
@@ -27,19 +28,18 @@ typedef struct vmarg{
 	unsigned	val;
 }vmarg;
 
-/*ME POIA SEIRA NA TA EXOUME? SAN EMAS I SAN TOU FRONT?*/
-/*added NOP but dunno what it does*/
-typedef enum vmopcode{//to xa struct tora egine struct
+
+typedef enum vmopcode{
 	assign_vmopcode = 0,
 	add_vmopcode = 1,
 	sub_vmopcode = 2,
 	mul_vmopcode = 3 ,
 	div_vmopcode = 4,
 	mod_vmopcode = 5,
-	/*uminus_vmopcode,*/
-	/*and_vmopcode,	*/
-	or_vmopcode = 8 ,
-	not_vmopcode = 9,
+	/*uminus_vmopcode = 6,*/
+	/*and_vmopcode = 7,*/
+	/*or_vmopcode = 8 ,*/
+	/*not_vmopcode = 9,*/
 	if_eq_vmopcode = 10,
 	if_noteq_vmopcode = 11,
 	if_lesseq_vmopcode = 12,
@@ -56,7 +56,7 @@ typedef enum vmopcode{//to xa struct tora egine struct
 	tablegetelem_vmopcode = 23,
 	tablesetelem_vmopcode = 24,
 	jump_vmopcode = 25,
-	invalid_vmopcode = 26
+	nop_vmopcode = 26
 }vmopcode;
 
 typedef struct incomplete_jump{
@@ -115,10 +115,12 @@ typedef struct user_func_array_entry{
 }user_func_array_entry;
 
 
+/*Some typedefs to reduce large code, thnx valsamakis for the tip*/
 typedef std::vector<std::string>::iterator constStringiterator;
 typedef std::vector<double>::iterator constDoubleiterator;
 typedef std::vector<std::string>::iterator libFunciterator;
 typedef std::vector<user_func_array_entry>::iterator userFunciterator;
+typedef std::vector<instruction>::iterator instrIterator;
 
 /*****Filler functions for const arrays*****/
 	
@@ -132,4 +134,14 @@ unsigned consts_newnumber(double numconst);
 unsigned libfuncs_newused(std::string str);
 
 unsigned userfuncs_newfunc(symTableEntry* sym);
+
+/*Prints the global arrays*/
+void printArrays();
+
+/*Prints the instructions*/
+void printInstructions();
+
+std::string vmopcodeToString(vmopcode op);
+
+std::string vmtypeToString(vmarg_t type);
 #endif

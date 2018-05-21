@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "quad.h"
 #include "symbolUtilities.h"
+#include "vmargs.h"
 #include <string.h>
 #include <iomanip>
 #include <stack>
@@ -428,6 +429,11 @@ int main (int argc, char *argv[]){
     	fclose(yyin);
     	printf("==================Print Quads===============\n");
     	printQuads();
+    	generate_func(); //Translate quads to instructions
+    	printf("TEST");
+    	printArrays();
+		generate_func(); 
+    	printInstructions();
     }
   	return 0;
 }

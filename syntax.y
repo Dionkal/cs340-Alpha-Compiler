@@ -810,7 +810,7 @@ returnstmt:	RETURN ';' 							{
 													if (scopeSpaceCounter >1){
 														emit(ret_iopcode, NULL, NULL, NULL, 0 , yylineno);
 														(returnStack.top()).push_back(nextquadLabel());
-														emit(jump, NULL, NULL,NULL,0,yylineno);
+														emit(jump_iopcode, NULL, NULL,NULL,0,yylineno);
 													}else{
 														std::cout <<"ERROR cannot emit quad with iopcode return when not in a fuction " <<yylineno <<std::endl;
 													}
@@ -821,7 +821,7 @@ returnstmt:	RETURN ';' 							{
 													if (scopeSpaceCounter >1 ){
 														emit(ret_iopcode, NULL, NULL,(expr*) $2 , 0 , yylineno);
 														(returnStack.top()).push_back(nextquadLabel());
-														emit(jump, NULL, NULL,NULL,0,yylineno);
+														emit(jump_iopcode, NULL, NULL,NULL,0,yylineno);
 													}else{
 														std::cout <<"ERROR cannot emit quad with iopcode return at line" <<yylineno <<" when not in a fuction "  <<std::endl;
 													}	
