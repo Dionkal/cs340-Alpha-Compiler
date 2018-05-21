@@ -808,8 +808,9 @@ returnstmt:	RETURN ';' 							{
 													 only when we enter a new fucntion therefore its ideal as a flag for the 
 													 return value*/
 													if (scopeSpaceCounter >1){
-														(returnStack.top()).push_back(nextquadLabel());
 														emit(ret_iopcode, NULL, NULL, NULL, 0 , yylineno);
+														(returnStack.top()).push_back(nextquadLabel());
+														emit(jump, NULL, NULL,NULL,0,yylineno);
 													}else{
 														std::cout <<"ERROR cannot emit quad with iopcode return when not in a fuction " <<yylineno <<std::endl;
 													}
@@ -818,8 +819,9 @@ returnstmt:	RETURN ';' 							{
 			|RETURN expr ';'					{ 
 													// printf("returnstmt: RETURN expr; in line:%d",yylineno);
 													if (scopeSpaceCounter >1 ){
-														(returnStack.top()).push_back(nextquadLabel());
 														emit(ret_iopcode, NULL, NULL,(expr*) $2 , 0 , yylineno);
+														(returnStack.top()).push_back(nextquadLabel());
+														emit(jump, NULL, NULL,NULL,0,yylineno);
 													}else{
 														std::cout <<"ERROR cannot emit quad with iopcode return at line" <<yylineno <<" when not in a fuction "  <<std::endl;
 													}	
