@@ -187,6 +187,17 @@ void add_incomplete_jump (unsigned instrNo, unsigned iaddress){
 	inc_jump_list.push_back(*ij);	
 }
 
+void patch_incomplete_jumps(){ 
+	jumpListIterator it_jumpList;
+
+	for(it_jumpList = inc_jump_list.begin(); it_jumpList != inc_jump_list.end(); it_jumpList++ ){
+		if(it_jumpList->iaddress = /*TODO: intermediate code size*/){
+			vctr_instr[it_jumpList->instrNo].vm_result = /*TODO: target code size*/
+		}else{
+			vctr_instr[it_jumpList->instrNo].vm_result = vctr_quads[it_jumpList->iaddress].taddress;
+		}
+	}
+}
 
 typedef void (*generator_func_t)(quad *);
 
@@ -224,6 +235,10 @@ void generate(iopcode op, quad q){
 	newInst->vm_op = (vmopcode) iopcodeToVmopcode(q.op);
 
 	make_operand(q.arg1 , &(newInst->vm_arg1) );
+	
+	if(op == uminus_opcode ){
+		make_operand(q.arg2 , &(newInst->vm_arg2) );	
+	}
 	make_operand(q.arg2 , &(newInst->vm_arg2) );
 	make_operand(q.result , &(newInst->vm_result) );
 	newInst->vm_srcLine = q.line;
@@ -300,9 +315,9 @@ void printInstructions(){
 	unsigned i = 0;
 
 	std::cout <<"========================Instructions========================" <<std::endl;
-	std::cout <<"      " << "opcode" <<std::endl;
+	std::cout <<"       " << "opcode     arg1            arg2          result       sourceline" <<std::endl;
 	for(it_Instr = vctr_instr.begin(); it_Instr !=  vctr_instr.end(); it_Instr++, i++ ){
-		std::cout <<std::setw(4) << i <<": "  <<std::setw(6) <<it_Instr->vm_op;		//print op
+		std::cout <<std::setw(4) << i <<": "  <<std::setw(6) <<vmopcodeToString(it_Instr->vm_op) <<"  ";		//print op
 
 
 		std::cout <<std::setw(8) <<vmtypeToString(it_Instr->vm_arg1.type) <<"    "; //print arg1

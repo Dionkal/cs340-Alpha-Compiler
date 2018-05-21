@@ -81,8 +81,8 @@ void generate_func (void);
 for future backpatching*/
 void add_incomplete_jump (unsigned instrNo, unsigned iaddress);
 
-/*TODO: patch_incomplete_jumps function*/
-
+/*Pathes the list of the incomplete instruction jumps*/
+void patch_incomplete_jumps();
 
 typedef struct instruction{
 	vmopcode vm_op;
@@ -121,6 +121,7 @@ typedef std::vector<double>::iterator constDoubleiterator;
 typedef std::vector<std::string>::iterator libFunciterator;
 typedef std::vector<user_func_array_entry>::iterator userFunciterator;
 typedef std::vector<instruction>::iterator instrIterator;
+typedef std::vector<incomplete_jump>::iterator jumpListIterator;
 
 /*****Filler functions for const arrays*****/
 	

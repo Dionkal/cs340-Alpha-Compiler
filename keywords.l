@@ -430,9 +430,7 @@ int main (int argc, char *argv[]){
     	printf("==================Print Quads===============\n");
     	printQuads();
     	generate_func(); //Translate quads to instructions
-    	printf("TEST");
     	printArrays();
-		generate_func(); 
     	printInstructions();
     }
   	return 0;
