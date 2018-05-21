@@ -84,6 +84,7 @@
 %type <index>			N2
 %type <index>			N3
 %type <index>			M
+%type <index>			K //saves the index of the incomplete jump before funcdef
 
 %right '='
 %left OR
@@ -574,19 +575,23 @@ block:		'{' {current_scope++;} stmt1 '}' { hideSym(current_scope--);}							{/*p
              |error '}'
 			;	
 
-funcdef:	funcprefix funcargs funcblockstart funcbody funcblockend 		
+funcdef:	K funcprefix funcargs funcblockstart funcbody funcblockend 		
 												
 												{
 													patchList(returnStack.top(), nextquadLabel());
 													returnStack.pop();
 
+													//backpatch the incomplete jump quad to the quad after funcend
+													patchLabel($1,nextquadLabel()+1);
+													
 													scopeSpaceCounter--; 
 													scopeAccessStack.pop();
 													((expr*) $$)->sym->totallocals =  getFunctionOffset(2);			
 													deleteOffset();	
-													($$)=($1);				
-													emit(funcend_iopcode,NULL,NULL,(expr *)($1),0,yylineno);	
-													/*TODO: backpatch the incomplete jump quad before*/									
+													($$)=($2);				
+													emit(funcend_iopcode,NULL,NULL,(expr *)($2),0,yylineno);	
+													
+													
 												}
 			;
 
@@ -600,8 +605,10 @@ funcname: 	ID 									{
 												}
 			;
 
-funcprefix:	FUNCTION funcname					{
-													/*TODO: emit an icomplete jump quad to the the next quad of the funcend*/
+funcprefix:	FUNCTION funcname 					{
+													// emit jump quad to the the next quad of the funcend
+													emit(jump_iopcode, NULL, NULL, NULL, 0, yylineno);
+													
 													expr* result_e=newexpr(programfunc_e);
 													result_e->sym=(symTableEntry *)($2);
 													result_e->sym->address = nextquadLabel(); //save the function address 
@@ -612,6 +619,8 @@ funcprefix:	FUNCTION funcname					{
 													($$)=(void *)result_e;
 												}
 			;
+
+K:												{$$ = nextquadLabel();}
 
 funcargs:	'(' idlist ')'						{
 													scopeSpaceCounter++;
