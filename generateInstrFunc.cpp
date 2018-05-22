@@ -11,24 +11,24 @@
 extern std::vector<instruction> vctr_instr;
 
 void generate_ADD(quad* q){
-	generate(add_iopcode,*q);
+	generate(add_iopcode,q);
 }
 
 
 void generate_SUB(quad* q){
-	generate(sub_iopcode,*q);	
+	generate(sub_iopcode,q);	
 }
 
 void generate_MUL(quad* q){
-	generate(mul_iopcode,*q);
+	generate(mul_iopcode,q);
 }
 
 void generate_DIV(quad* q){
-	generate(div_iopcode, *q);
+	generate(div_iopcode, q);
 }
 
 void generate_MOD(quad* q){
-	generate(mod_iopcode, *q);
+	generate(mod_iopcode, q);
 }
 
 void generate_UMINUS(quad* q){
@@ -46,18 +46,19 @@ void generate_UMINUS(quad* q){
 }
 
 void generate_NEWTABLE(quad* q){
-	generate(tablecreate_iopcode, *q);
+	generate(tablecreate_iopcode, q);
 }
 
 void generate_TABLEGETELEM(quad* q){
-	generate(tablegetelem_iopcode, *q);
+	generate(tablegetelem_iopcode, q);
 }
 
 void generate_TABLESETELEM(quad* q){
-	generate(tablesetelem_iopcode, *q);
+	generate(tablesetelem_iopcode, q);
 }
 
 void generate_ASSIGN(quad* q){
+	q->taddress = next_instruction_label();
 	instruction *newInst = new instruction();
 
 	newInst->vm_op = assign_vmopcode;
@@ -76,31 +77,31 @@ void generate_NOP(quad* q){
 }
 
 void generate_JUMP(quad* q){
-	generate(jump_iopcode, *q);
+	generate_relational(jump_iopcode, q);
 }
 
 void generate_IF_EQ(quad* q){
-	generate_relational(if_eq_iopcode, *q);
+	generate_relational(if_eq_iopcode, q);
 }
 
 void generate_IF_NOTEQ(quad* q){
-	generate_relational(if_noteq_iopcode, *q);
+	generate_relational(if_noteq_iopcode, q);
 }
  	
 void generate_IF_GREATER(quad* q){
-	generate_relational(if_greater_iopcode, *q);
+	generate_relational(if_greater_iopcode, q);
 }
  	
 void generate_IF_GREATEREQ(quad* q ){
-	generate_relational(if_greatereq_iopcode, *q);
+	generate_relational(if_greatereq_iopcode, q);
 }
  	
 void generate_IF_LESS(quad* q){
-	generate_relational(if_less_iopcode, *q);
+	generate_relational(if_less_iopcode, q);
 }
  	
 void generate_IF_LESSEQ(quad* q){
-	generate_relational(if_lesseq_iopcode, *q);
+	generate_relational(if_lesseq_iopcode, q);
 }
  	
 void generate_NOT(quad* q){
@@ -113,6 +114,7 @@ void generate_NOT(quad* q){
 	make_booloperand(&(newInst.vm_arg2), VM_FALSE);
 	newInst.vm_result.type = label_a;
 	newInst.vm_result.val = next_instruction_label() + 3;
+	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 
 	/*Generate 2nd instruction*/
@@ -120,6 +122,7 @@ void generate_NOT(quad* q){
 	make_booloperand(&(newInst.vm_arg1), VM_FALSE);
 	reset_operand(&newInst.vm_arg2);
 	make_operand(q->result, &newInst.vm_result);
+	newInst.vm_srcLine = 0;
 	vctr_instr.push_back(newInst);
 
 	/*Generate 3rd instruction*/
@@ -128,6 +131,7 @@ void generate_NOT(quad* q){
 	reset_operand(&newInst.vm_arg2);
 	newInst.vm_result.type = label_a;
 	newInst.vm_result.val = next_instruction_label() + 2;
+	newInst.vm_srcLine = 0;
 	vctr_instr.push_back(newInst);
 
 	/*Generate 4th instruction*/
@@ -135,6 +139,7 @@ void generate_NOT(quad* q){
 	make_booloperand(&newInst.vm_arg1, VM_TRUE);
 	reset_operand(&newInst.vm_arg2);
 	make_operand(q->result, &newInst.vm_result);
+	newInst.vm_srcLine = 0;
 	vctr_instr.push_back(newInst);
 }
  	
@@ -163,11 +168,13 @@ void generate_OR(quad* q){
 	make_booloperand(&newInst.vm_arg2, bool1);
 	newInst.vm_result.type = label_a;
 	newInst.vm_result.val = next_instruction_label() + 4;
+	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 
 	/*Generate 2nd instruction*/
 	make_operand(q->arg2, &newInst.vm_arg1);
 	newInst.vm_result.val= next_instruction_label() + 3;
+	newInst.vm_srcLine = 0;
 	vctr_instr.push_back(newInst);
 
 	/*Generate 3rd instruction*/
@@ -175,6 +182,7 @@ void generate_OR(quad* q){
 	make_booloperand(&newInst.vm_arg1, bool2);
 	reset_operand(&newInst.vm_arg2);
 	make_operand(q->result, &newInst.vm_result);
+	newInst.vm_srcLine = 0;
 	vctr_instr.push_back(newInst);
  
 	/*Generate 4th instruction*/
@@ -183,6 +191,7 @@ void generate_OR(quad* q){
 	reset_operand(&newInst.vm_arg2);
 	newInst.vm_result.type = label_a;
 	newInst.vm_result.val = next_instruction_label() + 2;
+	newInst.vm_srcLine = 0;
 	vctr_instr.push_back(newInst);
 
 	/*Generate 5th instruction*/
@@ -190,6 +199,7 @@ void generate_OR(quad* q){
 	make_booloperand(&newInst.vm_arg1, bool1);
 	reset_operand(&newInst.vm_arg2);
 	make_operand(q->result, &newInst.vm_result);
+	newInst.vm_srcLine = 0;
 	vctr_instr.push_back(newInst);
 }
  	
@@ -197,7 +207,10 @@ void generate_PARAM(quad* q){
 	q->taddress = next_instruction_label();
 	instruction newInst;
 	newInst.vm_op = param_vmopcode;
+	reset_operand(&newInst.vm_arg1);
+	reset_operand(&newInst.vm_arg2);
 	make_operand(q->result, &newInst.vm_result);
+	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 }
 
@@ -206,6 +219,7 @@ void generate_CALL(quad *q){
 	instruction newInst;
 	newInst.vm_op = call_vmopcode;
 	make_operand(q->result, &newInst.vm_result);
+	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 }
 
@@ -215,6 +229,7 @@ void generate_GETRETVAL(quad *q){
 	newInst.vm_op = assign_vmopcode;
 	make_operand(q->result, &newInst.vm_result);
 	make_retvaloperand( &newInst.vm_arg1);
+	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 }
 
@@ -223,7 +238,10 @@ void generate_FUNCSTART(quad *q){
 
 	instruction newInst;
 	newInst.vm_op = funcstart_vmopcode;
+	reset_operand( &newInst.vm_arg1);
+	reset_operand( &newInst.vm_arg2);
 	make_operand(q->result, &newInst.vm_result);
+	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 }
 
@@ -233,7 +251,9 @@ void generate_RETURN(quad *q){
 
 	newInst.vm_op = assign_vmopcode;
 	make_retvaloperand(&newInst.vm_result);
-	if(q->result != NULL) make_operand(q->result, &newInst.vm_result);
+	reset_operand( &newInst.vm_arg2);
+	if(q->result != NULL) make_operand(q->result, &newInst.vm_arg1);
+	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 }
 
@@ -241,6 +261,9 @@ void generate_FUNCEND(quad *q){
 	q->taddress = next_instruction_label();
 	instruction newInst;
 	newInst.vm_op = funcend_vmopcode;
+	reset_operand( &newInst.vm_arg1);
+	reset_operand( &newInst.vm_arg2);
 	make_operand(q->result, &newInst.vm_result);
+	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 }

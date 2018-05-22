@@ -7,7 +7,10 @@
 #include <iterator>
 
 
+/*It's important that invalid_a is represented by zero because all uninitialized
+ vmarg_ts will be by default zero */
 typedef enum vmarg_t{
+	invalid_a,		
 	assign_a,
 	global_a,
 	local_a,
@@ -19,8 +22,7 @@ typedef enum vmarg_t{
 	userfunc_a,
 	libfunc_a,
 	label_a,
-	retval_a,
-	invalid_a
+	retval_a
 }vmarg_t;
 
 typedef struct vmarg{
@@ -56,7 +58,7 @@ typedef enum vmopcode{
 	tablegetelem_vmopcode = 23,
 	tablesetelem_vmopcode = 24,
 	jump_vmopcode = 25,
-	nop_vmopcode = 26
+	nop_vmopcode = 26,
 }vmopcode;
 
 typedef struct incomplete_jump{
@@ -65,11 +67,11 @@ typedef struct incomplete_jump{
 }incomplete_jump;
 
 /*Generate instruction from given quad*/
-void generate(iopcode op, quad q);
+void generate(iopcode op, quad* q);
 
 /*Generate instruction for relops and jumps
  with incomplete jump handling*/
-void generate_relational(iopcode op, quad q);
+void generate_relational(iopcode op, quad* q);
 
 /*get the index of the next instruction label*/
 unsigned next_instruction_label();
@@ -141,6 +143,9 @@ void printArrays();
 
 /*Prints the instructions*/
 void printInstructions();
+
+/*Print the given vmarg */
+void printVmarg(vmarg arg);
 
 std::string vmopcodeToString(vmopcode op);
 
