@@ -13,6 +13,8 @@
  	
  	void generate_MOD(quad* q);
  	
+ 	void generate_UMINUS(quad* q);
+ 	
  	void generate_NEWTABLE(quad* q);
  	
  	void generate_TABLEGETELEM(quad* q);

@@ -3,6 +3,7 @@
 #include "generateInstrFunc.h"
 #include <iostream>
 #include <iomanip> 
+#include "quad.h"
 
 extern std::vector  <quad> vctr_quads; 
 static  unsigned currprocessedquad = 0;
@@ -191,10 +192,10 @@ void patch_incomplete_jumps(){
 	jumpListIterator it_jumpList;
 
 	for(it_jumpList = inc_jump_list.begin(); it_jumpList != inc_jump_list.end(); it_jumpList++ ){
-		if(it_jumpList->iaddress = /*TODO: intermediate code size*/){
-			vctr_instr[it_jumpList->instrNo].vm_result = /*TODO: target code size*/
+		if(it_jumpList->iaddress == vctr_quads.size()){
+			vctr_instr[it_jumpList->instrNo].vm_result.val = vctr_instr.size();
 		}else{
-			vctr_instr[it_jumpList->instrNo].vm_result = vctr_quads[it_jumpList->iaddress].taddress;
+			vctr_instr[it_jumpList->instrNo].vm_result.val = vctr_quads[it_jumpList->iaddress].taddress;
 		}
 	}
 }
@@ -208,25 +209,27 @@ generator_func_t generators[]={
 	generate_MUL,
 	generate_DIV,
 	generate_MOD,
+	generate_UMINUS,
+	generate_OR,
+	generate_OR,
+	generate_NOT,
+	generate_IF_EQ,
+	generate_IF_NOTEQ,
+	generate_IF_LESSEQ,
+	generate_IF_GREATEREQ,
+	generate_IF_LESS,
+	generate_IF_GREATER,
+	generate_CALL,
+	generate_PARAM,
+	generate_RETURN,
+	generate_GETRETVAL,
+	generate_FUNCSTART,
+	generate_FUNCEND,	
 	generate_NEWTABLE,
 	generate_TABLEGETELEM,
 	generate_TABLESETELEM,
-	generate_NOP,
 	generate_JUMP,
-	generate_IF_EQ,
-	generate_IF_NOTEQ,
-	generate_IF_GREATER,
-	generate_IF_GREATEREQ,
-	generate_IF_LESS,
-	generate_IF_LESSEQ,
-	generate_NOT,
-	generate_OR,
-	generate_PARAM,
-	generate_CALL,
-	generate_GETRETVAL,
-	generate_FUNCSTART,
-	generate_RETURN,
-	generate_FUNCEND
+	generate_NOP
 };
 
 void generate(iopcode op, quad q){
@@ -234,13 +237,9 @@ void generate(iopcode op, quad q){
 
 	newInst->vm_op = (vmopcode) iopcodeToVmopcode(q.op);
 
-	make_operand(q.arg1 , &(newInst->vm_arg1) );
-	
-	if(op == uminus_opcode ){
-		make_operand(q.arg2 , &(newInst->vm_arg2) );	
-	}
-	make_operand(q.arg2 , &(newInst->vm_arg2) );
-	make_operand(q.result , &(newInst->vm_result) );
+	if(q.arg1 != NULL)   make_operand(q.arg1 , &(newInst->vm_arg1) );
+	if(q.arg2 != NULL) 	 make_operand(q.arg2 , &(newInst->vm_arg2) );
+	if(q.result != NULL) make_operand(q.result , &(newInst->vm_result) );
 	newInst->vm_srcLine = q.line;
 
 	vctr_instr.push_back(*newInst);

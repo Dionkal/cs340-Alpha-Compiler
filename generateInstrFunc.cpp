@@ -31,6 +31,20 @@ void generate_MOD(quad* q){
 	generate(mod_iopcode, *q);
 }
 
+void generate_UMINUS(quad* q){
+	instruction newInst;
+
+	newInst.vm_op = mul_vmopcode;
+
+	make_operand(q->arg1 , &(newInst.vm_arg1) );
+	expr* e = newexpr_constnum(-1);
+	make_operand(e , &(newInst.vm_arg2) );	
+	make_operand(q->result , &(newInst.vm_result) );
+	newInst.vm_srcLine = q->line;
+
+	vctr_instr.push_back(newInst);
+}
+
 void generate_NEWTABLE(quad* q){
 	generate(tablecreate_iopcode, *q);
 }
@@ -62,7 +76,7 @@ void generate_NOP(quad* q){
 }
 
 void generate_JUMP(quad* q){
-	generate_relational(jump_iopcode, *q);
+	generate(jump_iopcode, *q);
 }
 
 void generate_IF_EQ(quad* q){
@@ -183,7 +197,7 @@ void generate_PARAM(quad* q){
 	q->taddress = next_instruction_label();
 	instruction newInst;
 	newInst.vm_op = param_vmopcode;
-	make_operand(q->arg1, &newInst.vm_arg1);
+	make_operand(q->result, &newInst.vm_result);
 	vctr_instr.push_back(newInst);
 }
 
@@ -191,7 +205,7 @@ void generate_CALL(quad *q){
 	q->taddress = next_instruction_label();
 	instruction newInst;
 	newInst.vm_op = call_vmopcode;
-	make_operand(q->arg1, &newInst.vm_arg1);
+	make_operand(q->result, &newInst.vm_result);
 	vctr_instr.push_back(newInst);
 }
 
@@ -201,6 +215,7 @@ void generate_GETRETVAL(quad *q){
 	newInst.vm_op = assign_vmopcode;
 	make_operand(q->result, &newInst.vm_result);
 	make_retvaloperand( &newInst.vm_arg1);
+	vctr_instr.push_back(newInst);
 }
 
 void generate_FUNCSTART(quad *q){
@@ -218,7 +233,7 @@ void generate_RETURN(quad *q){
 
 	newInst.vm_op = assign_vmopcode;
 	make_retvaloperand(&newInst.vm_result);
-	make_operand(q->arg1, &newInst.vm_arg1);
+	if(q->result != NULL) make_operand(q->result, &newInst.vm_result);
 	vctr_instr.push_back(newInst);
 }
 

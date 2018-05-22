@@ -586,7 +586,7 @@ funcdef:	K funcprefix funcargs funcblockstart funcbody funcblockend
 													
 													scopeSpaceCounter--; 
 													scopeAccessStack.pop();
-													((expr*) $$)->sym->totallocals =  getFunctionOffset(2);			
+													((expr*) $2)->sym->totallocals =  getFunctionOffset(2);			
 													deleteOffset();	
 													($$)=($2);				
 													emit(funcend_iopcode,NULL,NULL,(expr *)($2),0,yylineno);	
