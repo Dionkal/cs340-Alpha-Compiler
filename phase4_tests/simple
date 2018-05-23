@@ -1,6 +1,7 @@
 x = 10;
 y = "hello";
 function f(x,y)	{return x+y; }
+x + 1;
 z = "world";
-w = cos(3.1415)
+w = cos(3.1415);
 print(w,y,z,w);

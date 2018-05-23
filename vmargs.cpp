@@ -161,7 +161,7 @@ void make_retvaloperand(vmarg* arg){
 }
 
 void reset_operand(vmarg* arg){
-	arg->val = -1; 
+	arg->val = 0; 
 	arg->type = invalid_a;
 }
 
@@ -191,9 +191,9 @@ void add_incomplete_jump (unsigned instrNo, unsigned iaddress){
 void patch_incomplete_jumps(){ 
 	jumpListIterator it_jumpList;
 
-	for(it_jumpList = inc_jump_list.begin(); it_jumpList != inc_jump_list.end(); it_jumpList++ ){
-		if(it_jumpList->iaddress == vctr_quads.size()){
-			vctr_instr[it_jumpList->instrNo].vm_result.val = vctr_instr.size();
+	for(it_jumpList = inc_jump_list.begin(); it_jumpList != inc_jump_list.end(); ++it_jumpList ){
+		if(it_jumpList->iaddress == vctr_quads.size()-1){
+			vctr_instr[it_jumpList->instrNo].vm_result.val = vctr_instr.size() -1;
 		}else{
 			vctr_instr[it_jumpList->instrNo].vm_result.val = vctr_quads[it_jumpList->iaddress].taddress;
 		}
@@ -232,36 +232,41 @@ generator_func_t generators[]={
 	generate_NOP
 };
 
-void generate(iopcode op, quad q){
+void generate(iopcode op, quad* q){
+	q->taddress = next_instruction_label();
 	instruction *newInst = new instruction();
 
-	newInst->vm_op = (vmopcode) iopcodeToVmopcode(q.op);
+	newInst->vm_op = (vmopcode) iopcodeToVmopcode(q->op);
 
-	if(q.arg1 != NULL)   make_operand(q.arg1 , &(newInst->vm_arg1) );
-	if(q.arg2 != NULL) 	 make_operand(q.arg2 , &(newInst->vm_arg2) );
-	if(q.result != NULL) make_operand(q.result , &(newInst->vm_result) );
-	newInst->vm_srcLine = q.line;
+	if(q->arg1 != NULL)   make_operand(q->arg1 , &(newInst->vm_arg1) );
+	if(q->arg2 != NULL) 	 make_operand(q->arg2 , &(newInst->vm_arg2) );
+	if(q->result != NULL) make_operand(q->result , &(newInst->vm_result) );
+	newInst->vm_srcLine = q->line;
 
 	vctr_instr.push_back(*newInst);
 }
 
 
-void generate_relational(iopcode op, quad q){
+void generate_relational(iopcode op, quad* q){
+	q->taddress = next_instruction_label();
 	instruction *newInst = new instruction();
 	newInst->vm_op = (vmopcode) iopcodeToVmopcode(op); 
 
-	make_operand(q.arg1, &(newInst->vm_arg1));
-	make_operand(q.arg2, &(newInst->vm_arg2));
 
+	if(op != jump_iopcode){ 
+		make_operand(q->arg1, &(newInst->vm_arg1));
+		make_operand(q->arg2, &(newInst->vm_arg2));
+	}
 	newInst->vm_result.type = label_a;
 
-	if(q.label < currprocessedquad){
-		newInst->vm_result.val = vctr_quads[q.label].taddress;
+	if(q->label < currprocessedquad){
+		newInst->vm_result.val = vctr_quads[q->label].taddress;
 	}else{
-		add_incomplete_jump (next_instruction_label(),q.label);
+		add_incomplete_jump (next_instruction_label(),q->label);
 	}
 
-	q.taddress = next_instruction_label();
+	q->taddress = next_instruction_label();
+	newInst->vm_srcLine = q->line;
 	vctr_instr.push_back(*newInst);
 }
 
@@ -312,23 +317,31 @@ void printArrays(){
 void printInstructions(){
 	instrIterator it_Instr;
 	unsigned i = 0;
-
-	std::cout <<"========================Instructions========================" <<std::endl;
-	std::cout <<"       " << "opcode     arg1            arg2          result       sourceline" <<std::endl;
+			   //       opcode            arg1              arg2              result     sourceline
+	std::cout <<"===================================Instructions===================================" <<std::endl;
+	std::cout <<"       " << "opcode            arg1              arg2              result     sourceline" <<std::endl;
 	for(it_Instr = vctr_instr.begin(); it_Instr !=  vctr_instr.end(); it_Instr++, i++ ){
-		std::cout <<std::setw(4) << i <<": "  <<std::setw(6) <<vmopcodeToString(it_Instr->vm_op) <<"  ";		//print op
+		std::cout <<std::setw(4) << i <<": "  <<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";		//print op
+
+		printVmarg(it_Instr->vm_arg1);
+		printVmarg(it_Instr->vm_arg2);
+		printVmarg(it_Instr->vm_result);
+
+		std::cout <<"\tline: " <<it_Instr->vm_srcLine <<std::endl;
+	}
+}
 
 
-		std::cout <<std::setw(8) <<vmtypeToString(it_Instr->vm_arg1.type) <<"    "; //print arg1
-		if(it_Instr->vm_arg1.type != nil_a && it_Instr->vm_arg1.type != assign_a) std::cout <<std::setw(8) <<it_Instr->vm_arg1.val <<"    ";
-
-		std::cout <<std::setw(8) <<vmtypeToString(it_Instr->vm_arg2.type) <<"    "; //print arg2
-		if(it_Instr->vm_arg1.type != nil_a && it_Instr->vm_arg1.type != assign_a) std::cout <<std::setw(8) <<it_Instr->vm_arg2.val <<"    ";
-
-		std::cout <<std::setw(8) <<vmtypeToString(it_Instr->vm_result.type) <<"    "; //print result
-		if(it_Instr->vm_arg1.type != nil_a && it_Instr->vm_arg1.type != assign_a) std::cout <<std::setw(8) <<it_Instr->vm_result.val <<"    ";
-	
-		std::cout <<"line: " <<it_Instr->vm_srcLine <<std::endl;
+void printVmarg(vmarg arg){
+	if(arg.type != invalid_a){
+		if(arg.type != nil_a && arg.type != assign_a && arg.type != retval_a){
+			std::cout <<std::setw(6) <<arg.val <<" ";
+		}else{
+			std::cout <<std::setw(7) <<" ";
+		}
+		std::cout <<std::setw(10) <<vmtypeToString(arg.type) <<" ";
+	}else{
+		std::cout <<std::setw(18) <<" ";
 	}
 }
 
@@ -373,6 +386,6 @@ std::string vmtypeToString(vmarg_t type){
 	case	libfunc_a:		return "libfunc_a";
 	case	label_a:		return "label_a";
 	case	retval_a:		return "retval_a";
-	default:				return "invalid_a";
+	default:				return "invalid";
 	}
 }
