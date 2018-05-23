@@ -1,0 +1,5 @@
+function foo(a , b){
+	local y = a;
+        b = y +a;
+	return b;
+}
