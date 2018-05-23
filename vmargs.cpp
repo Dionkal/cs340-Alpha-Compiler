@@ -201,7 +201,6 @@ void patch_incomplete_jumps(){
 			vctr_instr[it_jumpList->instrNo].vm_result.val = vctr_instr.size() -1;
 		}else{
 			vctr_instr[it_jumpList->instrNo].vm_result.val = vctr_quads[it_jumpList->iaddress].taddress;
-			std::cout<<"TEST" <<std::endl;
 		}
 	}
 }

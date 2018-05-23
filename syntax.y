@@ -449,6 +449,14 @@ call: 		call '(' elist ')' 			{
 												self->next = ((calls*) $2)->elist;
 												((calls*) $2)->elist = self;
 											}
+
+											/*Call patch*/
+											if(((expr*)$1)->sym->symType == USER_FUNC){
+												((expr*)$1)->type = programfunc_e;
+											}else if(((expr*)$1)->sym->symType == LIB_FUNC){
+												((expr*)$1)->type = libraryfunc_e;
+											}
+
 											$$ = make_call((expr*)$1, ((calls*) $2)->elist);
 										}
 			|'(' funcdef ')' '(' elist ')' {	
