@@ -95,6 +95,7 @@ std::string iopcodeToString(iopcode op){
 		case mul_iopcode:				return "MUL";
 		case div_iopcode:				return "DIV";
 		case mod_iopcode:				return "MOD";
+		case uminus_iopcode:			return "UMINUS";
 		case funcstart_iopcode: 		return "FUNCSTART";
 		case funcend_iopcode: 			return "FUNCEND";
 		case tablegetelem_iopcode:		return "TABLEGETELEM";
