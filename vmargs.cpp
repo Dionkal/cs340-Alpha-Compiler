@@ -8,10 +8,7 @@
 
 extern std::vector  <quad> vctr_quads; 
 static  unsigned currprocessedquad = 0;
-fstream outputBinary,outputText;
-outputBinary.open("output.abc", ios::binary);
-outputText.open("output.txt");
-
+std::ofstream outputBinary,outputText;
 
 /*Global vector of instructions*/
 std::vector<instruction> vctr_instr;
@@ -286,12 +283,15 @@ void generate_func (void){
 void printArrays(){
 	constStringiterator it_String;
 	unsigned i = 0;
+	outputBinary.open("output.abc", std::ios::binary);
+	outputText.open("output.txt");
 
 	std::cout <<"------------String const array------------" <<std::endl;
 	for(it_String = const_string_array.begin(); it_String != const_string_array.end(); it_String++,i++ )    {
     	std::cout <<i <<": " <<*it_String  <<std::endl;
     	if(outputBinary.is_open()){
-			outputBinary<<i <<": "<<*it_String<<std::endl;
+			outputBinary<<*it_String<<std::endl;
+			outputText<<i <<": "<<*it_String<<std::endl;
 		}
 		if(outputText.is_open()){
 			outputText<<"------------String const array------------" <<std::endl;
@@ -306,7 +306,7 @@ void printArrays(){
 	outputText<<"-------------Num const array--------------" <<std::endl;
 	for(it_Double = const_num_array.begin(); it_Double != const_num_array.end(); it_Double++,i++ )    {
     	std::cout <<i <<": " <<*it_Double  <<std::endl;	
-    	outputBinary<<i <<": " <<*it_Double  <<std::endl;	
+    	outputBinary<<*it_Double  <<std::endl;	
     	outputText<<i <<": " <<*it_Double  <<std::endl;	
 	}
 
@@ -317,18 +317,18 @@ void printArrays(){
 	outputText<<"-------------Lib func array--------------" <<std::endl;
 	for(it_libFunc = lib_func_used_array.begin(); it_libFunc != lib_func_used_array.end(); it_libFunc++,i++ )    {
     	std::cout <<i <<": " <<*it_libFunc  <<std::endl;
-    	outputBinary<<i <<": " <<*it_libFunc  <<std::endl;
+    	outputBinary<<*it_libFunc  <<std::endl;
     	outputText<<i <<": " <<*it_libFunc  <<std::endl;
 	}
 
 	userFunciterator it_userFunc;
 	i = 0;
 
-	std::cout <<"-------------user func array--------------" <<std::endl;	
-	outputText<<"-------------user func array--------------" <<std::endl;	
+	std::cout <<"-------------User func array--------------" <<std::endl;	
+	outputText<<"-------------User func array--------------" <<std::endl;	
 	for(it_userFunc = user_func_array.begin(); it_userFunc != user_func_array.end(); it_userFunc++,i++ )    {
     	std::cout <<i <<": " <<it_userFunc->address <<std::setw(6) <<it_userFunc->local_size <<std::setw(6) <<it_userFunc->id <<std::endl;	
-    	outputBinary<<i <<": " <<it_userFunc->address <<std::setw(6) <<it_userFunc->local_size <<std::setw(6) <<it_userFunc->id <<std::endl;//maybe we dont need the setw in binary file
+    	outputBinary<<it_userFunc->address <<std::setw(6) <<it_userFunc->local_size <<std::setw(6) <<it_userFunc->id <<std::endl;//maybe we dont need the setw in binary file
     	outputText<<i <<": " <<it_userFunc->address <<std::setw(6) <<it_userFunc->local_size <<std::setw(6) <<it_userFunc->id <<std::endl;
 	}
 }
@@ -344,7 +344,7 @@ void printInstructions(){
 	outputText<<"       " << "opcode            arg1              arg2              result     sourceline" <<std::endl;
 	for(it_Instr = vctr_instr.begin(); it_Instr !=  vctr_instr.end(); it_Instr++, i++ ){
 		std::cout <<std::setw(4) << i <<": "  <<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";		//print op
-		outputBinary<<std::setw(4) << i <<": "  <<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";	
+		outputBinary<<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";	
 		outputText<<std::setw(4) << i <<": "  <<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";	
 
 		printVmarg(it_Instr->vm_arg1);
@@ -354,10 +354,9 @@ void printInstructions(){
 		std::cout <<"\tline: " <<it_Instr->vm_srcLine <<std::endl;
 		outputBinary<<"\tline: " <<it_Instr->vm_srcLine <<std::endl;
 		outputText<<"\tline: " <<it_Instr->vm_srcLine <<std::endl;
-
-		outputBinary.close();
-		outputText.close();
 	}
+	outputBinary.close();
+	outputText.close();
 }
 
 
@@ -369,7 +368,6 @@ void printVmarg(vmarg arg){
 			outputText<<std::setw(6) <<arg.val <<" ";
 		}else{
 			std::cout <<std::setw(7) <<" ";
-			outputBinary<<std::setw(7) <<" ";
 			outputText<<std::setw(7) <<" ";
 		}
 		std::cout <<std::setw(10) <<vmtypeToString(arg.type) <<" ";
