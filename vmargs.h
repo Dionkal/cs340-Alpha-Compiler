@@ -1,6 +1,6 @@
 #ifndef VMARGS_LIB
 	#define VMARGS_LIB
-
+	#define MAGIC_NUMBER 340200501
 #include "quad.h"
 #include "assert.h"
 #include <vector>
@@ -150,4 +150,7 @@ void printVmarg(vmarg arg);
 std::string vmopcodeToString(vmopcode op);
 
 std::string vmtypeToString(vmarg_t type);
+
+void printToFile(std::string filename);
 #endif
+

@@ -8,7 +8,6 @@
 
 extern std::vector  <quad> vctr_quads; 
 static  unsigned currprocessedquad = 0;
-std::ofstream outputBinary,outputText;
 
 /*Global vector of instructions*/
 std::vector<instruction> vctr_instr;
@@ -283,53 +282,34 @@ void generate_func (void){
 void printArrays(){
 	constStringiterator it_String;
 	unsigned i = 0;
-	outputBinary.open("output.abc", std::ios::binary);
-	outputText.open("output.txt");
 
 	std::cout <<"------------String const array------------" <<std::endl;
 	for(it_String = const_string_array.begin(); it_String != const_string_array.end(); it_String++,i++ )    {
     	std::cout <<i <<": " <<*it_String  <<std::endl;
-    	if(outputBinary.is_open()){
-			outputBinary<<*it_String<<std::endl;
-			outputText<<i <<": "<<*it_String<<std::endl;
-		}
-		if(outputText.is_open()){
-			outputText<<"------------String const array------------" <<std::endl;
-			outputText<<i <<": "<<*it_String<<std::endl;
-		}
 	}
 
 	constDoubleiterator it_Double;
 	i = 0;	
 
 	std::cout <<"-------------Num const array--------------" <<std::endl;
-	outputText<<"-------------Num const array--------------" <<std::endl;
 	for(it_Double = const_num_array.begin(); it_Double != const_num_array.end(); it_Double++,i++ )    {
     	std::cout <<i <<": " <<*it_Double  <<std::endl;	
-    	outputBinary<<*it_Double  <<std::endl;	
-    	outputText<<i <<": " <<*it_Double  <<std::endl;	
 	}
 
 	libFunciterator it_libFunc;
 	i = 0;
 
 	std::cout <<"-------------Lib func array--------------" <<std::endl;
-	outputText<<"-------------Lib func array--------------" <<std::endl;
 	for(it_libFunc = lib_func_used_array.begin(); it_libFunc != lib_func_used_array.end(); it_libFunc++,i++ )    {
     	std::cout <<i <<": " <<*it_libFunc  <<std::endl;
-    	outputBinary<<*it_libFunc  <<std::endl;
-    	outputText<<i <<": " <<*it_libFunc  <<std::endl;
 	}
 
 	userFunciterator it_userFunc;
 	i = 0;
 
 	std::cout <<"-------------User func array--------------" <<std::endl;	
-	outputText<<"-------------User func array--------------" <<std::endl;	
 	for(it_userFunc = user_func_array.begin(); it_userFunc != user_func_array.end(); it_userFunc++,i++ )    {
     	std::cout <<i <<": " <<it_userFunc->address <<std::setw(6) <<it_userFunc->local_size <<std::setw(6) <<it_userFunc->id <<std::endl;	
-    	outputBinary<<it_userFunc->address <<std::setw(6) <<it_userFunc->local_size <<std::setw(6) <<it_userFunc->id <<std::endl;//maybe we dont need the setw in binary file
-    	outputText<<i <<": " <<it_userFunc->address <<std::setw(6) <<it_userFunc->local_size <<std::setw(6) <<it_userFunc->id <<std::endl;
 	}
 }
 
@@ -340,23 +320,19 @@ void printInstructions(){
 			   //       opcode            arg1              arg2              result     sourceline
 	std::cout <<"===================================Instructions===================================" <<std::endl;
 	std::cout <<"       " << "opcode            arg1              arg2              result     sourceline" <<std::endl;
-	outputText<<"===================================Instructions===================================" <<std::endl;
-	outputText<<"       " << "opcode            arg1              arg2              result     sourceline" <<std::endl;
 	for(it_Instr = vctr_instr.begin(); it_Instr !=  vctr_instr.end(); it_Instr++, i++ ){
 		std::cout <<std::setw(4) << i <<": "  <<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";		//print op
-		outputBinary<<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";	
-		outputText<<std::setw(4) << i <<": "  <<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";	
+		// outputBinary<<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";	
+		// outputText<<std::setw(4) << i <<": "  <<std::setw(9) <<vmopcodeToString(it_Instr->vm_op) <<" ";	
 
 		printVmarg(it_Instr->vm_arg1);
 		printVmarg(it_Instr->vm_arg2);
 		printVmarg(it_Instr->vm_result);
 
 		std::cout <<"\tline: " <<it_Instr->vm_srcLine <<std::endl;
-		outputBinary<<"\tline: " <<it_Instr->vm_srcLine <<std::endl;
-		outputText<<"\tline: " <<it_Instr->vm_srcLine <<std::endl;
+		// outputBinary<<"\tline: " <<it_Instr->vm_srcLine <<std::endl;
+		// outputText<<"\tline: " <<it_Instr->vm_srcLine <<std::endl;
 	}
-	outputBinary.close();
-	outputText.close();
 }
 
 
@@ -364,19 +340,15 @@ void printVmarg(vmarg arg){
 	if(arg.type != invalid_a){
 		if(arg.type != nil_a && arg.type != assign_a && arg.type != retval_a){
 			std::cout <<std::setw(6) <<arg.val <<" ";
-			outputBinary<<std::setw(6) <<arg.val <<" ";
-			outputText<<std::setw(6) <<arg.val <<" ";
+			// outputBinary<<std::setw(6) <<arg.val <<" ";
 		}else{
 			std::cout <<std::setw(7) <<" ";
-			outputText<<std::setw(7) <<" ";
 		}
 		std::cout <<std::setw(10) <<vmtypeToString(arg.type) <<" ";
-		outputBinary<<std::setw(10) <<vmtypeToString(arg.type) <<" ";
-		outputText<<std::setw(10) <<vmtypeToString(arg.type) <<" ";
+		// outputBinary<<std::setw(10) <<vmtypeToString(arg.type) <<" ";
 	}else{
 		std::cout <<std::setw(18) <<" ";
-		outputBinary<<std::setw(18) <<" ";
-		outputText<<std::setw(18) <<" ";
+		// outputBinary<<std::setw(18) <<" ";
 	}
 }
 
@@ -423,4 +395,67 @@ std::string vmtypeToString(vmarg_t type){
 	case	retval_a:		return "retval_a";
 	default:				return "invalid";
 	}
+}
+
+void printToFile(std::string filename){
+	std::ofstream ofile;
+	ofile.open(filename, std::ios::binary);
+
+	ofile << MAGIC_NUMBER <<std::endl;				
+
+	ofile << const_string_array.size() <<std::endl;		//number of const stirngs
+	ofile << const_num_array.size() <<std::endl;		//number of const nums
+	ofile << lib_func_used_array.size() <<std::endl;	//number of funcdefs
+	ofile << user_func_array.size() <<std::endl;		//number of lib calls
+	ofile << vctr_instr.size() <<std::endl;				//number of instructions
+	
+	constStringiterator it_String;
+
+	for(it_String = const_string_array.begin(); it_String != const_string_array.end(); it_String++){
+    	ofile << *it_String <<std::endl;
+	}
+
+	constDoubleiterator it_Double;	
+
+	for(it_Double = const_num_array.begin(); it_Double != const_num_array.end(); it_Double++){
+    	ofile << *it_Double <<std::endl;
+	}
+
+	libFunciterator it_libFunc;
+
+	for(it_libFunc = lib_func_used_array.begin(); it_libFunc != lib_func_used_array.end(); it_libFunc++ ){
+		ofile << *it_libFunc <<std::endl;
+	}
+
+	userFunciterator it_userFunc;
+
+	for(it_userFunc = user_func_array.begin(); it_userFunc != user_func_array.end(); it_userFunc++ ){
+    	ofile << it_userFunc->address <<std::endl;
+    	ofile << it_userFunc->local_size <<std::endl;
+    	ofile << it_userFunc->id <<std::endl;
+	}
+	
+	instrIterator it_Instr;
+
+	for(it_Instr = vctr_instr.begin(); it_Instr != vctr_instr.end(); it_Instr++ ){
+		// opdcode
+		ofile << it_Instr->vm_op <<std::endl;	
+		
+		// arg1
+		ofile << it_Instr->vm_arg1.type <<std::endl;
+		ofile << it_Instr->vm_arg1.val <<std::endl;
+
+		// arg2
+		ofile << it_Instr->vm_arg2.type <<std::endl;
+		ofile << it_Instr->vm_arg2.val <<std::endl;
+
+		// result 
+		ofile << it_Instr->vm_result.type <<std::endl;
+		ofile << it_Instr->vm_result.val <<std::endl;
+
+		// line
+		ofile << it_Instr->vm_srcLine <<std::endl;	
+	}
+
+	ofile.close();
 }
