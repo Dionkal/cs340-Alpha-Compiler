@@ -1,0 +1,41 @@
+0: 
+------------String const array------------
+0: 
+1: world
+------------String const array------------
+1: world
+-------------Num const array--------------
+0: 10
+1: 1
+2: 3.1415
+-------------Lib func array--------------
+0: cos
+1: print
+-------------User func array--------------
+0: 5     1     f
+===================================Instructions===================================
+       opcode            arg1              arg2              result     sourceline
+   0:    ASSIGN      1   number_a                        0   global_a 	line: 1
+   1:    ASSIGN      0   global_a                        1   global_a 	line: 1
+   2:    ASSIGN      1   string_a                        2   global_a 	line: 2
+   3:    ASSIGN      2   global_a                        1   global_a 	line: 2
+   4:      JUMP                                          0    label_a 	line: 3
+   5: FUNCSTART                                          0 userfunc_a 	line: 3
+   6:       ADD      1   formal_a      0   formal_a      0    local_a 	line: 3
+   7:    ASSIGN      0    local_a                            retval_a 	line: 3
+   8:      JUMP                                          0    label_a 	line: 3
+   9:   FUNCEND                                          0 userfunc_a 	line: 3
+  10:       ADD      0   global_a      2   number_a      3   global_a 	line: 4
+  11:    ASSIGN      2   string_a                        4   global_a 	line: 5
+  12:    ASSIGN      4   global_a                        1   global_a 	line: 5
+  13:     PARAM                                          3   number_a 	line: 6
+  14:      CALL                                          1  libfunc_a 	line: 6
+  15:    ASSIGN          retval_a                        1   global_a 	line: 6
+  16:    ASSIGN      1   global_a                        5   global_a 	line: 6
+  17:    ASSIGN      5   global_a                        3   global_a 	line: 6
+  18:     PARAM                                          5   global_a 	line: 7
+  19:     PARAM                                          4   global_a 	line: 7
+  20:     PARAM                                          2   global_a 	line: 7
+  21:     PARAM                                          5   global_a 	line: 7
+  22:      CALL                                          2  libfunc_a 	line: 7
+  23:    ASSIGN          retval_a                        1   global_a 	line: 7

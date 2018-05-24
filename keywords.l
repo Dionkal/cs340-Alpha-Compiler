@@ -430,7 +430,7 @@ int main (int argc, char *argv[]){
     	printf("==================Print Quads===============\n");
     	printQuads();
     	generate_func(); //Translate quads to instructions
-    	patch_incomplete_jumps(); //patch final code jumps
+    	/*patch_incomplete_jumps();*/ //patch final code jumps
     	printArrays();
     	printInstructions();
     }
