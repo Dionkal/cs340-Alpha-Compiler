@@ -401,6 +401,8 @@ void printToFile(std::string filename){
 	std::ofstream ofile;
 	ofile.open(filename, std::ios::binary);
 
+	ofile << MAGIC_NUMBER <<std::endl;				
+
 	ofile << const_string_array.size() <<std::endl;		//number of const stirngs
 	ofile << const_num_array.size() <<std::endl;		//number of const nums
 	ofile << lib_func_used_array.size() <<std::endl;	//number of funcdefs
