@@ -150,4 +150,7 @@ void printVmarg(vmarg arg);
 std::string vmopcodeToString(vmopcode op);
 
 std::string vmtypeToString(vmarg_t type);
+
+void printToFile(std::string filename);
 #endif
+

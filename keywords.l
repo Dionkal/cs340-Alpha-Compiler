@@ -412,7 +412,7 @@ string typeToString(type t){
 
 int main (int argc, char *argv[]){
 	// vector <alpha_token_t> token_vector; 
-	if (argc != 2) {
+	if (argc !=2 && argc !=3) {
 		std::cout <<"Incorrect usage."<<std::endl;
 		std::cout <<"Use: ./scanner <input file> <optional output file>" <<std::endl;
     }else{
@@ -430,9 +430,17 @@ int main (int argc, char *argv[]){
     	printf("==================Print Quads===============\n");
     	printQuads();
     	generate_func(); //Translate quads to instructions
-    	/*patch_incomplete_jumps();*/ //patch final code jumps
+    	patch_incomplete_jumps(); //patch final code jumps
     	printArrays();
     	printInstructions();
+
+    	if(argc == 3){
+    		printToFile(std::string(argv[2]) + ".abc");	
+    	}else{
+    		printToFile("a.abc");
+    	}
+
+		
     }
   	return 0;
 }
