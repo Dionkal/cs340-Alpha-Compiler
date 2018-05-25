@@ -16,20 +16,14 @@
 	unsigned refCounter;
 		avm_table_bucket* strIndexed[AVM_TABLE_HASHTABLE];
 		avm_table_bucket* numIndexed[AVM_TABLE_HASHTABLE];
-		avm_table_bucket* userFunc[AVM_TABLE_HASHTABLE];//CHECK THIS NOT SURE
-		avm_table_bucket* libFunc[AVM_TABLE_HASHTABLE];
-		avm_table_bucket* boolIndexed[AVM_TABLE_HASHTABLE];
+		// avm_table_bucket* userFunc[AVM_TABLE_HASHTABLE];//CHECK THIS NOT SURE
+		// avm_table_bucket* libFunc[AVM_TABLE_HASHTABLE];
+		// avm_table_bucket* boolIndexed[AVM_TABLE_HASHTABLE];
 		unsigned total;
 	}avm_table;
 
 
 	avm_table *avm_tablenew(void);
-
-	void avm_tabledestroy(avm_table* t);
-
-	avm_memcell *avm_tablegetelem(avm_memcell *key);
-
-	void avm_tablesetelem(avm_memcell *key,avm_memcell *value);
 
 	void avm_tableincrefcounter(avm_table* t);
 
@@ -38,4 +32,10 @@
 	void avm_tablebucketsinit(avm_table_bucket** p);
 
 	void avm_tablebucketsdestroy(avm_table_bucket** p);
+
+	void avm_tabledestroy(avm_table* t);
+
+	avm_memcell *avm_tablegetelem(avm_memcell *key);
+
+	void avm_tablesetelem(avm_memcell *key,avm_memcell *value);
 #endif
