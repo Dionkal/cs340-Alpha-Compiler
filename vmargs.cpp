@@ -159,6 +159,7 @@ void make_booloperand(vmarg* arg, unsigned val){
 
 void make_retvaloperand(vmarg* arg){
 	arg->type = retval_a;
+	arg->val = 0;
 }
 
 void reset_operand(vmarg* arg){
@@ -401,7 +402,7 @@ void printToFile(std::string filename){
 	std::ofstream ofile;
 	ofile.open(filename, std::ios::binary);
 
-	// ofile << MAGIC_NUMBER <<std::endl;				
+	ofile << MAGIC_NUMBER <<std::endl;				
 
 	ofile << const_string_array.size() <<std::endl;		//number of const stirngs
 	ofile << const_num_array.size() <<std::endl;		//number of const nums

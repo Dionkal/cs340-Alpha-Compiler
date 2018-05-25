@@ -227,8 +227,8 @@ void generate_GETRETVAL(quad *q){
 	q->taddress = next_instruction_label();
 	instruction newInst;
 	newInst.vm_op = assign_vmopcode;
-	make_operand(q->result, &newInst.vm_result);
-	make_retvaloperand( &newInst.vm_arg1);
+	make_operand(q->result, &newInst.vm_arg1);
+	make_retvaloperand( &newInst.vm_result);
 	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 }

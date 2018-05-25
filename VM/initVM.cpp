@@ -76,5 +76,38 @@ void readFile(std::string filename){
 		user_func_array.push_back(func);
 	}
 
+	/*Fill code segment array*/
+	for(int i = 0; i < instr_size; i++){
+		instruction instr;
+		std::string::size_type sz;
+
+		// get opcode
+		std::getline(input,line);
+		instr.vm_op =  (vmopcode) std::stoi (line,&sz);
+
+		// get arg1 data
+		std::getline(input,line);
+		instr.vm_arg1.type = (vmarg_t) std::stoi (line,&sz);
+		std::getline(input,line);
+		instr.vm_arg1.val =  (unsigned) std::stoi (line,&sz);
+
+		// get arg2 data
+		std::getline(input,line);
+		instr.vm_arg2.type = (vmarg_t) std::stoi (line,&sz);
+		std::getline(input,line);
+		instr.vm_arg2.val =  (unsigned) std::stoi (line,&sz);
+
+		// get result data
+		std::getline(input,line);
+		instr.vm_result.type = (vmarg_t) std::stoi (line,&sz);
+		std::getline(input,line);
+		instr.vm_result.val =  (unsigned) std::stoi (line,&sz);
+	
+		//get sourceline 
+		std::getline(input,line);
+		instr.vm_srcLine =  (unsigned) std::stoi (line,&sz);
+
+		vctr_instr.push_back(instr);
+	}
 	std::cout <<"TEST" <<std::endl;
 }
