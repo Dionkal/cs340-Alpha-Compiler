@@ -14,8 +14,6 @@ void readFile(std::string filename){
 	std::ifstream infile(filename);
 	// All the different input types
 	int 			const_string_size,const_num_size,user_func_size,lib_func_size,instr_size;
-	double 			input_double;
-	std::string 	input_string_line;
 
 	std::ifstream input( filename);
 
@@ -61,6 +59,21 @@ void readFile(std::string filename){
 	for(int i = 0; i < lib_func_size; i++){
 		std::getline(input,line);
 		lib_func_used_array.push_back(line);
+	}
+
+	/*Fill user funcdef array*/
+	for(int i = 0; i < user_func_size; i++){
+		user_func_array_entry func;
+		std::string::size_type sz;
+
+		std::getline(input,line);
+		func.address =  (unsigned) std::stoi (line,&sz);
+		std::getline(input,line);
+		func.local_size = (unsigned) std::stoi (line,&sz);
+		std::getline(input,line);
+		func.id = line; 
+
+		user_func_array.push_back(func);
 	}
 
 	std::cout <<"TEST" <<std::endl;
