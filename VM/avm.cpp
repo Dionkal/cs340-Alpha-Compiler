@@ -1,6 +1,10 @@
 #include "avm.h"
 #include <fstream>
 
+
+/*GLOBAL STATIC STACK*/
+avm_memcell stack[AVM_STACKSIZE];
+
 // avm_memcell *avm_translate_operand(vmarg* arg,avm_memcell* reg){
 	// switch(arg->type){
 
@@ -23,13 +27,12 @@
 	}*/	
 // }
 
-/*static void avm_initstack(void){
+static void avm_initstack(void){
 	unsigned i;
 	for(i=0; i<AVM_STACKSIZE; ++i){
-		AVM_WIPEOUT(stack[i]);
 		stack[i].type=undef_m;
 	}
-}*/
+}
 
 
 int main(int argc, char *argv[]){
@@ -38,5 +41,6 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 	readFile(std::string(argv[1]));
+	avm_initstack(); 
 	return 0;
 }
