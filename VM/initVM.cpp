@@ -36,9 +36,9 @@ void readFile(std::string filename){
 	std::getline(input,line);
 	const_num_size 		= std::stoi (line,&sz);
 	std::getline(input,line);
-	user_func_size 		= std::stoi (line,&sz);
-	std::getline(input,line);
 	lib_func_size 		= std::stoi (line,&sz);
+	std::getline(input,line);
+	user_func_size 		= std::stoi (line,&sz);
 	std::getline(input,line);
 	instr_size 			= std::stoi (line,&sz);
 	
@@ -56,5 +56,12 @@ void readFile(std::string filename){
 		std::string::size_type sz;     
 		const_num_array.push_back(std::stod (line,&sz));
 	}	
+	
+	/*Fill lib_func array*/
+	for(int i = 0; i < lib_func_size; i++){
+		std::getline(input,line);
+		lib_func_used_array.push_back(line);
+	}
+
 	std::cout <<"TEST" <<std::endl;
 }
