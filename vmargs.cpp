@@ -159,6 +159,7 @@ void make_booloperand(vmarg* arg, unsigned val){
 
 void make_retvaloperand(vmarg* arg){
 	arg->type = retval_a;
+	arg->val = 0;
 }
 
 void reset_operand(vmarg* arg){

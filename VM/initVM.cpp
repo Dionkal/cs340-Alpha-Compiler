@@ -14,8 +14,6 @@ void readFile(std::string filename){
 	std::ifstream infile(filename);
 	// All the different input types
 	int 			const_string_size,const_num_size,user_func_size,lib_func_size,instr_size;
-	double 			input_double;
-	std::string 	input_string_line;
 
 	std::ifstream input( filename);
 
@@ -36,9 +34,9 @@ void readFile(std::string filename){
 	std::getline(input,line);
 	const_num_size 		= std::stoi (line,&sz);
 	std::getline(input,line);
-	user_func_size 		= std::stoi (line,&sz);
-	std::getline(input,line);
 	lib_func_size 		= std::stoi (line,&sz);
+	std::getline(input,line);
+	user_func_size 		= std::stoi (line,&sz);
 	std::getline(input,line);
 	instr_size 			= std::stoi (line,&sz);
 	
@@ -56,5 +54,60 @@ void readFile(std::string filename){
 		std::string::size_type sz;     
 		const_num_array.push_back(std::stod (line,&sz));
 	}	
+	
+	/*Fill lib_func array*/
+	for(int i = 0; i < lib_func_size; i++){
+		std::getline(input,line);
+		lib_func_used_array.push_back(line);
+	}
+
+	/*Fill user funcdef array*/
+	for(int i = 0; i < user_func_size; i++){
+		user_func_array_entry func;
+		std::string::size_type sz;
+
+		std::getline(input,line);
+		func.address =  (unsigned) std::stoi (line,&sz);
+		std::getline(input,line);
+		func.local_size = (unsigned) std::stoi (line,&sz);
+		std::getline(input,line);
+		func.id = line; 
+
+		user_func_array.push_back(func);
+	}
+
+	/*Fill code segment array*/
+	for(int i = 0; i < instr_size; i++){
+		instruction instr;
+		std::string::size_type sz;
+
+		// get opcode
+		std::getline(input,line);
+		instr.vm_op =  (vmopcode) std::stoi (line,&sz);
+
+		// get arg1 data
+		std::getline(input,line);
+		instr.vm_arg1.type = (vmarg_t) std::stoi (line,&sz);
+		std::getline(input,line);
+		instr.vm_arg1.val =  (unsigned) std::stoi (line,&sz);
+
+		// get arg2 data
+		std::getline(input,line);
+		instr.vm_arg2.type = (vmarg_t) std::stoi (line,&sz);
+		std::getline(input,line);
+		instr.vm_arg2.val =  (unsigned) std::stoi (line,&sz);
+
+		// get result data
+		std::getline(input,line);
+		instr.vm_result.type = (vmarg_t) std::stoi (line,&sz);
+		std::getline(input,line);
+		instr.vm_result.val =  (unsigned) std::stoi (line,&sz);
+	
+		//get sourceline 
+		std::getline(input,line);
+		instr.vm_srcLine =  (unsigned) std::stoi (line,&sz);
+
+		vctr_instr.push_back(instr);
+	}
 	std::cout <<"TEST" <<std::endl;
 }

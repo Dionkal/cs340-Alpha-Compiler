@@ -1,6 +1,6 @@
 #ifndef VMARGS_LIB
 	#define VMARGS_LIB
-	#define MAGIC_NUMBER 340200501
+	#define MAGIC_NUMBER 340200501	
 #include "quad.h"
 #include "assert.h"
 #include <vector>
