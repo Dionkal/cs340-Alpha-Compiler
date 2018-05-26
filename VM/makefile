@@ -1,10 +1,10 @@
 main: avm.o avm_table.o
-	g++ -g -Wall avm.cpp avm_table.o initVM.o -o avm
+	g++ -std=c++11 -g -Wall avm.cpp avm_table.o initVM.o -o avm
 avm.o: avm.cpp avm_table.h
-	g++ -g -Wall -c avm.cpp
+	g++ -std=c++11 -g -Wall -c avm.cpp
 avm_table.o: avm_table.cpp avm.h
-	g++ -g -Wall -c avm_table.cpp 
+	g++ -std=c++11 -g -Wall -c avm_table.cpp 
 initVM.o: initVM.cpp
-	g++ -g -Wall -c initVM.cpp
+	g++ -std=c++11 -g -Wall -c initVM.cpp
 clean:
 	rm -rf avm *.o
