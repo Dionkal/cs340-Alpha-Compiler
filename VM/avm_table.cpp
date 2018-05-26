@@ -39,7 +39,7 @@ void avm_tabledestroy(avm_table* t){
 	delete(t);
 }
 
-
+/*TODO check proper string copy of data field because instead of strings we have char* */
 avm_memcell avm_tablegetelem(avm_table* table, avm_memcell* key){
 	numIndexedIterator numIndexed_it;
 	strIndexedIterator strIndexed_it;
