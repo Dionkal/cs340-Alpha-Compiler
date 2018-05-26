@@ -1,5 +1,5 @@
-main: avm.o avm_table.o dispatch.o
-	g++ -std=c++11 -g -Wall avm.o avm_table.o initVM.o dispatcher.o -o avm
+main: avm.o avm_table.o dispatch.o assign.o initVM.o
+	g++ -std=c++11 -g -Wall avm.o avm_table.o dispatcher.o ex_assign.o initVM.o  -o avm
 avm.o: avm.cpp avm_table.h
 	g++ -std=c++11 -g -Wall -c avm.cpp
 avm_table.o: avm_table.cpp avm.h
@@ -8,5 +8,7 @@ initVM.o: initVM.cpp
 	g++ -std=c++11 -g -Wall -c initVM.cpp
 dispatch.o: dispatcher.cpp
 	g++ -std=c++11 -g -Wall -c dispatcher.cpp
+assign.o: ex_assign.cpp
+	g++ -std=c++11 -g -Wall -c ex_assign.cpp
 clean:
 	rm -rf avm *.o

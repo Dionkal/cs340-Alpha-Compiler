@@ -1,29 +1,40 @@
 #include "ex_assign.h"
+#include <assert.h>
+#include <cstring>
+#include "avm_table.h"
+
+extern avm_memcell ax,retval;
+extern unsigned top;
+extern avm_memcell stack[AVM_STACKSIZE];
 
 
-void avm_assign(avm_memsell* lv, avm_memsell* rv){
+void avm_assign(avm_memcell* lv, avm_memcell* rv){
 	if(lv==rv) return;
 
-	if((lv->type == table_m) && (rv->type == table_m) && (lv->data.tableVar == rv->data.tableVar)) return;
+	if((lv->type == table_m) && (rv->type == table_m) && (lv->data.tableVal == rv->data.tableVal)) return;
 
-	if(rv->tpe == undef_m) //throw warning 
+	if(rv->type == undef_m) //throw warning 
 		return;
 
-	avm_memsellclear(lv);
 
-	memcpy(lv, rv, sizeof(avm_memsell)); //dispath instead in cpp
+	// avm_memsellclear(lv);
 
-	if (lv->type == string_m)
+	/*TODO: monitor this for possible segmentations*/
+	//memcpy(lv, rv, sizeof(avm_memcell)); //dispath instead in cpp
+
+	if (lv->type == string_m){
 		lv->data.strVal = strdup(rv->data.strVal);
-	else if (lv->type == table_m)
-		avm_tableincrefcounter(lv->data.tableVar);
+	}
+	else if (lv->type == table_m){
+		avm_tableincrefcounter(lv->data.tableVal);
+	}
 
 }
 void execute_assign (instruction * instr){
-	avm_memsell* lv = avm_translate_operand(&instr->result, (avm_memsell*)0);
-	avm_memsell* rv = avm_translate_operand(&instr->arg1, &ax;
+	avm_memcell* lv = avm_translate_operand(&instr->vm_result, (avm_memcell*)0);
+	avm_memcell* rv = avm_translate_operand(&instr->vm_arg1, &ax);
 
-	assert((lv && ((&stack[N-1] >= lv) && (lv > &stack[top]))) || lv==&retval);
+	assert((lv && ((&stack[AVM_STACKSIZE-1] >= lv) && (lv > &stack[top]))) || lv==&retval);
 	assert(rv);
 
 	avm_assign(lv,rv); 
