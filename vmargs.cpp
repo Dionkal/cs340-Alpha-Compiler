@@ -7,6 +7,7 @@
 #include <fstream>
 
 extern std::vector  <quad> vctr_quads; 
+extern unsigned int programVarOffset;
 static  unsigned currprocessedquad = 0;
 
 /*Global vector of instructions*/
@@ -404,6 +405,7 @@ void printToFile(std::string filename){
 
 	ofile << MAGIC_NUMBER <<std::endl;				
 
+	ofile << programVarOffset <<std::endl; 				//number of program vars
 	ofile << const_string_array.size() <<std::endl;		//number of const stirngs
 	ofile << const_num_array.size() <<std::endl;		//number of const nums
 	ofile << lib_func_used_array.size() <<std::endl;	//number of funcdefs

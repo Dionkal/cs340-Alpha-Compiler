@@ -7,12 +7,8 @@ void avm_memcellclear(avm_memcell* m){}
 
 avm_table *avm_tablenew(void){
 	avm_table * t = new avm_table();
-	// AVM_WIPEOUT(*t);
 
 	t-> refCounter = t->total = 0;
-	avm_tablebucketsinit(t->numIndexed);
-	avm_tablebucketsinit(t->strIndexed);
-	/*TODO init other hash maps for bonus*/	
 	return t;
 }
 
@@ -28,29 +24,67 @@ void avm_tabledecrefcounter(avm_table* t){
 	}
 }
 
-void avm_tablebucketsinit(avm_table_bucket** p){
-	for(unsigned i =0; i < AVM_TABLE_HASHTABLE; ++i){
-		p[i] = (avm_table_bucket*) 0;
-	}
-}
-
-
-void avm_tablebucketsdestroy(avm_table_bucket** p){
-	for (unsigned i = 0; i < AVM_TABLE_HASHTABLE; ++i, ++p){
-		/*Delete inner tables recursively*/
-		for(avm_table_bucket* b = *p; b;){
-			avm_table_bucket* del = b;
-			b = b->next;
-			avm_memcellclear(&del->key);
-			avm_memcellclear(&del->value);
-			delete(del);
-		}
-		p[i] = (avm_table_bucket*) 0; //clear memory
-	}
-}
 
 void avm_tabledestroy(avm_table* t){
-	avm_tablebucketsdestroy(t->strIndexed);
-	avm_tablebucketsdestroy(t->numIndexed);
+	/*Clear str indexed*/
+	strIndexedIterator strIndexed_it;
+	for(strIndexed_it = t->strIndexed.begin(); strIndexed_it != t->strIndexed.end(); ++strIndexed_it){
+		avm_memcellclear(&strIndexed_it->second);
+	}
+
+	numIndexedIterator numIndexed_it;
+	/*Clear num indexed*/
+	for(numIndexed_it = t->numIndexed.begin(); numIndexed_it != t->numIndexed.end(); ++numIndexed_it){
+		avm_memcellclear(&numIndexed_it->second);
+	}
+
+	t->strIndexed.clear();
+	t->numIndexed.clear();
 	delete(t);
+}
+
+
+avm_memcell avm_tablegetelem(avm_table* table, avm_memcell* key){
+	numIndexedIterator numIndexed_it;
+	strIndexedIterator strIndexed_it;
+	/*Get the correct hash table depending on the type of the given key*/
+	switch(key->type){
+		case number_m:
+			numIndexed_it = table->numIndexed.find(key->data.numVal);
+			return numIndexed_it->second;
+		case string_m:
+			strIndexed_it = table->strIndexed.find(key->data.strVal);
+			return strIndexed_it->second;
+		default:
+			assert(0);
+	}
+}
+
+
+void avm_tablesetelem(avm_table* table, avm_memcell* key, avm_memcell* val){
+	std::pair<numIndexedEntry::iterator,bool> retInt;
+	std::pair<strIndexedEntry::iterator,bool> retStr;
+	/*Get the correct hash table depending on the type of the given key*/
+	switch(key->type){
+		case number_m:
+			retInt = table->numIndexed.insert(std::pair<double,avm_memcell> (key->data.numVal,*val));
+			//entry already exists
+			if(retInt.second == false){ 
+				(retInt.first)->second.data.numVal = val->data.numVal;
+			}else{
+				table->total++;
+			}
+			return;
+		case string_m:
+			retStr = table->strIndexed.insert(std::pair<std::string,avm_memcell> (key->data.strVal,*val));
+			//entry already exists
+			if(retStr.second == false){ 
+				(retStr.first)->second.data.strVal = val->data.strVal;
+			}else{
+				table->total++;
+			}
+			return;
+		default:
+			assert(0);
+	}
 }

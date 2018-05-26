@@ -1,6 +1,8 @@
 #include "avm.h"
 #include <fstream>
 
+/*Size of the global space*/
+extern unsigned globalSize;
 
 /*GLOBAL STATIC STACK*/
 avm_memcell stack[AVM_STACKSIZE];

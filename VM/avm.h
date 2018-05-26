@@ -25,11 +25,11 @@ struct avm_table;
 
 typedef struct avm_memcell{
 	avm_memcell_t	type;
-	typedef union data{
+	union{
 		double			numVal;
 		char* 			strVal;
 		unsigned char	boolChar;
-		avm_table *		tableVar;
+		avm_table*		tableVal;
 		unsigned		funcVal;
 		char* 			libfuncVal;
 	}data;
