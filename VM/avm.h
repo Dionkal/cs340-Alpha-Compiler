@@ -9,6 +9,7 @@
 #define MAGIC_NUMBER 340200501
 #define AVM_TABLE_HASHTABLE 211
 #define AVM_STACKSIZE 4096
+#define AVM_STACKENV_SIZE 4
 
 typedef enum avm_memcell_t{
 	number_m	=0,
@@ -28,7 +29,7 @@ typedef struct avm_memcell{
 	union{
 		double			numVal;
 		char* 			strVal;
-		unsigned char	boolChar;
+		bool			boolVal;
 		avm_table*		tableVal;
 		unsigned		funcVal;
 		char* 			libfuncVal;
@@ -36,5 +37,14 @@ typedef struct avm_memcell{
 }avm_memcell;
 
 void avm_memcellclear(avm_memcell* m);
+
+/*translate a vmarg into a register*/
+avm_memcell *avm_translate_operand(vmarg* arg,avm_memcell* reg);
+
+/*Get consts and functions*/
+double 		consts_getnumber(unsigned index);
+char*  		consts_getstring(unsigned index);
+char*  		libfuncs_getused(unsigned index);
+unsigned	userfunc_getaddr(unsigned index);
 
 #endif
