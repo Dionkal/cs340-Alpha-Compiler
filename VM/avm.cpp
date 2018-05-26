@@ -12,7 +12,7 @@ extern std::vector <double> 					const_num_array;
 extern std::vector <std::string> 				lib_func_used_array;
 extern std::vector <user_func_array_entry>		user_func_array;
 
-
+extern void avm_tabledecrefcounter(avm_table* t);
 
 /*AVM registers*/
 avm_memcell ax, bx, cx, retval;
