@@ -14,7 +14,6 @@
 		unsigned total;
 	}avm_table;
 
-
 	avm_table *avm_tablenew(void);
 
 	void avm_tableincrefcounter(avm_table* t);

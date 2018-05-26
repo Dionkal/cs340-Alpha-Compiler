@@ -4,9 +4,9 @@
 void avm_assign(avm_memcell* lv, avm_memcell* rv){
 	if(lv==rv) return;
 
-	if((lv->type == table_m) && (rv->type == table_m) && (lv->data.tableVar == rv->data.tableVar)) return;
+	if((lv->type == table_m) && (rv->type == table_m) /*&& (lv->data.tableVar == rv->data.tableVar)*/ ) return;
 
-	if(rv->tpe == undef_m) //throw warning 
+	if(rv->type == undef_m) //throw warning 
 		return;
 
 	avm_memsellclear(lv);

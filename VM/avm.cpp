@@ -37,6 +37,40 @@ static void avm_initstack(void){
 }
 
 
+memclear_func_t memclearFuncs[]={
+	0,/*number*/
+	memclear_string,
+	0,/*bool*/
+	memclear_table,
+	0,/*user func*/
+	0,/*libfunc*/
+	0,/*nil*/
+	0/*undef*/
+};
+
+void avm_memcellclear(avm_memcell* m){
+	memclear_func_t  f;
+
+	if(m->type!=undef_m){
+		f=memclearFuncs[m->type];
+		if(f){
+			(*f)(m);
+		}
+		m->type=undef_m;
+	}
+
+}
+
+void memclear_string(avm_memcell* m){
+	assert(m->data.strVal);
+	free(m->data.strVal);
+}
+
+void memclear_table(avm_memcell* m){
+	assert(m->data.tableVal);
+	avm_tabledecrefcounter(m->data.tableVal);
+}
+
 int main(int argc, char *argv[]){
 	if(argc!=2){
 		std::cout <<"No input file, exiting";
