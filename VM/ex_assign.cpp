@@ -17,10 +17,10 @@ void avm_assign(avm_memcell* lv, avm_memcell* rv){
 		return;
 
 
-	// avm_memsellclear(lv);
+	avm_memsellclear(lv);
 
 	/*TODO: monitor this for possible segmentations*/
-	//memcpy(lv, rv, sizeof(avm_memcell)); //dispath instead in cpp
+	memcpy(lv, rv, sizeof(avm_memcell)); //dispath instead in cpp
 
 	if (lv->type == string_m){
 		lv->data.strVal = strdup(rv->data.strVal);
