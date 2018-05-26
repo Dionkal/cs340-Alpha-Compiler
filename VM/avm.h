@@ -45,6 +45,8 @@ void memclear_string(avm_memcell* m);
 
 void memclear_table(avm_memcell* m);
 
+void avm_warning(std::string format);
+
 /*translate a vmarg into a register*/
 avm_memcell *avm_translate_operand(vmarg* arg,avm_memcell* reg);
 
