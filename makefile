@@ -1,6 +1,6 @@
 all:clean bi fl main 
 main: 
-	g++ -g -Wall lex.yy.c generateInstrFunc.cpp vmargs.cpp parser.c quad.cpp symbolActions.cpp symbolUtilities.cpp jumplists.cpp -o scanner 
+	g++  -std=c++11 -g -Wall lex.yy.c generateInstrFunc.cpp vmargs.cpp parser.c quad.cpp symbolActions.cpp symbolUtilities.cpp jumplists.cpp -o scanner 
 fl:  
 	flex  keywords.l
 bi:
