@@ -3,6 +3,7 @@
 	#include "vmargs.h"
 	#include "avm.h"
 	#include "dispatcher.h"
+	#include "ex_assign.h"
 	void avm_dec_top(void);
 
 	void avm_push_envvalue(unsigned val);
@@ -13,5 +14,13 @@
 
 	unsigned avm_get_envvalue(unsigned i);
 
-	void execue_funcexit(instruction* unused);
+	void execute_funcexit(instruction* unused);
+
+	void avm_calllibfunc(char* id);
+
+	unsigned avm_totalactuals (void);
+
+	avm_memcell* avm_getactual(unsigned i);
+
+	void libfunc_print(void);
 #endif
