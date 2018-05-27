@@ -5,6 +5,7 @@
 extern avm_memcell stack[AVM_STACKSIZE];
 extern unsigned top;
 extern avm_memcell eax, bx, retval;
+extern std::string typeStrings[];
 // extern std::string avm_tostring(avm_memcell* m);
 
 void execute_newtable(instruction* instr){
@@ -31,8 +32,7 @@ void execute_tablegetelem(instruction* instr){
 	lv->type = nil_m;	//Default value
 
 	if(t->type !=  table_m){
-		/*TODO avm_error*/
-		// avm_error("illegal use of type %s, as table!", typeStrings[t->type]);
+		avm_error("illegal use of type %s, as table!", typeStrings[t->type]);
 	}else{
 		avm_memcell content = avm_tablegetelem(t->data.tableVal, i);
 		if(content.type != undef_m){
@@ -40,8 +40,7 @@ void execute_tablegetelem(instruction* instr){
 		}else{
 			std::string ts = avm_tostring(t);
 			std::string is = avm_tostring(i);
-			/*TODO: avm_warning*/
-			// avm_warning("%s[%s] not found!",ts,is);
+			 avm_warning("%s[%s] not found!",ts,is);
 		}
 	}
 }
@@ -55,8 +54,7 @@ void execute_tablesetelem(instruction* instr){
 	assert(i && c);
 
 	if(t->type != table_m){
-		/*TODO avm error*/
-		// avm_error("illegal use of type %s as table!",typeStrings[t->type]);
+		 avm_error("illegal use of type %s as table!",typeStrings[t->type]);
 	}else{
 		avm_tablesetelem(t->data.tableVal,i ,c);
 	}

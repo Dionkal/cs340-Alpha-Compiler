@@ -1,10 +1,6 @@
 #include "execute_call.h"
 #include "toString.h"
 
-#define AVM_NUMACTUALS_OFFSET 	4
-#define AVM_SAVEDTOP_OFFSET 	2
-#define AVM_SAVED_PC_OFFSET 	3
-#define AVM_SAVEDTOPSP_OFFSET	1
 
 extern unsigned top,topsp;
 extern bool 	executionFinished;
@@ -14,7 +10,7 @@ extern avm_memcell eax;
 extern unsigned  pc;
 extern std::vector<instruction> vctr_instr;
 extern std::vector <user_func_array_entry>	user_func_array;
-
+extern std::vector <std::string> lib_func_used_array;
 unsigned totalActuals = 0;
 
 
@@ -113,19 +109,23 @@ void execute_funcexit(instruction* unused){
 
 typedef void (*library_func_t)(void);
 
-library_func_t avm_getlibraryfunc(char* id);
-
 void avm_calllibfunc(char* id){
-	// TODO: implement avm_getlibraryfunc
-	library_func_t f; // = avm_getlibraryfunc(id);
-	if(!f){
-		/*TODO: add avm_error*/
-		// avm_error =("unsupported lib func %s called!", id);
+	std::string f  = avm_getlibraryfunc(id);
+	if(f.empty()){
+		avm_error("unsupported lib func %s called!", id);
 		executionFinished = 1;
 	}else{
 		topsp = top;
 		totalActuals = 0;
-		(*f)();   /*Call library function*/
+		if(f == "print"){   /*Call library function*/
+			//TODO call print libfunc
+		}else if("totalarguments"){
+			//TODO totalarguments lib func
+		}else if("argument"){
+			// TODO argument lib func
+		}else{
+			assert(0);
+		}
 		if(!executionFinished){	//execute func exit only if there are no errors
 			execute_funcexit(NULL);
 		}
@@ -179,4 +179,15 @@ void execute_pusharg(instruction* instr){
 user_func_array_entry* avm_getfuncinfo(unsigned address){
 	assert(vctr_instr[address].vm_result.type == userfunc_a); //only functions are permited
 	return &user_func_array[vctr_instr[address].vm_result.val];
+}
+
+
+std::string avm_getlibraryfunc(std::string id){
+	std::vector <std::string>::iterator it; 
+	it = std::find(lib_func_used_array.begin(),	lib_func_used_array.end(), id);
+	if(*it != id ){
+		return "";
+	}else{
+		return *it;
+	}
 }

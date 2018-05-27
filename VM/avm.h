@@ -5,6 +5,7 @@
 #include <iostream>
 #include "vmargs.h"
 #include <stdlib.h>
+#include <cstdarg>
 
 #include "initVM.h"
 #define MAGIC_NUMBER 340200501
@@ -45,7 +46,9 @@ void memclear_string(avm_memcell* m);
 
 void memclear_table(avm_memcell* m);
 
-void avm_warning(std::string format);
+void avm_warning(const char* format, ...);
+
+void avm_error(const char* fmt, ...);
 
 /*translate a vmarg into a register*/
 avm_memcell *avm_translate_operand(vmarg* arg,avm_memcell* reg);
@@ -55,5 +58,4 @@ double 		consts_getnumber(unsigned index);
 char*  		consts_getstring(unsigned index);
 char*  		libfuncs_getused(unsigned index);
 unsigned	userfunc_getaddr(unsigned index);
-
 #endif

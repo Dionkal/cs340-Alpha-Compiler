@@ -10,6 +10,36 @@ instruction* 	code = NULL;
 
 #define AVM_ENDING_PC 	codeSize	
 
+execute_func_t executeFuncs[]={
+	execute_assign,
+	execute_add,
+	execute_sub,
+	execute_mul,
+	execute_div,
+	execute_mod,
+	execute_nop,
+	execute_nop,
+	execute_nop,
+	execute_nop,
+	execute_jeq,
+	execute_jne,
+	execute_leq,
+	execute_geq,
+	execute_le,
+	exevute_grt,
+	execute_call,
+	execute_pusharg,
+	execute_nop,
+	execute_nop,
+	execute_funcenter,
+	execute_funcexit,
+	execute_newtable,
+	execute_tablegetelem,
+	execute_tablesetelem,
+	execute_jump,
+	execute_nop
+}
+
 void execute_cycle(){
 	if(executionFinished) return;
 
@@ -29,7 +59,7 @@ void execute_cycle(){
 
 		unsigned oldPC = pc;
 		/*TODO uncomment next line when execute function is implemented*/
-		// (*executeFuncs[instr->vm_op]) (instr); 
+		(*executeFuncs[instr->vm_op]) (instr); 
 
 		if(pc== oldPC) ++pc; //execute next instr
 	}
