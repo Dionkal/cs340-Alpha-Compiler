@@ -23,4 +23,6 @@
 	avm_memcell* avm_getactual(unsigned i);
 
 	void libfunc_print(void);
+
+	user_func_array_entry* avm_getfuncinfo(unsigned address);
 #endif
