@@ -1,5 +1,5 @@
 #include "execute_call.h"
-
+#include "toString.h"
 
 #define AVM_NUMACTUALS_OFFSET 	4
 #define AVM_SAVEDTOP_OFFSET 	2
@@ -13,37 +13,22 @@ extern unsigned pc;
 extern avm_memcell eax;
 extern unsigned  pc;
 extern std::vector<instruction> vctr_instr;
-extern user_func_array_entry* avm_getfuncinfo(unsigned address);
 
 unsigned totalActuals = 0;
 
 
-typedef char* (*tostring_func_t) (avm_memcell*);
+typedef std::string (*tostring_func_t) (avm_memcell*);
 
-extern char* number_tostring(avm_memcell*);
-extern char* string_tostring(avm_memcell*);
-extern char* bool_tostring(avm_memcell*);
-extern char* table_tostring(avm_memcell*);
-extern char* userfunc_tostring(avm_memcell*);
-extern char* libfunc_tostring(avm_memcell*);
-extern char* nil_tostring(avm_memcell*);
-extern char* undef_tostring(avm_memcell*);
+extern std::string number_tostring(avm_memcell*);
+extern std::string string_tostring(avm_memcell*);
+extern std::string bool_tostring(avm_memcell*);
+extern std::string table_tostring(avm_memcell*);
+extern std::string userfunc_tostring(avm_memcell*);
+extern std::string libfunc_tostring(avm_memcell*);
+extern std::string nil_tostring(avm_memcell*);
+extern std::string undef_tostring(avm_memcell*);
 
-tostring_func_t tostringFuncs[]={
-	number_tostring,
-	string_tostring,
-	bool_tostring,
-	table_tostring,
-	userfunc_tostring,
-	libfunc_tostring,
-	nil_tostring,
-	undef_tostring
-};
 
-char* avm_tostring(avm_memcell* m){
-	assert(m->type >= 0 && m->type <= undef_m);
-	return (*tostringFuncs[m->type]) (m);
-}
 
 
 void avm_dec_top(void){
@@ -79,7 +64,7 @@ void execute_call (instruction* instr){
 		case userfunc_m: {
 			pc = func->data.funcVal;
 			/*TODO: fix AVM_ENDING_PC*/
-			// assert(pc<AVM_ENDING_PC);
+			assert(pc<vctr_instr.size());
 			assert(vctr_instr[pc].vm_op == funcstart_vmopcode);
 			break;
 		}
@@ -87,10 +72,9 @@ void execute_call (instruction* instr){
 		case libfunc_m: avm_calllibfunc(func->data.libfuncVal); break;
 
 		default:
-			char* s = avm_tostring(func);
+			std::string str = avm_tostring(func);
 			/*TODO avm_to stirng + cll avm_error*/
 			// avm_error("call: cannot bind %s to function!", s);
-			delete(s);
 			executionFinished = 1;
 	}		
 }
@@ -165,10 +149,9 @@ avm_memcell* avm_getactual(unsigned i){
 void libfunc_print(void){
 	unsigned n = avm_totalactuals();
 	for(unsigned i = 0; i < n; ++i){
-		char* s = avm_tostring(avm_getactual(i));
+		std::string str = avm_tostring(avm_getactual(i));
 		/*TODO fix put*/
 		// put(s);
-		delete(s);
 	}
 }
 
@@ -189,4 +172,8 @@ void execute_pusharg(instruction* instr){
 	avm_assign(&stack[top],arg);
 	++totalActuals;
 	avm_dec_top();
+}
+
+user_func_array_entry* avm_getfuncinfo(unsigned address){
+	assert(vctr_instr[address].vm_result.type == userfunc_a); //only functions are permited
 }

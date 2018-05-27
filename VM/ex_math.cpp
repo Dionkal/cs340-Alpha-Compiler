@@ -13,16 +13,11 @@ extern unsigned top,topsp;
 
 typedef double (*arithmetic_func_t)(double x,double y);
 
-double add_impl(double x,double y){ double z=x+y; return z;}
-double sub_impl(double x,double y){ double z=x-y; return z;}
-double mul_impl(double x,double y){ double z=x*y; return z;}
-double div_impl(double x,double y){ 
-	double z; 
-	assert(y=0);
-	z=x/y;
-	return z;
-}
-double mod_impl(double x,double y){ unsigned z=(unsigned)x%(unsigned)y; return z;}
+double add_impl(double x,double y){  return x+y;}
+double sub_impl(double x,double y){  return x-y;}
+double mul_impl(double x,double y){  return x*y;}
+double div_impl(double x,double y){ assert(y); return x/y; }
+double mod_impl(double x,double y){ return (unsigned)x%(unsigned)y; }
 
 /*Dispather for arithmetics*/
 arithmetic_func_t arithmeticFuncs[]={

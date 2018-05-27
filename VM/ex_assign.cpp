@@ -3,7 +3,7 @@
 #include <cstring>
 #include "avm_table.h"
 
-extern avm_memcell ax,retval;
+extern avm_memcell eax,retval;
 extern unsigned top;
 extern avm_memcell stack[AVM_STACKSIZE];
 
@@ -32,7 +32,7 @@ void avm_assign(avm_memcell* lv, avm_memcell* rv){
 }
 void execute_assign (instruction * instr){
 	avm_memcell* lv = avm_translate_operand(&instr->vm_result, (avm_memcell*)0);
-	avm_memcell* rv = avm_translate_operand(&instr->vm_arg1, &ax);
+	avm_memcell* rv = avm_translate_operand(&instr->vm_arg1, &eax);
 
 	assert((lv && ((&stack[AVM_STACKSIZE-1] >= lv) && (lv > &stack[top]))) || lv==&retval);
 	assert(rv);

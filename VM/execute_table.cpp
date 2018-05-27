@@ -1,10 +1,11 @@
 #include "execute_table.h"
 #include "ex_assign.h"
+#include "toString.h"
 
 extern avm_memcell stack[AVM_STACKSIZE];
 extern unsigned top;
 extern avm_memcell eax, bx, retval;
-
+// extern std::string avm_tostring(avm_memcell* m);
 
 void execute_newtable(instruction* instr){
 	avm_memcell* lv = avm_translate_operand(&instr->vm_result, NULL);
@@ -22,7 +23,7 @@ void execute_tablegetelem(instruction* instr){
 	avm_memcell* t = avm_translate_operand(&instr->vm_arg1, NULL);
 	avm_memcell* i = avm_translate_operand(&instr->vm_arg2, &eax);
 
-	assert(lv && &stack[AVM_STACKSIZE-1] >= lv && lv > &stack[top] || lv == &retval);
+	assert((lv && &stack[AVM_STACKSIZE-1] >= lv && lv > &stack[top]) || lv == &retval);
 	assert(t && &stack[AVM_STACKSIZE-1] >= t && lv > &stack[top]);
 	assert(i);
 
@@ -37,12 +38,10 @@ void execute_tablegetelem(instruction* instr){
 		if(content.type != undef_m){
 			avm_assign(lv, &content);
 		}else{
-			char* ts = avm_tostring(t);
-			char* is = avm_tostring(i);
+			std::string ts = avm_tostring(t);
+			std::string is = avm_tostring(i);
 			/*TODO: avm_warning*/
 			// avm_warning("%s[%s] not found!",ts,is);
-			delete(ts);
-			delete(is);
 		}
 	}
 }

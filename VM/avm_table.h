@@ -30,4 +30,6 @@
 	typedef std::map<double,avm_memcell> 				numIndexedEntry;
 	typedef std::map<std::string,avm_memcell>::iterator strIndexedIterator;
 	typedef std::map<double,avm_memcell>::iterator  	numIndexedIterator;
+
+	user_func_array_entry* avm_getfuncinfo(unsigned address);
 #endif

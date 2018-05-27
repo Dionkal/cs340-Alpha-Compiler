@@ -1,5 +1,5 @@
-main: avm.o avm_table.o dispatch.o assign.o  execute_call.o initVM.o
-	g++ -std=c++11 -g -Wall avm.o avm_table.o dispatcher.o ex_assign.o execute_table.o execute_call.o initVM.o  -o avm
+main: avm.o avm_table.o dispatch.o assign.o  execute_call.o execute_table.o toString.o initVM.o
+	g++ -std=c++11 -g -Wall avm.o avm_table.o dispatcher.o ex_assign.o execute_table.o execute_call.o initVM.o  toString.o -o avm
 avm.o: avm.cpp avm_table.h
 	g++ -std=c++11 -g -Wall -c avm.cpp
 avm_table.o: avm_table.cpp avm.h
@@ -14,5 +14,7 @@ execute_call.o:	execute_call.cpp
 	g++ -std=c++11 -g -Wall -c execute_call.cpp
 execute_table.o: execute_table.cpp
 	g++ -std=c++11 -g -Wall -c execute_table.cpp
+toString.o: toString.cpp
+	g++ -std=c++11 -g -Wall -c toString.cpp
 clean:
 	rm -rf avm *.o
