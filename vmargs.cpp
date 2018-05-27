@@ -195,7 +195,7 @@ void patch_incomplete_jumps(){
 	jumpListIterator it_jumpList;
 
 	for(it_jumpList = inc_jump_list.begin(); it_jumpList != inc_jump_list.end(); ++it_jumpList ){
-		if(it_jumpList->iaddress == vctr_quads.size()-1){
+		if(it_jumpList->iaddress == vctr_quads.size()){
 			vctr_instr[it_jumpList->instrNo].vm_result.val = vctr_instr.size() -1;
 		}else{
 			vctr_instr[it_jumpList->instrNo].vm_result.val = vctr_quads[it_jumpList->iaddress].taddress;

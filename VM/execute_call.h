@@ -23,6 +23,4 @@
 	avm_memcell* avm_getactual(unsigned i);
 
 	void libfunc_print(void);
-	
-	char* avm_tostring(avm_memcell* m);
 #endif
