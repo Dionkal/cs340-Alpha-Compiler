@@ -1,9 +1,5 @@
 #include "avm_table.h"
 
-/*Temp definition
-*/
-void avm_memcellclear(avm_memcell* m){}
-
 
 avm_table *avm_tablenew(void){
 	avm_table * t = new avm_table();
