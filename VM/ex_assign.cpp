@@ -17,7 +17,7 @@ void avm_assign(avm_memcell* lv, avm_memcell* rv){
 		return;
 
 
-	avm_memsellclear(lv);
+	avm_memcellclear(lv);
 
 	/*TODO: monitor this for possible segmentations*/
 	memcpy(lv, rv, sizeof(avm_memcell)); //dispath instead in cpp
