@@ -13,6 +13,7 @@ extern unsigned pc;
 extern avm_memcell eax;
 extern unsigned  pc;
 extern std::vector<instruction> vctr_instr;
+extern std::vector <user_func_array_entry>	user_func_array;
 
 unsigned totalActuals = 0;
 
@@ -115,7 +116,8 @@ typedef void (*library_func_t)(void);
 library_func_t avm_getlibraryfunc(char* id);
 
 void avm_calllibfunc(char* id){
-	library_func_t f = avm_getlibraryfunc(id);
+	// TODO: implement avm_getlibraryfunc
+	library_func_t f; // = avm_getlibraryfunc(id);
 	if(!f){
 		/*TODO: add avm_error*/
 		// avm_error =("unsupported lib func %s called!", id);
@@ -176,4 +178,5 @@ void execute_pusharg(instruction* instr){
 
 user_func_array_entry* avm_getfuncinfo(unsigned address){
 	assert(vctr_instr[address].vm_result.type == userfunc_a); //only functions are permited
+	return &user_func_array[vctr_instr[address].vm_result.val];
 }
