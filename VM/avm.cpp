@@ -15,7 +15,7 @@ extern std::vector <user_func_array_entry>		user_func_array;
 
 
 /*AVM registers*/
-avm_memcell ax, bx, cx, retval;
+avm_memcell eax, bx, cx, retval;
 
 /*Stack pointers*/
 unsigned top,topsp;
