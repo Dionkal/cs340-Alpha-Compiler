@@ -12,3 +12,8 @@ parser\.c
 parser\.h
 
 parser\.output
+
+.vscode/*
+
+VM/*.o
+VM/avm
