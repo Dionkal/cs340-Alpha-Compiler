@@ -63,7 +63,6 @@ void execute_cycle()
 		}
 
 		unsigned oldPC = pc;
-		/*TODO uncomment next line when execute function is implemented*/
 		(*executeFuncs[instr->vm_op])(instr);
 
 		if (pc == oldPC)

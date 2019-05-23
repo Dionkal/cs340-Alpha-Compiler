@@ -1,6 +1,8 @@
 #include <assert.h>
 #include "avm.h"
 
+typedef unsigned char (*tobool_func_t)(avm_memcell *);
+
 void execute_jeq(instruction *i);
 
 void execute_jne(instruction *i);

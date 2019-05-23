@@ -1,7 +1,7 @@
 #include "ex_math.h"
 
 extern bool executionFinished;
-extern avm_memcell eax, bx, cx, retval;
+extern avm_memcell ax, bx, cx, retval;
 extern avm_memcell stack[AVM_STACKSIZE];
 /*Stack pointers*/
 extern unsigned top, topsp;
@@ -29,7 +29,7 @@ arithmetic_func_t arithmeticFuncs[] = {
 void execute_arithmetic(instruction *i)
 {
 	avm_memcell *lv = avm_translate_operand(&i->vm_result, (avm_memcell *)0);
-	avm_memcell *rv1 = avm_translate_operand(&i->vm_arg1, &eax);
+	avm_memcell *rv1 = avm_translate_operand(&i->vm_arg1, &ax);
 	avm_memcell *rv2 = avm_translate_operand(&i->vm_arg2, &bx);
 
 	assert(((lv && (&stack[AVM_STACKSIZE - 1]) && lv > &stack[top]) || lv == &retval));
