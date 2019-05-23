@@ -1,6 +1,0 @@
-while(a){
-	while(b){
-		continue;
-		break;
-	}
-}

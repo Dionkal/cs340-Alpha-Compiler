@@ -1,5 +1,5 @@
 %{
-#define YY_DECL int yylex(void)	
+#define YY_DECL int yylex(void)
 #include "scanner.h"
 #include "parser.h"
 #include "quad.h"
@@ -14,7 +14,7 @@ extern std::stack<bool> scopeAccessStack;
 
 extern unsigned loopcounter;
 extern std::stack<unsigned> loopcounterStack;
-	
+
 %}
 %option yylineno
 %option noyywrap
@@ -24,7 +24,7 @@ real	[0-9]+"."[0-9]+
 
 /*Punctuation*/
 leftBracket1	'\{'
-rightBracket1	'\}'	
+rightBracket1	'\}'
 leftBracket2	'\['
 rightBracket2	'\]'
 leftBracket3	'\('
@@ -44,200 +44,200 @@ ANY				.
 
 "if"				{
 					return IF;
-					//addToken(KEYWORD,string("IF"),string(yytext),yylineno); 
+					//addToken(KEYWORD,string("IF"),string(yytext),yylineno);
 				}
-"else" 			{ 
-					return ELSE; 
+"else" 			{
+					return ELSE;
 					//addToken(KEYWORD,string("ELSE"),string(yytext),yylineno);
 				}
-"while"			{ 
-					return WHILE; 
+"while"			{
+					return WHILE;
 					//addToken(KEYWORD,string("WHILE"),string(yytext),yylineno);
 				}
-"for"				{ 
-          			
+"for"				{
+
 					return FOR;
 					//addToken(KEYWORD,string("FOR"),string(yytext),yylineno);
 				}
-"function"		{ 
-					return FUNCTION; 
+"function"		{
+					return FUNCTION;
 					//addToken(KEYWORD,string("FUNCTION"),string(yytext),yylineno);
 				}
-"return"		{ 
-          			
-					return RETURN; 
+"return"		{
+
+					return RETURN;
 					//addToken(KEYWORD,string("RETURN"),string(yytext),yylineno);
 				}
-"break"			{ 
-          			
-					return BREAK; 
+"break"			{
+
+					return BREAK;
 					//addToken(KEYWORD,string("BREAK"),string(yytext),yylineno);
 				}
-"continue"		{ 
-          			
-					return CONTINUE; 
+"continue"		{
+
+					return CONTINUE;
 					//addToken(KEYWORD,string("CONTINUE"),string(yytext),yylineno);
 				}
-"and"			{ 
-          			
-					return AND; 
-					//addToken(KEYWORD,string("AND"),string(yytext),yylineno); 
+"and"			{
+
+					return AND;
+					//addToken(KEYWORD,string("AND"),string(yytext),yylineno);
 				}
-"not"				{ 
-          			
-					return NOT; 
+"not"				{
+
+					return NOT;
 					//addToken(KEYWORD,string("NOT"),string(yytext),yylineno);
 				}
-"or"				{ 
-          			
-					return OR; 
+"or"				{
+
+					return OR;
 					//addToken(KEYWORD,string("OR"),string(yytext),yylineno);
 				}
-"local"			{ 
-          			
-					return LOCAL; 
-					//addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno); 
+"local"			{
+
+					return LOCAL;
+					//addToken(KEYWORD,string("LOCAL"),string(yytext),yylineno);
 				}
-"true"			{ 
-          			
-					return TRUE; 
+"true"			{
+
+					return TRUE;
 					//addToken(KEYWORD,string("TRUE"),string(yytext),yylineno);
 				}
-"false"			{ 
-          			
-					return FALSE; 
-					//addToken(KEYWORD,string("FALSE"),string(yytext),yylineno); 
+"false"			{
+
+					return FALSE;
+					//addToken(KEYWORD,string("FALSE"),string(yytext),yylineno);
 				}
-"nil"			{ 
-          			
-					return NIL; 
-					//addToken(KEYWORD,string("NIL"),string(yytext),yylineno); 
+"nil"			{
+
+					return NIL;
+					//addToken(KEYWORD,string("NIL"),string(yytext),yylineno);
 				}
-{ID_LEX}		{	
+{ID_LEX}		{
 					yylval.stringValue = strdup(yytext);
 					return ID;
 					//addToken(IDENTIFIER,string(yytext),string(yytext),yylineno);
 				}
-				
-"="				{ 
+
+"="				{
 					return '=';
           			//addToken(OPERATOR,string("ASSIGNMENT"),string(yytext),yylineno);
-				}				
-"+"				{ 
+				}
+"+"				{
           			return '+';
 					//addToken(OPERATOR,string("PLUS"),string(yytext),yylineno);
-				}				
-"-"				{ 
+				}
+"-"				{
           			return '-';
 					//addToken(OPERATOR,string("MINUS"),string(yytext),yylineno);
 				}
-"*"				{ 
+"*"				{
           			return '*';
 					//addToken(OPERATOR,string("MULTIPLICATION"),string(yytext),yylineno);
 				}
-"/"				{ 
+"/"				{
           			return '/';
 					//addToken(OPERATOR,string("DIVISION"),string(yytext),yylineno);
 				}
-"%"				{ 
+"%"				{
           			return '%';
 					//addToken(OPERATOR,string("MODULO"),string(yytext),yylineno);
 				}
-"=="			{ 
+"=="			{
           			return EQUAL;
 					//addToken(OPERATOR,string("EQUALS"),string(yytext),yylineno);
 				}
-"!="			{ 
+"!="			{
           			return NOTEQUAL;
 					//addToken(OPERATOR,string("NOT_EQUALS"),string(yytext),yylineno);
 				}
-"++"			{	 
+"++"			{
           			return PLUSPLUS;
 					//addToken(OPERATOR,string("PLUS_PLUS"),string(yytext),yylineno);
 				}
-"--"			{ 
+"--"			{
           			return MINUSMINUS;
 					//addToken(OPERATOR,string("MINUS_MINUS"),string(yytext),yylineno);
 				}
-">"				{ 
+">"				{
           			return '>';
 					//addToken(OPERATOR,string("GREATER"),string(yytext),yylineno);
 				}
-"<"				{ 
+"<"				{
           			return '<';
 					//addToken(OPERATOR,string("LESS"),string(yytext),yylineno);
 				}
-">="			{ 
+">="			{
           			return GREATEREQUAL;
 					//addToken(OPERATOR,string("G_EQUAL"),string(yytext),yylineno);
 				}
-"<="			{ 
+"<="			{
           			return LESSEQUAL;
 					//addToken(OPERATOR,string("L_EQUAL"),string(yytext),yylineno);
 				}
-{integer}		{	
+{integer}		{
 					// printf("Integer\n");
 					yylval.floatValue = atof(yytext);
 					return NUMBER;
-					//addToken(INT_CONST,string(yytext),string(yytext),yylineno); 	
+					//addToken(INT_CONST,string(yytext),string(yytext),yylineno);
 				}
 
 {real}			{
 					yylval.floatValue = atof(yytext);
 					return NUMBER;
-					//addToken(REAL_CONST,string(yytext),string(yytext),yylineno); 
+					//addToken(REAL_CONST,string(yytext),string(yytext),yylineno);
 				}
 
 {Whitespace}	{
-					//addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno); 
+					//addToken(PUNCTUATION,string("LEFT_BRACKET"),string(yytext),yylineno);
 				}
 "{"				{return '{';}
 
-"}"  			{ return '}';} 
+"}"  			{ return '}';}
 
-"["  			{ 
+"["  			{
 					return '[';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
-				} 
-"]"  			{ 
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
+				}
+"]"  			{
 					return ']';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
 				}
-"("  			{ 
+"("  			{
 					return '(';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
 				}
-")"  			{ 
+")"  			{
 					return ')';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
 				}
-";"    			{ 
+";"    			{
 					return ';';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
 				}
-","     		{ 
+","     		{
 					return ',';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
 			    }
-":"      		{ 
+":"      		{
 					return ':';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
-				} 
-{doubleColon}   { 
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
+				}
+{doubleColon}   {
 					return SCOPEOP;
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
-			    } 
-"."    			{ 
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
+			    }
+"."    			{
 					return '.';
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
-			    } 
-{doublePeriod}  { 
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
+			    }
+{doublePeriod}  {
 					return DOUPLEDOT;
-					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno); 
-			    }  
+					//addToken(PUNCTUATION,string("RIGHT_BRACKET"),string(yytext),yylineno);
+			    }
 
 
-"\""		{ 	
+"\""		{
 			char input = *yytext; /*get input*/
   			char next;
   			string output;
@@ -276,13 +276,13 @@ ANY				.
 						yylval.stringValue = (char*)(output.c_str());
 
 						return STRING;
-					}					 
-					break;		
+					}
+					break;
 				}
 
-    			output += input; 
+    			output += input;
   			}
-  		
+
   		if (input == '\0') {
     		printf("Error: End-of-file reached while in string: %s at line #%d\n",yytext,stringLine);
     	}
@@ -291,7 +291,7 @@ ANY				.
 
 {comment1}		; //addToken(COMMENT,string("LINE COMMENT"),"",yylineno);;
 
-"/*"	{	
+"/*"	{
 					char c;
 			int start_line;
 			string startToEnd;
@@ -299,7 +299,7 @@ ANY				.
 			std :: vector <int> v;
 
 			v.push_back (yylineno);
-	
+
 			while(((c = yyinput()) != '\0') && (c  != EOF) )
 			{
 				if(c == '*')
@@ -310,60 +310,60 @@ ANY				.
 						{
 							start_line=v.back();
 							v.pop_back();
-							
+
 							convert1<<start_line;
 							convert2<<yylineno;
 							startToEnd=convert1.str()+"-"+convert2.str();
-							//addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line); 
+							//addToken(COMMENT,string("C STYLE COMMENT"),startToEnd,start_line);
 							convert1.str(std::string());
 							convert2.str(std::string());
-							
+
 						}
 						if(v.empty()) break;
-						
-					}	
+
+					}
 					else unput(c);
 				}else if(c == '/')
 				{
 					if((c = yyinput()) == '*')
 					v.push_back(yylineno);
-					
+
 					else
 					unput(c);
 				}
-				
-				
+
+
 			}
-			
+
 			if(!v.empty()) std::cout << "End of file and unclosed comments\n";
 		}
 
-{ANY}		{printf("LEX: Invalid token %s at line: #%d \n",yytext,yylineno);}		
-				
+{ANY}		{printf("LEX: Invalid token %s at line: #%d \n",yytext,yylineno);}
+
 %%
 //Global Hashtables
 std::multimap<string,symTableEntry*> SymTableName;
 std::multimap< int,symTableEntry*> SymTableScope;
 
 
-// std::map<string,symTableEntry> SymTableScope; 
+// std::map<string,symTableEntry> SymTableScope;
 int current_scope = 0;
 //Global token vector
-vector  <alpha_token_t>* vctr_ptr; 
+vector  <alpha_token_t>* vctr_ptr;
 //Global token number
 int token_number = 0;
 //Global lex object
 //yyFlexLexer temp;
 
-int alpha_yylex(void* yylval){ 
-  vctr_ptr = (vector <alpha_token_t>*) yylval;  
-  return  yylex(); 
-} 
+int alpha_yylex(void* yylval){
+  vctr_ptr = (vector <alpha_token_t>*) yylval;
+  return  yylex();
+}
 
 void addToken(type token_t,string token_sT, string value, int line){
 	alpha_token_t token_struct;
-	
-	token_number++; 
+
+	token_number++;
 
 	token_struct.number_of_token = token_number; 		//save token number
 	token_struct.line_number = line;	  				//save line number
@@ -372,27 +372,27 @@ void addToken(type token_t,string token_sT, string value, int line){
 	token_struct.token_value = value;					//save value of token as string
 
 	switch(token_t){
-		case KEYWORD: 		
-		case OPERATOR: 		
-		case PUNCTUATION: 	 
-		case COMMENT: 
+		case KEYWORD:
+		case OPERATOR:
+		case PUNCTUATION:
+		case COMMENT:
 			token_struct.arrow_type = "<--enumerated";
 			break;
-		case IDENTIFIER: 	
+		case IDENTIFIER:
 		case STRING_TYPE:
 			token_struct.arrow_type = "<--char*";
 			break;
-		case INT_CONST: 	
+		case INT_CONST:
 			token_struct.arrow_type = "<--int";
 			break;
-		case REAL_CONST: 	
+		case REAL_CONST:
 			token_struct.arrow_type ="<--floating point";
 		 	break;
-		default:	
+		default:
 			token_struct.arrow_type = "<--_UKNOWN_TYPE_";
 	}
-	//add token struct to global vector 
-	vctr_ptr->push_back(token_struct);  
+	//add token struct to global vector
+	vctr_ptr->push_back(token_struct);
 }
 
 
@@ -411,7 +411,7 @@ string typeToString(type t){
 }
 
 int main (int argc, char *argv[]){
-	// vector <alpha_token_t> token_vector; 
+	// vector <alpha_token_t> token_vector;
 	if (argc !=2 && argc !=3) {
 		std::cout <<"Incorrect usage."<<std::endl;
 		std::cout <<"Use: ./scanner <input file> <optional output file>" <<std::endl;
@@ -428,19 +428,21 @@ int main (int argc, char *argv[]){
     	// printSymTable();
     	fclose(yyin);
     	printf("==================Print Quads===============\n");
-    	printQuads();
+
+		printQuads_debug();
+		// printQuads();
     	generate_func(); //Translate quads to instructions
     	patch_incomplete_jumps(); //patch final code jumps
     	printArrays();
     	printInstructions();
 
     	if(argc == 3){
-    		printToFile(std::string(argv[2]) + ".abc");	
+    		printToFile(std::string(argv[2]) + ".abc");
     	}else{
     		printToFile("a.abc");
     	}
 
-		
+
     }
   	return 0;
 }
@@ -451,7 +453,7 @@ symTableEntry* lookupSym(string key){
 	int max_scope = -1;
 	symTableEntry* tempVal = NULL;
 	std::pair <std::multimap<string,symTableEntry*>::iterator, std::multimap<string,symTableEntry*>::iterator> retList;
-	
+
 	retList = SymTableName.equal_range(key);
 
 		for (std::multimap<string,symTableEntry*>::iterator it=retList.first; it!=retList.second; ++it){
@@ -481,20 +483,20 @@ symTableEntry* lookupSym(string key, int scope){
 void insertSym(string key,symTableType type,int scp,unsigned int line){
 
 	/*insert new symbol*/
-	symTableEntry* symptr = new symTableEntry(); 
+	symTableEntry* symptr = new symTableEntry();
 	symptr->name = key;
 	symptr->symType = type;
-	symptr->scope = scp;	
+	symptr->scope = scp;
 	symptr->declLine = line;
 	symptr->isVisible = true;
-	
+
 	/*Offset operations, only for variables*/
 	if(type == GLOBAL_VAR || type == LOCAL_VAR || type == ARGUMENT_VAR){
 		symptr->offset = currScopeOffset();
 		symptr->space = current_scopescape();
 		incrementScopeOffset(); //increase offset
 	}
-	
+
 	SymTableName.insert ( std::pair<string,symTableEntry*>(key,symptr) );
 	SymTableScope.insert( std::pair<int,symTableEntry*>(scp,symptr) );
 }

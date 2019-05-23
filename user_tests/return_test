@@ -1,5 +1,0 @@
-function f(){
-	return;
-	return local x;
-	return nil;
-}

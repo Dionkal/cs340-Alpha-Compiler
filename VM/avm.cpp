@@ -12,10 +12,18 @@ extern std::vector<std::string> const_string_array;
 extern std::vector<double> const_num_array;
 extern std::vector<std::string> lib_func_used_array;
 extern std::vector<user_func_array_entry> user_func_array;
-extern bool executionFinished;
-extern unsigned pc;
 
 extern void avm_tabledecrefcounter(avm_table *t);
+
+extern std::vector<instruction> vctr_instr;
+
+bool executionFinished = false;
+unsigned pc = 0;
+unsigned currLine = 0;
+unsigned codeSize = 0;
+instruction *code = NULL;
+
+#define AVM_ENDING_PC codeSize
 
 /*AVM registers*/
 avm_memcell ax, bx, cx, retval;
@@ -40,8 +48,8 @@ std::string typeStrings[] = {
 std::map<std::string, library_func_t> libFuncHash;
 
 double consts_getnumber(unsigned index) { return const_num_array[index]; }
-char *consts_getstring(unsigned index) { return (char *)(const_string_array[index]).c_str(); }
-char *libfuncs_getused(unsigned index) { return (char *)(lib_func_used_array[index]).c_str(); }
+char *consts_getstring(unsigned index) { return (char *)(const_string_array[index - 1]).c_str(); }
+char *libfuncs_getused(unsigned index) { return (char *)(lib_func_used_array[index - 1]).c_str(); }
 unsigned userfunc_getaddr(unsigned index) { return user_func_array[index].address; }
 
 void loadLibFuncs()
@@ -74,7 +82,7 @@ avm_memcell *avm_translate_operand(vmarg *arg, avm_memcell *reg)
 	}
 	case string_a:
 	{
-		reg->type = bool_m;
+		reg->type = string_m;
 		reg->data.strVal = strdup(consts_getstring(arg->val));
 		return reg;
 		/*TODO check were strings are deleted and free the pointer
@@ -99,6 +107,7 @@ avm_memcell *avm_translate_operand(vmarg *arg, avm_memcell *reg)
 	{
 		reg->type = userfunc_m;
 		reg->data.funcVal = userfunc_getaddr(arg->val);
+		return reg;
 	}
 
 	case libfunc_a:
@@ -107,6 +116,7 @@ avm_memcell *avm_translate_operand(vmarg *arg, avm_memcell *reg)
 		reg->data.libfuncVal = strdup(libfuncs_getused(arg->val));
 		/*TODO check were strings are deleted and free the pointer
 			in order to avoid memory leaks*/
+		return reg;
 	}
 
 	default:
@@ -171,6 +181,8 @@ int main(int argc, char *argv[])
 	readFile(std::string(argv[1]));
 	avm_initstack();
 	loadLibFuncs();
+
+	top = topsp = AVM_STACKSIZE - vctr_instr.size() + 1;
 
 	while (!executionFinished)
 		execute_cycle();
@@ -246,100 +258,62 @@ void avm_error(const char *fmt, ...)
 	va_end(args);
 }
 
-void avm_dec_top(void)
+execute_func_t executeFuncs[] = {
+	execute_assign,
+	execute_add,
+	execute_sub,
+	execute_mul,
+	execute_div,
+	execute_mod,
+	execute_nop, // uminus
+	execute_nop, // and
+	execute_nop, // or
+	execute_nop, // not
+	execute_jeq,
+	execute_jne,
+	execute_jle,
+	execute_jge,
+	execute_jlt,
+	execute_jgt,
+	execute_call,
+	execute_pusharg,
+	execute_nop, // return
+	execute_nop, // get return value
+	execute_funcenter,
+	execute_funcexit,
+	execute_newtable,
+	execute_tablegetelem,
+	execute_tablesetelem,
+	execute_nop, //jump
+	execute_nop};
+
+void execute_cycle()
 {
-	if (!top)
-	{ //stack overflow (not the site)
-		avm_error("stack overflow");
+	if (executionFinished)
+		return;
+
+	if (pc == AVM_ENDING_PC)
+	{
 		executionFinished = 1;
+		return;
 	}
 	else
 	{
-		--top;
-	}
-}
+		assert(pc < AVM_ENDING_PC);
+		instruction *instr = &vctr_instr[pc]; //get the next isntruction to execute
+		assert(instr->vm_op >= 0 && instr->vm_op <= AVM_MAX_INSTRUCTIONS);
 
-void avm_push_envvalue(unsigned val)
-{
-	stack[top].type = number_m;
-	stack[top].data.numVal = val;
-	avm_dec_top();
-}
-
-unsigned totalActuals = 0;
-
-void avm_callsaveenvironment(void)
-{
-	avm_push_envvalue(totalActuals);
-	avm_push_envvalue(pc + 1);
-	avm_push_envvalue(top + totalActuals + 2);
-	avm_push_envvalue(topsp);
-}
-
-unsigned avm_get_envvalue(unsigned i)
-{
-	assert(stack[i].type = number_m);
-	unsigned val = (unsigned)stack[i].data.numVal;
-	assert(stack[i].data.numVal == ((double)val));
-	return val;
-}
-
-void avm_calllibfunc(char *id)
-{
-	library_func_t f = avm_getlibraryfunc(id);
-	if (!f)
-	{
-		avm_error("unsupported lib func %s called!", id);
-		executionFinished = 1;
-	}
-	else
-	{
-		topsp = top;
-		totalActuals = 0;
-		(*f)(); // call the lib function
-		if (!executionFinished)
-		{ //execute func exit only if there are no errors
-			execute_funcexit(NULL);
+		/*Optimization: change the currline only if the
+		source line has changed from previous instruction*/
+		if (instr->vm_srcLine)
+		{
+			currLine = instr->vm_srcLine;
 		}
+
+		unsigned oldPC = pc;
+		(*executeFuncs[instr->vm_op])(instr);
+
+		if (pc == oldPC)
+			++pc; //execute next instr
 	}
-}
-
-unsigned avm_totalactuals(void)
-{
-	return avm_get_envvalue(topsp + AVM_NUMACTUALS_OFFSET);
-}
-
-avm_memcell *avm_getactual(unsigned i)
-{
-	assert(i < avm_totalactuals());
-	return &stack[topsp + AVM_STACKENV_SIZE + 1 + i];
-}
-
-library_func_t avm_getlibraryfunc(std::string id)
-{
-	std::map<std::string, library_func_t>::iterator it;
-	it = libFuncHash.find(id);
-	if (it != libFuncHash.end()) //Lib func not found
-	{
-		return NULL;
-	}
-	else
-	{
-		return it->second;
-	}
-}
-
-/*
-	With the following every library function is manually
-	added in the VM library function resolution map.
-*/
-void avm_registerlibfunc(std::string id, library_func_t addr)
-{
-	libFuncHash[id] = addr;
-}
-
-user_func_array_entry *avm_getfuncinfo(unsigned address)
-{
-	assert(vctr_instr[address].vm_result.type == userfunc_a); //only functions are permited
-	return &user_func_array[vctr_instr[address].vm_result.val];
 }

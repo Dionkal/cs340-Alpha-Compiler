@@ -1,7 +1,0 @@
-while ( x - y > z - w){
-	if(b)
-		break;
-	else	
-		x = x-z;
-	
-}

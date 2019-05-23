@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.3.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,6 +30,9 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
+
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_YY_PARSER_H_INCLUDED
 # define YY_YY_PARSER_H_INCLUDED
@@ -110,7 +114,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 37 "syntax.y" /* yacc.c:1909  */
+#line 37 "syntax.y" /* yacc.c:1921  */
 
 	char* stringValue;
 	float floatValue;
@@ -121,7 +125,7 @@ union YYSTYPE
 	void* jumpListEntry;
 	void* forjump;
 
-#line 125 "parser.h" /* yacc.c:1909  */
+#line 129 "parser.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;

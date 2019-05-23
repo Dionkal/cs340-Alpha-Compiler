@@ -1,5 +1,0 @@
-if (a or b){
-	x=y;
-}else{
-	y=z;
-}
