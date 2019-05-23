@@ -20,7 +20,6 @@ void avm_assign(avm_memcell *lv, avm_memcell *rv)
 
 	avm_memcellclear(lv);
 
-	/*TODO: monitor this for possible segmentations*/
 	memcpy(lv, rv, sizeof(avm_memcell)); //dispath instead in cpp
 
 	if (lv->type == string_m)

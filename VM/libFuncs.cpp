@@ -61,7 +61,6 @@ void libfunc_argument()
 	{
 		avm_memcellclear(&retval);
 		retval.type = avm_getactual(0)->type;
-		/* TODO: finish implementation */
 		if (typeStrings[retval.type] == "number_m")
 			retval.data.numVal = avm_getactual(0)->data.numVal;
 		else if (typeStrings[retval.type] == "string_m")
