@@ -1,37 +1,39 @@
 #ifndef EXECUTE_CALL_LIB
-	#define EXECUTE_CALL_LIB
-	
-	#define AVM_NUMACTUALS_OFFSET 	4
-	#define AVM_SAVEDTOP_OFFSET 	2
-	#define AVM_SAVED_PC_OFFSET 	3
-	#define AVM_SAVEDTOPSP_OFFSET	1
+#define EXECUTE_CALL_LIB
 
-	#include <algorithm>
-	#include "vmargs.h"
-	#include "avm.h"
-	#include "dispatcher.h"
-	#include "ex_assign.h"
-	void avm_dec_top(void);
+#define AVM_NUMACTUALS_OFFSET 4
+#define AVM_SAVEDTOP_OFFSET 2
+#define AVM_SAVED_PC_OFFSET 3
+#define AVM_SAVEDTOPSP_OFFSET 1
 
-	void avm_push_envvalue(unsigned val);
+#include <algorithm>
+#include "vmargs.h"
+#include "avm.h"
+#include "dispatcher.h"
+#include "ex_assign.h"
+void avm_dec_top(void);
 
-	void execute_call (instruction* instr);
+void avm_push_envvalue(unsigned val);
 
-	void execute_funcenter(instruction* instr);
+void execute_call(instruction *instr);
 
-	unsigned avm_get_envvalue(unsigned i);
+void execute_funcenter(instruction *instr);
 
-	void execute_funcexit(instruction* unused);
+unsigned avm_get_envvalue(unsigned i);
 
-	void avm_calllibfunc(char* id);
+void execute_funcexit(instruction *unused);
 
-	unsigned avm_totalactuals (void);
+void avm_calllibfunc(char *id);
 
-	avm_memcell* avm_getactual(unsigned i);
+unsigned avm_totalactuals(void);
 
-	void libfunc_print(void);
+avm_memcell *avm_getactual(unsigned i);
 
-	user_func_array_entry* avm_getfuncinfo(unsigned address);
+void libfunc_print(void);
 
-	std::string avm_getlibraryfunc(std::string id);
+void execute_pusharg(instruction *instr);
+
+user_func_array_entry *avm_getfuncinfo(unsigned address);
+
+std::string avm_getlibraryfunc(std::string id);
 #endif
