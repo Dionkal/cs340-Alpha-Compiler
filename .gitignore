@@ -17,3 +17,6 @@ parser\.output
 
 VM/*.o
 VM/avm
+
+usert_tests/*
+bin/*

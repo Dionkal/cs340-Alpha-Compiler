@@ -41,7 +41,7 @@ unsigned consts_newstring(std::string str)
 	}
 
 	const_string_array.push_back(str);
-	return i + 1;
+	return i;
 }
 
 unsigned consts_newnumber(double numconst)
@@ -58,7 +58,7 @@ unsigned consts_newnumber(double numconst)
 	}
 
 	const_num_array.push_back(numconst);
-	return i + 1;
+	return i;
 }
 
 unsigned libfuncs_newused(std::string str)
@@ -76,7 +76,7 @@ unsigned libfuncs_newused(std::string str)
 	}
 
 	lib_func_used_array.push_back(str);
-	return i + 1;
+	return i;
 }
 
 unsigned userfuncs_newfunc(symTableEntry *sym)
@@ -389,8 +389,8 @@ void printInstructions()
 	for (it_Instr = vctr_instr.begin(); it_Instr != vctr_instr.end(); it_Instr++, i++)
 	{
 		std::cout << std::setw(4) << i << ": " << std::setw(9) << vmopcodeToString(it_Instr->vm_op) << " "; //print op
-		outputBinary << std::setw(9) << vmopcodeToString(it_Instr->vm_op) << " ";
-		outputText << std::setw(4) << i << ": " << std::setw(9) << vmopcodeToString(it_Instr->vm_op) << " ";
+		// outputBinary << std::setw(9) << vmopcodeToString(it_Instr->vm_op) << " ";
+		// outputText << std::setw(4) << i << ": " << std::setw(9) << vmopcodeToString(it_Instr->vm_op) << " ";
 
 		printVmarg(it_Instr->vm_arg1);
 		printVmarg(it_Instr->vm_arg2);

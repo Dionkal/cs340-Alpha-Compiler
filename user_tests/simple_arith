@@ -1,0 +1,5 @@
+print ("Simple expressions...\n");
+x = y = 10;
+z = (x+y) * (x);
+print(x);
+print(z);

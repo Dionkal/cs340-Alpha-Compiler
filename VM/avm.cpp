@@ -48,8 +48,8 @@ std::string typeStrings[] = {
 std::map<std::string, library_func_t> libFuncHash;
 
 double consts_getnumber(unsigned index) { return const_num_array[index]; }
-char *consts_getstring(unsigned index) { return (char *)(const_string_array[index - 1]).c_str(); }
-char *libfuncs_getused(unsigned index) { return (char *)(lib_func_used_array[index - 1]).c_str(); }
+char *consts_getstring(unsigned index) { return (char *)(const_string_array[index]).c_str(); }
+char *libfuncs_getused(unsigned index) { return (char *)(lib_func_used_array[index]).c_str(); }
 unsigned userfunc_getaddr(unsigned index) { return user_func_array[index].address; }
 
 void loadLibFuncs()
