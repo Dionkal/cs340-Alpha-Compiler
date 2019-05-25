@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
 	avm_initstack();
 	loadLibFuncs();
 
-	top = topsp = AVM_STACKSIZE - vctr_instr.size() + 1;
+	top = topsp = AVM_STACKSIZE - vctr_instr.size();
 
 	while (!executionFinished)
 		execute_cycle();
@@ -190,36 +190,14 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void avm_warning(const char *format, ...)
+void avm_warning(const char *fmt, ...)
 {
 	va_list args;
-	va_start(args, format);
-	std::cout << "Warning: ";
-	while (*format != '\0')
-	{
-		if (*format == 'd')
-		{
-			int i = va_arg(args, int);
-			std::cout << i << '\n';
-		}
-		else if (*format == 'c')
-		{
-			// note automatic conversion to integral type
-			int c = va_arg(args, int);
-			std::cout << static_cast<char>(c) << '\n';
-		}
-		else if (*format == 'f')
-		{
-			double d = va_arg(args, double);
-			std::cout << d << '\n';
-		}
-		else if (*format == 's')
-		{
-			char *c = va_arg(args, char *);
-			std::cout << std::string(c) << '\n';
-		}
-		++format;
-	}
+	va_start(args, fmt);
+
+	fprintf(stderr, "Error: ");
+	vfprintf(stderr, fmt, args);
+	fprintf(stderr, "\n");
 
 	va_end(args);
 }
@@ -228,34 +206,13 @@ void avm_error(const char *fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
-	std::cout << "Error: ";
-	while (*fmt != '\0')
-	{
-		if (*fmt == 'd')
-		{
-			int i = va_arg(args, int);
-			std::cout << i << '\n';
-		}
-		else if (*fmt == 'c')
-		{
-			// note automatic conversion to integral type
-			int c = va_arg(args, int);
-			std::cout << static_cast<char>(c) << '\n';
-		}
-		else if (*fmt == 'f')
-		{
-			double d = va_arg(args, double);
-			std::cout << d << '\n';
-		}
-		else if (*fmt == 's')
-		{
-			char *c = va_arg(args, char *);
-			std::cout << std::string(c) << '\n';
-		}
-		++fmt;
-	}
-	executionFinished = true; //stop execution
+
+	fprintf(stderr, "Error: ");
+	vfprintf(stderr, fmt, args);
+	fprintf(stderr, "\n");
+
 	va_end(args);
+	executionFinished = true; //stop execution
 }
 
 execute_func_t executeFuncs[] = {
@@ -284,7 +241,7 @@ execute_func_t executeFuncs[] = {
 	execute_newtable,
 	execute_tablegetelem,
 	execute_tablesetelem,
-	execute_nop, //jump
+	execute_jump, //jump
 	execute_nop};
 
 void execute_cycle()

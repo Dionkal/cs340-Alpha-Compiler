@@ -14,3 +14,5 @@ void execute_jge(instruction *i);
 void execute_jlt(instruction *i);
 
 void execute_jgt(instruction *i);
+
+void execute_jump(instruction *i);

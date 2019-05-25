@@ -377,3 +377,8 @@ void execute_jgt(instruction *i)
 	if (!executionFinished && result)
 		pc = i->vm_result.val;
 }
+
+void execute_jump(instruction *i)
+{
+	pc = i->vm_result.val;
+}

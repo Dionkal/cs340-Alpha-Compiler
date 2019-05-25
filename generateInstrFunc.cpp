@@ -244,6 +244,8 @@ void generate_CALL(quad *q)
 	q->taddress = next_instruction_label();
 	instruction newInst;
 	newInst.vm_op = call_vmopcode;
+	reset_operand(&newInst.vm_arg1);
+	reset_operand(&newInst.vm_arg2);
 	make_operand(q->result, &newInst.vm_result);
 	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
@@ -254,8 +256,8 @@ void generate_GETRETVAL(quad *q)
 	q->taddress = next_instruction_label();
 	instruction newInst;
 	newInst.vm_op = assign_vmopcode;
-	make_operand(q->result, &newInst.vm_arg1);
-	make_retvaloperand(&newInst.vm_result);
+	make_operand(q->result, &newInst.vm_result);
+	make_retvaloperand(&newInst.vm_arg1);
 	newInst.vm_srcLine = q->line;
 	vctr_instr.push_back(newInst);
 }
@@ -284,6 +286,7 @@ void generate_RETURN(quad *q)
 	newInst.vm_op = assign_vmopcode;
 	make_retvaloperand(&newInst.vm_result);
 	reset_operand(&newInst.vm_arg2);
+	reset_operand(&newInst.vm_arg1);
 	if (q->result != NULL)
 		make_operand(q->result, &newInst.vm_arg1);
 	newInst.vm_srcLine = q->line;
