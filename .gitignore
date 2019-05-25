@@ -20,3 +20,4 @@ VM/avm
 
 usert_tests/*
 bin/*
+*.abc

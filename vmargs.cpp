@@ -87,14 +87,14 @@ unsigned userfuncs_newfunc(symTableEntry *sym)
 	/*Optimisation: Iterate the vector to see if the element already exists*/
 	for (it = user_func_array.begin(); it != user_func_array.end(); it++, i++)
 	{
-		if ((*it).address == sym->address && (*it).local_size == sym->totallocals && (*it).id == sym->name)
+		if ((*it).local_size == sym->totallocals && (*it).id == sym->name)
 		{
 			return i;
 		}
 	}
 
 	user_func_array_entry func_entry;
-	func_entry.address = sym->address;
+	// func_entry.address = taddress;
 	func_entry.local_size = sym->totallocals;
 	func_entry.id = sym->name;
 	user_func_array.push_back(func_entry);
