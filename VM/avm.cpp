@@ -173,6 +173,7 @@ void memclear_table(avm_memcell *m)
 
 int main(int argc, char *argv[])
 {
+
 	if (argc != 2)
 	{
 		std::cout << "No input file, exiting";
@@ -182,8 +183,8 @@ int main(int argc, char *argv[])
 	avm_initstack();
 	loadLibFuncs();
 
-	top = topsp = AVM_STACKSIZE - vctr_instr.size();
-
+	// top = AVM_STACKSIZE - 1;
+	top = topsp = AVM_STACKSIZE - 1 - globalSize;
 	while (!executionFinished)
 		execute_cycle();
 

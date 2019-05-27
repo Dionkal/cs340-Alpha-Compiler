@@ -77,7 +77,7 @@ void execute_funcexit(instruction *unused)
 	pc = avm_get_envvalue(topsp + AVM_SAVED_PC_OFFSET);
 	topsp = avm_get_envvalue(topsp + AVM_SAVEDTOPSP_OFFSET);
 
-	while (++oldTop <= top)
+	while (oldTop++ <= top)
 	{
 		avm_memcellclear(&stack[oldTop]);
 	}

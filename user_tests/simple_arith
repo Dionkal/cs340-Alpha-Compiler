@@ -1,5 +1,7 @@
+print("Simple expressions....");
 x = y = 10;
 z = (x+y) * (x);
 a = x >= y or y >= z;
+print(x,z,a);
 
 x = (function(){x = (function(){x = (function(){x = (function(){x = (function(){x = (function(){});});});});});});

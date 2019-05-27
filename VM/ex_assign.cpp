@@ -15,10 +15,10 @@ void avm_assign(avm_memcell *lv, avm_memcell *rv)
 	if ((lv->type == table_m) && (rv->type == table_m) && (lv->data.tableVal == rv->data.tableVal))
 		return;
 
-	if (rv->type == undef_m) //TODO: throw warning
-		return;
+	if (rv->type == undef_m)
+		avm_warning("assigning form 'undef content!");
 
-	// avm_memcellclear(lv);
+	avm_memcellclear(lv);
 
 	memcpy(lv, rv, sizeof(avm_memcell));
 
