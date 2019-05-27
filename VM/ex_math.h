@@ -1,6 +1,6 @@
 #ifndef EX_MATH_LIB
 #define EX_MATH_LIB
-#include "vmargs.h"
+#include "../vmargs.h"
 #include "avm.h"
 
 #define execute_add execute_arithmetic

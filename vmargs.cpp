@@ -111,6 +111,7 @@ void make_operand(expr *e, vmarg *arg)
 	case tableitem_e:
 	case arithexpr_e:
 	case boolexpr_e:
+	case assignexpr_e:
 	case newtable_e:
 	{
 
@@ -130,11 +131,6 @@ void make_operand(expr *e, vmarg *arg)
 		default:
 			assert(0);
 		}
-		break;
-	}
-	case assignexpr_e:
-	{
-		arg->type = assign_a;
 		break;
 	}
 	case constbool_e:
@@ -406,7 +402,7 @@ void printVmarg(vmarg arg)
 {
 	if (arg.type != invalid_a)
 	{
-		if (arg.type != nil_a && arg.type != assign_a && arg.type != retval_a)
+		if (arg.type != nil_a /*&& arg.type != assign_a */ && arg.type != retval_a)
 		{
 			std::cout << std::setw(6) << arg.val << " ";
 			// outputBinary<<std::setw(6) <<arg.val <<" ";
@@ -478,8 +474,6 @@ std::string vmtypeToString(vmarg_t type)
 {
 	switch (type)
 	{
-	case assign_a:
-		return "assign_a";
 	case global_a:
 		return "global_a";
 	case local_a:

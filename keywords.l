@@ -274,7 +274,7 @@ ANY				.
 					if(isLegal){
 					// addToken(STRING_TYPE, string("STRING_TYPE"), output, stringLine);
 						yylval.stringValue = (char*)(output.c_str());
-
+						std::cout <<"KEYWORDS.L: "  <<yylval.stringValue <<std::endl;
 						return STRING;
 					}
 					break;

@@ -1,5 +1,6 @@
 #include "libFuncs.h"
 #include "string.h"
+#include <math.h>
 
 extern avm_memcell retval;
 extern unsigned top, topsp;
@@ -69,7 +70,8 @@ void libfunc_argument()
 			retval.data.boolVal = avm_getactual(0)->data.boolVal;
 		else if (typeStrings[retval.type] == "table_m")
 		{
-			/* TODO: copy table ?*/
+			retval.data.tableVal = avm_getactual(0)->data.tableVal;
+			avm_tableincrefcounter(retval.data.tableVal);
 		}
 		else if (typeStrings[retval.type] == "userfunc_m")
 			retval.data.funcVal = avm_getactual(0)->data.funcVal;
@@ -77,5 +79,59 @@ void libfunc_argument()
 			retval.data.libfuncVal = avm_getactual(0)->data.libfuncVal;
 		else if (typeStrings[retval.type] == "libfunc_m")
 			retval.data.libfuncVal = avm_getactual(0)->data.libfuncVal;
+	}
+}
+
+void libfunc_sqrt()
+{
+	unsigned n = avm_totalactuals();
+	if (n != 1)
+		avm_error("Too many a arguments %d in 'sqrt' expected 1.", n);
+	else
+	{
+		if (avm_getactual(0)->type != number_m || avm_getactual(0)->data.numVal < 0)
+		{
+			retval.type = nil_m;
+			return;
+		}
+
+		retval.type = number_m;
+		retval.data.numVal = sqrt(avm_getactual(0)->data.numVal);
+	}
+}
+
+void libfunc_sin()
+{
+	unsigned n = avm_totalactuals();
+	if (n != 1)
+		avm_error("Too many a arguments %d in 'sin' expected 1.", n);
+	else
+	{
+		if (avm_getactual(0)->type != number_m)
+		{
+			retval.type = nil_m;
+			return;
+		}
+
+		retval.type = number_m;
+		retval.data.numVal = sin(avm_getactual(0)->data.numVal);
+	}
+}
+
+void libfunc_cos()
+{
+	unsigned n = avm_totalactuals();
+	if (n != 1)
+		avm_error("Too many a arguments %d in 'cos' expected 1.", n);
+	else
+	{
+		if (avm_getactual(0)->type != number_m)
+		{
+			retval.type = nil_m;
+			return;
+		}
+
+		retval.type = number_m;
+		retval.data.numVal = cos(avm_getactual(0)->data.numVal);
 	}
 }

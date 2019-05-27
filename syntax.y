@@ -661,7 +661,9 @@ const:		NUMBER 								{
 												}
 			| STRING 							{
 													expr* temp_expr = newexpr(conststring_e);
+
 													temp_expr->strConst= std::string((char*)$1);
+													std::cout <<"PHASE 3: CONST STRING: "  <<((char*)$1) <<std::endl;
 													std::cout <<"PHASE 3: STRING: "  <<temp_expr->strConst <<std::endl;
 													($$) = temp_expr;
 												}

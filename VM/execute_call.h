@@ -7,7 +7,6 @@
 #define AVM_SAVEDTOPSP_OFFSET 1
 
 #include <algorithm>
-#include "vmargs.h"
 #include "avm.h"
 #include "ex_assign.h"
 

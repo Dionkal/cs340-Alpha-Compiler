@@ -11,4 +11,12 @@ void libfunc_print(void);
 void libfunc_typeof(void);
 
 void libfunc_totalarguments(void);
+
+void libfunc_argument();
+
+void libfunc_sqrt();
+
+void libfunc_sin();
+
+void libfunc_cos();
 #endif

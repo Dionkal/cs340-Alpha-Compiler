@@ -3,20 +3,20 @@
 #include <assert.h>
 #include <string>
 #include <iostream>
-#include "vmargs.h"
 #include <stdlib.h>
 #include <cstdarg>
 #include <algorithm>
+#include "initVM.h"
 #include "execute_call.h"
 #include "execute_nop.h"
 #include "ex_assign.h"
 #include "ex_math.h"
 #include "ex_jumps.h"
 #include "execute_table.h"
+#include "libFuncs.h"
 #include <map>
 #include "memcell.h"
 
-#include "initVM.h"
 #define MAGIC_NUMBER 340200501
 #define AVM_TABLE_HASHTABLE 211
 #define AVM_STACKSIZE 4096

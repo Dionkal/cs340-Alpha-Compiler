@@ -20,7 +20,9 @@ void avm_assign(avm_memcell *lv, avm_memcell *rv)
 
 	avm_memcellclear(lv);
 
-	memcpy(lv, rv, sizeof(avm_memcell));
+	//memcpy(lv, rv, sizeof(avm_memcell));
+	lv->type = rv->type;
+	lv->data = rv->data;
 
 	if (lv->type == string_m)
 	{
@@ -37,7 +39,9 @@ void execute_assign(instruction *instr)
 	avm_memcell *rv = avm_translate_operand(&instr->vm_arg1, &ax);
 
 	assert(lv && ((&stack[AVM_STACKSIZE - 1] >= lv && lv > &stack[top]) || lv == &retval));
-	assert(rv); // TODO: Similar assertion test as above
+	assert(rv);
+	// assert(rv && ((&stack[AVM_STACKSIZE - 1] >= rv && rv > &stack[0]) || rv == &retval)); // TODO: Similar assertion test as above
 
 	avm_assign(lv, rv);
+	printf(" ");
 }

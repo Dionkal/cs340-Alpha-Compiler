@@ -11,7 +11,6 @@
 typedef enum vmarg_t
 {
 	invalid_a,
-	assign_a,
 	global_a,
 	local_a,
 	formal_a,

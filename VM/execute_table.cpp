@@ -51,6 +51,7 @@ void execute_tablegetelem(instruction *instr)
 			avm_warning("%s[%s] not found!", ts, is);
 		}
 	}
+	printf(" ");
 }
 
 void execute_tablesetelem(instruction *instr)
@@ -70,4 +71,5 @@ void execute_tablesetelem(instruction *instr)
 	{
 		avm_tablesetelem(t->data.tableVal, i, c);
 	}
+	printf(" ");
 }

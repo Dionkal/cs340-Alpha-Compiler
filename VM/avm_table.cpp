@@ -72,6 +72,8 @@ void avm_tablesetelem(avm_table *table, avm_memcell *key, avm_memcell *val)
 	{
 	case number_m:
 		retInt = table->numIndexed.insert(std::pair<double, avm_memcell>(key->data.numVal, *val));
+		if (val->type == table_m)
+			avm_tableincrefcounter(val->data.tableVal);
 		//entry already exists
 		if (retInt.second == false)
 		{
@@ -84,6 +86,8 @@ void avm_tablesetelem(avm_table *table, avm_memcell *key, avm_memcell *val)
 		return;
 	case string_m:
 		retStr = table->strIndexed.insert(std::pair<std::string, avm_memcell>(key->data.strVal, *val));
+		if (val->type == table_m)
+			avm_tableincrefcounter(val->data.tableVal);
 		//entry already exists
 		if (retStr.second == false)
 		{

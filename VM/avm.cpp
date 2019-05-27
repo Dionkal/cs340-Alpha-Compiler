@@ -55,7 +55,12 @@ unsigned userfunc_getaddr(unsigned index) { return user_func_array[index].addres
 void loadLibFuncs()
 {
 	avm_registerlibfunc("print", libfunc_print);
-	// TODO: Register more lib funcs
+	avm_registerlibfunc("typeof", libfunc_typeof);
+	avm_registerlibfunc("total_arguments", libfunc_totalarguments);
+	avm_registerlibfunc("argument", libfunc_argument);
+	avm_registerlibfunc("sqrt", libfunc_sqrt);
+	avm_registerlibfunc("sin", libfunc_sin);
+	avm_registerlibfunc("cos", libfunc_cos);
 }
 
 avm_memcell *avm_translate_operand(vmarg *arg, avm_memcell *reg)
@@ -183,8 +188,9 @@ int main(int argc, char *argv[])
 	avm_initstack();
 	loadLibFuncs();
 
-	// top = AVM_STACKSIZE - 1;
+	// topsp = AVM_STACKSIZE - 1;
 	top = topsp = AVM_STACKSIZE - 1 - globalSize;
+	pc = 0;
 	while (!executionFinished)
 		execute_cycle();
 
